@@ -1,5 +1,7 @@
 from datetime import date
+import tkinter as tk
 
+from controller.main_controller import MainController
 from utils.database import engine, SessionLocal
 from models.base import Base
 from services.ledger_service import LedgerService
@@ -57,7 +59,9 @@ def main():
     # print("Finding transactions in account ID 2 from 19/3/2021 to 24/3/2021")
     # print(transaction_controller.query_account_transactions(2, datetime.date(2021, 3, 19), datetime.date(2021, 3, 24)))
 
-
-
 if __name__ == "__main__":
-    main()
+    root = tk.Tk()
+    Base.metadata.create_all(bind=engine)
+    session = SessionLocal()
+    app = MainController(root, session)
+    root.mainloop()
