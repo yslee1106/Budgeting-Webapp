@@ -7,19 +7,25 @@ sys.path.append('../AI Ledger')
 from utils.database import TransactionType
 
 class TransactionForm:
-    def __init__(self, controller, accounts):
+    def __init__(self, controller, accounts, transactions = None):
             self.controller = controller
             self.root = controller.root
             self.accounts = accounts
-            self.create_form()
+            print(transactions)
 
-    def create_form(self):
+            if(not transactions):
+                self.create_new_transaction_form()
+            else:
+                self.transactions = transactions
+                self.create_transaction_view()
+
+    def create_new_transaction_form(self):
         # Form Title
         title_label = tk.Label(self.root, text="New Transaction", font=("Arial", 16, "bold"))
         title_label.grid(row=0, column=0, columnspan=2, pady=10)
 
         # Account Field
-        self.value_to_account_map = {str(acc): acc for acc in self.accounts}
+        self.value_to_account_map = {str(acc.name): acc for acc in self.accounts}
         debit_account_label = tk.Label(self.root, text="Account to Debit:", font=("Arial", 12))
         debit_account_label.grid(row=1, column=0, padx=10, pady=5, sticky=tk.W)
         self.debit_account_combobox = ttk.Combobox(self.root, font=("Arial", 12), values=list(self.value_to_account_map.keys()))
@@ -51,10 +57,46 @@ class TransactionForm:
         self.amount_entry = tk.Entry(self.root, font=("Arial", 12))
         self.amount_entry.grid(row=4, column=1, padx=10, pady=5, sticky=tk.W)
 
+        # Cancel Button
+        cancel_button = tk.Button(self.root, text="Cancel", font=("Arial", 12),
+                                  command=self.controller.open_start_page)
+        cancel_button.grid(row=5, column=0)
+
         # Submit Button
         submit_button = tk.Button(self.root, text="Submit", font=("Arial", 12),
                                    command=self.on_submit)
-        submit_button.grid(row=5, column=0, columnspan=2, pady=20)
+        submit_button.grid(row=5, column=1, columnspan=2, pady=20)
+
+    def create_transaction_view(self):
+        # Set up the treeview to display transactions
+        self.tree = ttk.Treeview(self.root, columns=("Date", "Account", "Description", "Type", "Amount"), show="headings")
+
+        # Define the column headings
+        self.tree.heading("Date", text="Date")
+        self.tree.heading("Account", text="Account")
+        self.tree.heading("Description", text="Description")
+        self.tree.heading("Type", text="Type")
+        self.tree.heading("Amount", text="Amount")
+
+        # Define column widths
+        self.tree.column("Date", width=50, anchor=tk.CENTER)
+        self.tree.column("Account", width=200, anchor=tk.CENTER)
+        self.tree.column("Description", width=400, anchor=tk.W)
+        self.tree.column("Type", width=50, anchor=tk.CENTER)
+        self.tree.column("Amount", width=100, anchor=tk.E)
+
+        self.tree.pack(fill=tk.BOTH, expand=True)
+
+        # Load data into the treeview
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+        for transaction in self.transactions:
+            self.tree.insert("", tk.END, values=transaction)
+
+        # Cancel Button
+        cancel_button = tk.Button(self.root, text="Cancel", font=("Arial", 12),
+                                  command=self.controller.open_start_page)
+        cancel_button.pack()
 
     def on_submit(self):
         try:

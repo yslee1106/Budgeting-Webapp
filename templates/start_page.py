@@ -13,16 +13,16 @@ class StartPage:
         header_label.pack(pady=20)
 
         new_account_button = tk.Button(self.root, text="Open New Account", font=("Arial", 12),
-                                        command=self.controller.show_new_account_view)
+                                        command=self.controller.open_new_account)
         new_account_button.pack(pady=10, fill=tk.X, padx=50)
 
         new_transaction_button = tk.Button(self.root, text="Open New Transaction", font=("Arial", 12),
                                             command=self.controller.open_new_transaction)
         new_transaction_button.pack(pady=10, fill=tk.X, padx=50)
 
-        update_transaction_button = tk.Button(self.root, text="Update Transaction", font=("Arial", 12),
-                                               command=self.controller.update_transaction)
-        update_transaction_button.pack(pady=10, fill=tk.X, padx=50)
+        view_transactions_button = tk.Button(self.root, text="View Transactions", font=("Arial", 12),
+                                               command=self.controller.open_view_transaction)
+        view_transactions_button.pack(pady=10, fill=tk.X, padx=50)
 
         view_balances_button = tk.Button(self.root, text="View Account Balances", font=("Arial", 12),
                                           command=self.controller.view_account_balances)

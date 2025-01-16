@@ -6,12 +6,17 @@ sys.path.append('../AI Ledger')
 from utils.database import AccountType
 
 class AccountForm:
-    def __init__(self, controller):
+    def __init__(self, controller, accounts = None):
             self.controller = controller
             self.root = controller.root
-            self.create_form()
 
-    def create_form(self):
+            if(not accounts):
+                self.create_new_account_form()
+            else:
+                self.accounts = accounts
+                self.create_account_view(accounts)
+
+    def create_new_account_form(self):
         # Form Title
         title_label = tk.Label(self.root, text="Open New Account", font=("Arial", 16, "bold"))
         title_label.grid(row=0, column=0, columnspan=2, pady=10)
@@ -37,10 +42,43 @@ class AccountForm:
         self.balance_entry = tk.Entry(self.root, font=("Arial", 12))
         self.balance_entry.grid(row=3, column=1, padx=10, pady=5, sticky=tk.W)
 
+        # Cancel Button
+        cancel_button = tk.Button(self.root, text="Cancel", font=("Arial", 12),
+                                  command=self.controller.open_start_page)
+        cancel_button.grid(row=4, column=0)
+
         # Submit Button
         submit_button = tk.Button(self.root, text="Submit", font=("Arial", 12),
                                    command=self.on_submit)
-        submit_button.grid(row=4, column=0, columnspan=2, pady=20)
+        submit_button.grid(row=4, column=1, columnspan=2, pady=20)
+
+    def create_account_view(self, accounts):
+        # Set up the treeview to display transactions
+        self.tree = ttk.Treeview(self.root, columns=("Account Name", "Type", "Balance"), show="headings")
+
+        # Define the column headings
+        self.tree.heading("Account Name", text="Account Name")
+        self.tree.heading("Type", text="Type")
+        self.tree.heading("Balance", text="Balance")
+
+        # Define column widths
+        self.tree.column("Account Name", width=50, anchor=tk.CENTER)
+        self.tree.column("Type", width=50, anchor=tk.CENTER)
+        self.tree.column("Balance", width=100, anchor=tk.E)
+
+        self.tree.pack(fill=tk.BOTH, expand=True)
+
+        # Load data into the treeview
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+        for accounts in self.accounts:
+            self.tree.insert("", tk.END, values=accounts)
+
+        # Cancel Button
+        cancel_button = tk.Button(self.root, text="Cancel", font=("Arial", 12),
+                                  command=self.controller.open_start_page)
+        cancel_button.pack()
+
 
     def on_submit(self):
         try:
