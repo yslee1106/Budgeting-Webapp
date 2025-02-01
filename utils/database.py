@@ -1,10 +1,15 @@
+import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from enum import Enum
 
-DATABASE_URL = "sqlite:///ledger.db"  # Change this URL to your database
+new_directory = "data"
+new_filename = "ledger.db"
+new_path = os.path.join(new_directory, new_filename)
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+os.makedirs(new_directory, exist_ok=True)
+
+engine = create_engine(f"sqlite:///{new_path}", connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(bind=engine)
 
 class TransactionType(Enum):
