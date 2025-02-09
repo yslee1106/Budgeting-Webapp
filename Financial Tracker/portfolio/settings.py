@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'FinancialTracker.urls'
+ROOT_URLCONF = 'portfolio.urls'
 
 TEMPLATES = [
     {
@@ -68,7 +68,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'FinancialTracker.wsgi.application'
+WSGI_APPLICATION = 'portfolio.wsgi.application'
 
 
 # Database
