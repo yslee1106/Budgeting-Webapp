@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.db import IntegrityError
+import decimal
 from .repository import insert_transaction, insert_account
 from .models import Account, Transaction
 
@@ -56,6 +57,7 @@ def add_transaction(request):
     context = dict()
     message = ''
     message_color = 'ignore'
+    accounts = Account.objects.all()
 
     if request.method == 'POST':
         try:
@@ -94,14 +96,15 @@ def add_transaction(request):
     
     context['message'] = message
     context['message_color'] = message_color
+    context['accounts'] = accounts
     return render(request, template, context)
 
-def update_account_balance(account: Account, amount: float, type):
+def update_account_balance(account: Account, amount, type):
     try:
         if type == 'Credit':
-            account.balance -= float(amount)
+            account.balance -= decimal.Decimal(amount)
         else:
-            account.balance += float(amount)
+            account.balance += decimal.Decimal(amount)
         account.save()
     except Account.DoesNotExist:
         print(f'No account with id {id} to update balance')
