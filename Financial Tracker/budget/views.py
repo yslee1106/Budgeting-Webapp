@@ -1,8 +1,6 @@
 from django.shortcuts import render
 from django.db import IntegrityError
-import decimal
-from .repository import insert_transaction, insert_account
-from .models import Account, Transaction
+from .services import insert_transaction, insert_account, get_account, get_transactions
 
 def get_menu(request):
     template = 'menu.html'
@@ -11,7 +9,7 @@ def get_menu(request):
 def get_all_accounts(request):
     template = 'account_list.html'
     context = dict()
-    context['accounts_list'] = Account.objects.all()
+    context['accounts_list'] = get_account()
     return render(request, template, context)
 
 def add_account(request):
@@ -49,7 +47,7 @@ def add_account(request):
 def get_all_transactions(request):
     template = 'transaction_list.html'
     context = dict()
-    context['transactions_list'] = Transaction.objects.all()
+    context['transactions_list'] = get_transactions()
     return render(request, template, context)
 
 def add_transaction(request):
@@ -57,31 +55,21 @@ def add_transaction(request):
     context = dict()
     message = ''
     message_color = 'ignore'
-    accounts = Account.objects.all()
+    accounts = get_account()
 
     if request.method == 'POST':
         try:
-            details = {
-                'account': Account.objects.get(id=request.POST['account']),
-                'transaction_date': request.POST['transaction_date'], 
-                'description': request.POST['description'], 
-                'type': request.POST['type'], 
-                'amount': request.POST['amount']
-            }
-
-            contra_details = {
-                'account': Account.objects.get(id=request.POST['contra_account']),
-                'transaction_date': request.POST['transaction_date'], 
-                'description': request.POST['contra_description'], 
-                'type': request.POST['contra_type'], 
-                'amount': request.POST['amount']
-            }
-
-            insert_transaction(details)
-            update_account_balance(details['account'], details['amount'], details['type'])
-            insert_transaction(contra_details)
-            update_account_balance(contra_details['account'], contra_details['amount'], contra_details['type'])
-
+            account = request.POST['account']
+            contra_account = request.POST['contra_account']
+            transaction_date = request.POST['transaction_date']
+            description = request.POST['description']
+            contra_description = request.POST['contra_description']
+            type = request.POST['type']
+            contra_type = request.POST['contra_type']
+            amount = request.POST['amount']
+            
+            insert_transaction(account, contra_account, transaction_date, description, contra_description, type, contra_type, amount) 
+            
             message = 'Transaction has been added succesfully'
             message_color = 'green'
             
@@ -98,13 +86,3 @@ def add_transaction(request):
     context['message_color'] = message_color
     context['accounts'] = accounts
     return render(request, template, context)
-
-def update_account_balance(account: Account, amount, type):
-    try:
-        if type == 'Credit':
-            account.balance -= decimal.Decimal(amount)
-        else:
-            account.balance += decimal.Decimal(amount)
-        account.save()
-    except Account.DoesNotExist:
-        print(f'No account with id {id} to update balance')

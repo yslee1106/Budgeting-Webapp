@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .chat-container {
+            width: 400px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .chat-window {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .chat-message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-message.user {
+            align-items: flex-end;
+        }
+
+        .chat-message.bot {
+            align-items: flex-start;
+        }
+
+        .chat-message .message {
+            max-width: 70%;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .chat-message.user .message {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .chat-message.bot .message {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+
+        .chat-input-container {
+            display: flex;
+            border-top: 1px solid #ddd;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .chat-send-btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .chat-send-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        {% csrf_token %}
+        <div class="chat-header">
+            Chatbot
+        </div>
+        <div class="chat-window" id="chat-window">
+            <!-- Chat messages will be appended here -->
+            <div class="chat-message bot">
+                <div class="message">Hello! How can I assist you today?</div>
+            </div>
+        </div>
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chat-input" placeholder="Type a message...">
+            <button class="chat-send-btn" id="chat-send-btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Connect to the WebSocket
+        const chatSocket = new WebSocket(
+            'ws://' + window.location.host + '/ws/chatbot/'
+        );
+
+        // Handle incoming messages
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const chat = document.getElementById('chat-window');
+            const messageElement = document.createElement('div');
+            messageElement.textContent = `You: ${data.message}`;
+            chat.appendChild(messageElement);
+
+            if (data.response) {
+                const botElement = document.createElement('div');
+                botElement.textContent = `Bot: ${data.response}`;
+                chat.appendChild(botElement);
+            }
+
+            chat.scrollTop = chat.scrollHeight; // Auto-scroll to the bottom
+        };
+
+        // Handle WebSocket errors
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        // Send a message when the send button is clicked
+        document.getElementById('chat-send-btn').onclick = function() {
+            const messageInput = document.getElementById('chat-input');
+            const message = messageInput.value;
+            if (message) {
+                chatSocket.send(JSON.stringify({
+                    'message': message
+                }));
+                messageInput.value = ''; // Clear the input field
+            }
+        };
+
+        // Send a message when Enter is pressed
+        document.getElementById('chat-input').onkeypress = function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('chat-send-btn').click();
+            }
+        };
+    </script>
+
+    <!-- <script>
+        const chatWindow = document.getElementById('chat-window');
+        const chatInput = document.getElementById('chat-input');
+        const chatSendBtn = document.getElementById('chat-send-btn');
+    
+        function appendMessage(sender, message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add('chat-message', sender);
+            messageElement.innerHTML = `<div class="message">${message}</div>`;
+            chatWindow.appendChild(messageElement);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+    
+        function getCSRFToken() {
+            let cookieValue = null;
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith('csrftoken=')) {
+                    cookieValue = cookie.substring('csrftoken='.length, cookie.length);
+                    break;
+                }
+            }
+            return cookieValue;
+        }
+    
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+    
+            if (message !== "") {
+                appendMessage('user', message);
+                chatInput.value = '';
+    
+                try {
+                    const response = await fetch('', {  // Send request to the SAME URL
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCSRFToken()  // Ensure CSRF security
+                        },
+                        body: JSON.stringify({ message: message })
+                    });
+    
+                    const data = await response.json();
+    
+                    if (data.status === 'success') {
+                        appendMessage('bot', data.message);
+                    } else {
+                        appendMessage('bot', 'Sorry, something went wrong.');
+                    }
+                } catch (error) {
+                    appendMessage('bot', 'Sorry, I am unable to process your request at the moment.');
+                }
+            }
+        }
+    
+        chatSendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script> -->
+    
+</body>
+</html>

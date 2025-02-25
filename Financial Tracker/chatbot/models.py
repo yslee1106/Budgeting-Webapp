@@ -11,6 +11,3 @@ class Message(models.Model):
     text = models.TextField()
     is_user_message = models.BooleanField(default=True)  # True for user, False for AI
     created_at = models.DateTimeField(auto_now_add=True)
-
-class Chatbot():
-    
