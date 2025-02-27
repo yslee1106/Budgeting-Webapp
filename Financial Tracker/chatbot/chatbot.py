@@ -47,19 +47,20 @@ class ChatBot():
             {"messages": ("user", input)}, config, stream_mode="values"
         )
 
-        printed = set()
-        for event in events:
-            _print_event(event, printed)
+        # DEBUG LINE
+        # printed = set()
+        # for event in events:
+        #     _print_event(event, printed)
         
         final_response = None
-        # for event in events:
-        #     for message in event.get("messages", []):
-        #         print(message.content)
-        #         if message.type == "ai":
-        #             final_response = message.content
-        #             break
-        #     if final_response:
-        #         break
+        for event in events:
+            for message in event.get("messages", []):
+                print(message.type)
+                print(message.content)
+                if message.type == "ai":
+                    if message.content:
+                        final_response = message.content
+                        break
 
         return final_response or "Sorry, I didn't get a response"
 

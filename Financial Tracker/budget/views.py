@@ -20,13 +20,11 @@ def add_account(request):
 
     if request.method == 'POST':
         try:
-            details = {
-                'name': request.POST['name'],
-                'type': request.POST['type'],
-                'balance': request.POST['balance']
-            }
+            name = request.POST['name']
+            type = request.POST['type']
+            balance = request.POST['balance']
 
-            insert_account(details)
+            insert_account(name, type, balance)
 
             message = 'Account has been added succesfully'
             message_color = 'green'
