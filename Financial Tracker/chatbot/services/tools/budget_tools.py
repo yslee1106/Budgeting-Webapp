@@ -26,7 +26,19 @@ def search_transactions(
     type: Optional[str] = None,
     amount: Optional[Decimal] = None,
 ) -> list[dict]:
-    """Search for transactions based on the account, transaction date, description, type and amount"""
+    """
+    Search for transactions based on the account, transaction date, description, type and amount
+    
+    Args:
+        account_id (Optional[int]): The account ID of the transaction. Defaults to None.
+        transaction_date (Optional[date]): The date of the transaction. Defaults to None.
+        description (Optional[str]): The description of the transaction. Defaults to None.
+        type (Optional[str]): The transaction type of the transaction. Can be either credit or debit. Defaults to None.
+        amount (Optional[Decimal]): The amount of the transaction. Defaults to None.
+
+    Returns:
+        A list of dictionaries where each dictionary contains the budget transaction details
+    """
 
     results = list(get_transactions(
         account_id=account_id, 
@@ -45,7 +57,17 @@ def create_new_account(
     type: str,
     balance: Decimal
 ) -> list[dict]:
-    """Create a new account"""
+    """
+    Creates a new account
+    
+    Args:
+        name (str): The name of the account.
+        type (str): The type of the account. Can only be Assets, Liability, Equity, Expense and Income.
+        balance (Decimal): The balance of the account.
+
+    Returns:
+        str: A message indicating whether the account was successfully created    
+    """
     
     try:
         insert_account(name, type, balance)
@@ -65,7 +87,22 @@ def create_new_transaction(
     contra_type: str,
     amount: float
 ) -> str:
-    """Create a new double entry transaction and update the respective account balances."""
+    """
+    Create a new double entry transaction and update the respective account balances.
+    
+    Args:
+        account_id (int): The account ID of the transaction.
+        contra_account_id (int): The account ID of the contra-transaction.
+        transaction_date (date): The transaction date of the transaction and the contra transaction.
+        description (str): The description of the transaction.
+        contra_description (str): The description of the contra-transaction.
+        type (str): The type of the transaction. Can be either debit or credit.
+        contra_type (str): The type of the contra-transaction. Can be either debit or credit.
+        amount (float): The amount of the transaction and contra-transaction.
+
+    Returns:
+        str: A message indicating whether the double entry transaction was successfully created
+    """
     
     try:
         insert_transaction(account_id, contra_account_id, transaction_date, description, contra_description, type, contra_type, amount)

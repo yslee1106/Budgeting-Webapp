@@ -1,4 +1,3 @@
-import uuid
 import os
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
@@ -7,8 +6,9 @@ from langchain_core.runnables import RunnableLambda
 from langchain_core.messages import ToolMessage
 from langgraph.graph import StateGraph, END, START
 from langgraph.prebuilt import ToolNode, tools_condition
-from langgraph.checkpoint.memory import MemorySaver
 from langsmith import utils
+from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
+from psycopg_pool import AsyncConnectionPool
 
 from .utils import _print_event
 from .services.state import State, pop_dialog_state
@@ -17,33 +17,66 @@ from .services.primary_assistant import PrimaryAssistant
 from .services.budget_assistant import BudgetAssistant, ToUpdateBudgetAssistant
 
 class ChatBot():
-
     def __init__(self):
         load_dotenv(override=True)
 
+        #LANGSMITH TRACING
         os.environ['LANGCHAIN_TRACING_V2']='true'
         os.environ['LANGCHAIN_API_KEY']="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"
         os.environ['LANGCHAIN_PROJECT']="sql query agent"
-        print(utils.tracing_is_enabled())
+        utils.tracing_is_enabled()
         
-        self.llm = ChatOpenAI(model="gpt-4o")
         # self.llm = ChatOpenAI(base_url="https://api.deepseek.com", model="deepseek-chat")
+        self.llm = ChatOpenAI(model="gpt-4o")
         self.budget_assistant = BudgetAssistant(self.llm)
         self.primary_assistant = PrimaryAssistant(self.llm)
-        self.memory = MemorySaver()
-
-        self.app = self.__workflow(self.memory)
+        self.pool = None
+        self.checkpointer = None
+        self.app = None
         
-    def run(self, input: str):
-        thread_id = str(uuid.uuid4())
+
+    @classmethod
+    async def create(cls):
+        """
+        Factory method to create and initialize the chatbot asynchronously.
+        """
+        instance = cls()
+
+        db_uri = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}?sslmode=disable"
+        await instance.__build(db_uri)
+        return instance
+
+
+    async def __build(self, db_uri):
+        connection_kwargs = {
+            "autocommit": True,
+            "prepare_threshold": 0,
+        }
+
+        self.pool = AsyncConnectionPool(
+            conninfo=db_uri,
+            max_size=20,
+            kwargs=connection_kwargs,
+        )
+        
+        self.checkpointer = AsyncPostgresSaver(self.pool)
+        await self.checkpointer.setup()
+
+        self.app = self.__workflow()
+
+
+    def __config(self, thread_id: str):
         config = {
             "configurable": {
                 # Checkpoints are accessed by thread_id
                 "thread_id": thread_id,
             }
         }
+        return config
 
-        events = self.app.stream(
+    def run(self, input: str, thread_id: str):
+        config = self.__config(thread_id)
+        events = self.app.astream(
             {"messages": ("user", input)}, config, stream_mode="values"
         )
 
@@ -52,17 +85,14 @@ class ChatBot():
         # for event in events:
         #     _print_event(event, printed)
         
-        final_response = None
-        for event in events:
-            for message in event.get("messages", []):
-                print(message.type)
-                print(message.content)
-                if message.type == "ai":
-                    if message.content:
-                        final_response = message.content
-                        break
+        return events or "Sorry, I didn't get a response"
 
-        return final_response or "Sorry, I didn't get a response"
+    def invoke(self, input, config):
+        self.app.invoke(input, config)
+
+    def get_interuption(self, thread_id):
+        config = self.__config(thread_id)
+        return self.app.get_state(config)
 
 
     def __handle_tool_error(self, state: State) -> dict:
@@ -77,6 +107,7 @@ class ChatBot():
                 for tc in tool_calls
             ]
         }
+
 
     def __create_entry_node(self, assistant_name: str, new_dialog_state: str) -> Callable:
         def entry_node(state) -> dict:
@@ -97,13 +128,14 @@ class ChatBot():
 
         return entry_node
     
+
     def __create_tool_node_with_fallback(self, tools: list) -> dict:
         return ToolNode(tools).with_fallbacks(
             [RunnableLambda(self.__handle_tool_error)], exception_key="error"
         )
 
-    def __workflow(self, memory: MemorySaver):
 
+    def __workflow(self):
         def route_update_budget(state: State,):
             route = tools_condition(state)
             if route == END:
@@ -187,13 +219,15 @@ class ChatBot():
         builder.add_conditional_edges(START, route_to_workflow)
         
         app = builder.compile(
-            checkpointer=memory,
+            checkpointer=self.checkpointer,
             # Let the user approve or deny the use of sensitive tools
-            interrupt_before=[
-                "update_budget_sensitive_tools",
-            ],
+            # interrupt_before=[
+            #     "update_budget_sensitive_tools",
+            # ],
         )
 
         return app   
     
-
+    def close_pool(self):
+        if hasattr(self, 'pool'):
+            self.pool.close()
