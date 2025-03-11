@@ -3930,14 +3930,16 @@ input[type="button"].btn-block {
   padding-left: 0;
   border-radius: 0; }
 
-.alert {
+.alert,
+.calandar {
   position: relative;
   padding: 0.9rem 1.25rem;
   margin-bottom: 1rem;
   border: 0.0625rem solid transparent;
   border-radius: 0.2857rem; }
 
-.alert-heading {
+.alert-heading,
+.calandar-heading {
   color: inherit; }
 
 .alert-link {
@@ -3952,7 +3954,8 @@ input[type="button"].btn-block {
     padding: 0.9rem 1.25rem;
     color: inherit; }
 
-.alert-primary {
+.alert-primary,
+.calandar-primary {
   color: #e14eca;
   background-color: #e66ad2;
   border-color: #e66ad2; }
@@ -3961,7 +3964,8 @@ input[type="button"].btn-block {
   .alert-primary .alert-link {
     color: #d725bb; }
 
-.alert-secondary {
+.alert-secondary,
+.calandar-secondary {
   color: #f4f5f7;
   background-color: #f6f7f8;
   border-color: #f6f7f8; }
@@ -3970,7 +3974,8 @@ input[type="button"].btn-block {
   .alert-secondary .alert-link {
     color: #d6dae2; }
 
-.alert-success {
+.alert-success,
+.calandar-selected {
   color: #00f2c3;
   background-color: #29f4cd;
   border-color: #29f4cd; }
@@ -3979,7 +3984,8 @@ input[type="button"].btn-block {
   .alert-success .alert-link {
     color: #00bf9a; }
 
-.alert-info {
+.alert-info,
+.calandar-info {
   color: #1d8cf8;
   background-color: #419ef9;
   border-color: #419ef9; }
@@ -10857,14 +10863,14 @@ hr {
 .table small, .table .small {
   font-weight: 300; }
 
-.card-tasks .card-body .table {
+.card-expenses .card-body .table {
   margin-bottom: 0; }
-  .card-tasks .card-body .table > thead > tr > th,
-  .card-tasks .card-body .table > tbody > tr > th,
-  .card-tasks .card-body .table > tfoot > tr > th,
-  .card-tasks .card-body .table > thead > tr > td,
-  .card-tasks .card-body .table > tbody > tr > td,
-  .card-tasks .card-body .table > tfoot > tr > td {
+  .card-expenses .card-body .table > thead > tr > th,
+  .card-expenses .card-body .table > tbody > tr > th,
+  .card-expenses .card-body .table > tfoot > tr > th,
+  .card-expenses .card-body .table > thead > tr > td,
+  .card-expenses .card-body .table > tbody > tr > td,
+  .card-expenses .card-body .table > tfoot > tr > td {
     padding-top: 5px;
     padding-bottom: 5px; }
 
@@ -12973,9 +12979,9 @@ Copyright (c) 2015 Daniel Eden
     .white-content .card:not(.card-white).card-plain {
       background: transparent;
       box-shadow: none; }
-    .white-content .card:not(.card-white).card-tasks .card-body i {
+    .white-content .card:not(.card-white).card-expenses .card-body i {
       color: rgba(34, 42, 66, 0.7); }
-      .white-content .card:not(.card-white).card-tasks .card-body i:hover {
+      .white-content .card:not(.card-white).card-expenses .card-body i:hover {
         color: #222a42; }
   .white-content .table > tbody > tr > td {
     color: rgba(34, 42, 66, 0.7) !important; }
@@ -13030,7 +13036,7 @@ Copyright (c) 2015 Daniel Eden
     margin-bottom: .75rem; }
   .card .card-body {
     padding: 15px; }
-    .card .card-body.table-full-width {
+    .card .card-body .table-full-width {
       padding-left: 0;
       padding-right: 0; }
     .card .card-body .card-title {
@@ -13297,21 +13303,21 @@ Copyright (c) 2015 Daniel Eden
   .card-user .card-description {
     margin-top: 30px; }
 
-.card-tasks {
-  height: 473px; }
-  .card-tasks .table-full-width {
-    max-height: 410px;
+.card-expenses {
+  height: 721px; }
+  .card-expenses .table-full-width {
+    max-height: 620px;
     position: relative; }
-  .card-tasks .card-header .title {
+  .card-expenses .card-header .title {
     margin-right: 20px;
     font-weight: 400; }
-  .card-tasks .card-header .dropdown {
+  .card-expenses .card-header .dropdown {
     float: right;
     color: #cccccc; }
-  .card-tasks .card-body i {
+  .card-expenses .card-body i {
     color: #9A9A9A;
     font-size: 1.4em; }
-    .card-tasks .card-body i:hover {
+    .card-expenses .card-body i:hover {
       color: #ffffff; }
 
 .card-plain {
@@ -13326,4 +13332,110 @@ Copyright (c) 2015 Daniel Eden
     padding-left: 0;
     padding-right: 0; }
 
+.typography-line {
+  padding-left: 25%;
+  margin-bottom: 35px;
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.typography-line span {
+  bottom: 10px;
+  color: #c0c1c2;
+  display: block;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 13px;
+  left: 0;
+  position: absolute;
+  width: 260px;
+  text-transform: none;
+}
+
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: auto;
+  margin: 0 auto;
+  padding: 5px 5px;
+}
+
+/* Range slider styling */
+.custom-slider {
+  -webkit-appearance: none;
+  flex-grow: 1;
+  height: 4px;
+  background: linear-gradient(to right, yellow 50%, #ccc 50%);
+  border-radius: 2px;
+  outline: none;
+}
+
+/* Thumb styling */
+.custom-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: #444;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+  position: relative;
+}
+
+.custom-slider:hover::-webkit-slider-thumb {
+  opacity: 1;
+}
+
+.custom-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: #444;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.custom-slider:hover::-moz-range-thumb {
+  opacity: 1;
+}
+
+.slider-number-input::-webkit-inner-spin-button,
+        .slider-number-input::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+        .slider-number-input {
+          -moz-appearance: textfield;
+          width: 50px;
+          border: none;
+          font-family: Arial, sans-serif;
+          font-size: 14px;
+          text-align: center;
+          font-weight: 400;
+          line-height: 1.42857;
+          color: rgba(255, 255, 255, 0.8);
+          background-color: transparent;
+          background-clip: padding-box;
+          border: 1px solid #cad1d7;
+          border-color: #2b3553;
+          border-radius: 0.42rem;
+          box-shadow: none;
+          transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .slider-number-input:focus {
+          border-color: #e14eca;
+          background-color: transparent;
+          box-shadow: none;
+        }
+
+/* Max value display */
+.slider-max-value {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+} 
 /*# sourceMappingURL=black-dashboard.css.map */
