@@ -1,10 +1,14 @@
-from django.urls import path
-from . import views
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import SessionViewSet, IncomeViewSet, ExpenseViewSet, BucketViewSet, GoalsViewSet
+
+router = DefaultRouter()
+router.register(r'session', SessionViewSet)
+router.register(r'income', IncomeViewSet)
+router.register(r'expense', ExpenseViewSet)
+router.register(r'bucket', BucketViewSet)
+router.register(r'goals', GoalsViewSet)
 
 urlpatterns = [
-    path('', views.get_menu, name='menu'),
-    # path('accounts/add/', views.add_account, name='add-new-account'),
-    # path('transactions/add/', views.add_transaction, name='add-new-transaction'),
-    # path('accounts/', views.get_all_accounts, name='view-all-accounts'),
-    # path('transactions/', views.get_all_transactions, name='view-all-transactions')
+   path('', include(router.urls))
 ]

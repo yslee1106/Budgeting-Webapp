@@ -10,7 +10,7 @@ class Session(models.Model):
         unique_together = (('period'),)
     
     period = models.DateField(null=False, blank=False)
-    budget = models.DecimalField(max_digits=20, decimal_places=2, null=False)
+    total_funds = models.DecimalField(max_digits=20, decimal_places=2, null=False)
     available_funds = models.DecimalField(max_digits=20, decimal_places=2, null=False)
     total_expense = models.DecimalField(max_digits=20, decimal_places=2, null=False)
     total_goals = models.DecimalField(max_digits=20, decimal_places=2, null=False)
@@ -18,16 +18,16 @@ class Session(models.Model):
 
     def __repr__(self):
         return (
-            f"Session(id={self.id}, period='{self.period}', available_funds={self.available_funds}, "
-            f"total_expense={self.total_expense}, total_goals={self.total_goals}, "
+            f"Session(id={self.id}, period='{self.period}',  total_funds={self.total_funds}"
+            f"total_expense={self.total_expense}, total_goals={self.total_goals}, available_funds={self.available_funds},"
             f"carry_forward={self.carry_forward})"
         )
 
     def __str__(self):
         return (
             f"Session on {self.period} - "
-            f"Income: ${self.available_funds}, Expenses: ${self.total_expense}, "
-            f"Goals: ${self.total_goals}, Carry Forward: ${self.carry_forward}"
+            f"Total Funds: ${self.total_funds}, Expenses: ${self.total_expense}, "
+            f"Goals: ${self.total_goals}, Available Funds: ${self.available_funds}"
         )
 
 
@@ -204,8 +204,8 @@ class Bucket(models.Model):
     class Meta:
         unique_together = (('expense'), ('session'))
 
-    expense = models.ForeignKey(Expense, on_delete=models.SET_DEFAULT, related_name='bucket', null=False, blank=True, default='')
-    session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='session')
+    expense = models.ForeignKey(Expense, on_delete=models.SET_DEFAULT, related_name='expense', null=False, blank=True, default='')
+    session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='buckets')
     next_due = models.DateField(null=False, blank=True)
     target_amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
     amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
