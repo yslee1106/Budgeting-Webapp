@@ -209,20 +209,20 @@ class Bucket(models.Model):
     next_due = models.DateField(null=False, blank=True)
     target_amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
     amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
-    fullfilled = models.BooleanField(null=False)
+    fulfilled = models.BooleanField(null=False)
 
     def __repr__(self):
             return (
                 f"Bucket(id={self.id}, expense_id={self.expense.id}, session_id={self.session.id}, "
                 f"next_due='{self.next_due}', target_amount={self.target_amount}, "
-                f"amount={self.amount}, fulfilled={self.fullfilled})"
+                f"amount={self.amount}, fulfilled={self.fulfilled})"
             )
 
     def __str__(self):
         return (
             f"Bucket for Expense {self.expense.id} in Session {self.session.id} - "
             f"Target: ${self.target_amount}, Amount: ${self.amount}, "
-            f"Next Due: {self.next_due}, Fulfilled: {self.fullfilled}"
+            f"Next Due: {self.next_due}, Fulfilled: {self.fulfilled}"
         )
 
 
