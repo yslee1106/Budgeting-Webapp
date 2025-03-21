@@ -6,7 +6,7 @@ router = DefaultRouter()
 router.register(r'session', SessionViewSet)
 router.register(r'income', IncomeViewSet)
 router.register(r'expense', ExpenseViewSet)
-router.register(r'bucket', BucketViewSet)
+router.register(r'bucket', BucketViewSet, basename='bucket')
 router.register(r'goals', GoalsViewSet)
 
 urlpatterns = [

@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { fetchSessions, fetchBucketBySession, fetchGoals } from 'services/budgetService';
+
 import Grid from "@mui/material/Grid2";
 import Stack from '@mui/material/Stack';
 import MDBox from "components/MDBox";
@@ -10,8 +13,59 @@ import Session from "pages/budget/components/session"
 import Funds from "pages/budget/components/funds";
 import Goals from "pages/budget/components/goals";
 import Expenses from "pages/budget/components/expenses";
+import expensesData from "./components/expenses/data";
 
 function Budget() {
+    const [sessionsData, setSessionsData] = useState([]);
+    const [bucketsData, setBucketsData] = useState([]);
+    const [goalsData, setGoalsData] = useState([]);
+    const [selectedSession, setSelectedSession] = useState([]);
+
+    // Session State
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const items = await fetchSessions(); // Use the API function
+                setSessionsData(items);
+                setSelectedSession(items[0]);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        getData();
+    }, []);
+
+    // Buckets State
+    useEffect(() => {
+        if (selectedSession) {
+            const fetchData = async () => {
+                try {
+                    const buckets = await fetchBucketBySession(selectedSession.id);
+                    setBucketsData(buckets);
+                } catch (error) {
+                    console.error('Error', error);
+                }
+            };
+
+            fetchData();
+        }
+    }, [selectedSession]);    
+
+    // Goals State
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const items = await fetchGoals(); // Use the API function
+                setGoalsData(items);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        };
+
+        getData();
+    }, []);    
+
     return (
         <DashboardLayout>
             <DashboardNavbar absolute isMini />
@@ -19,7 +73,7 @@ function Budget() {
                 <MDBox mb={3}>
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
-                            <Session />
+                            <Session data={ sessionsData } selected={ selectedSession } setSelected={ setSelectedSession }/>
                         </Grid>
                     </Grid>
                 </MDBox>
@@ -30,12 +84,12 @@ function Budget() {
                                 <Stack>
                                     <Grid item xs={12}>
                                         <MDBox mb={3}>
-                                            <Funds />
+                                            <Funds data={ selectedSession }/>
                                         </MDBox>
                                     </Grid>
                                     <Grid item xs={12}>
                                         <MDBox mt={3}>
-                                            <Goals />
+                                            <Goals data={ goalsData }/>
                                         </MDBox>
                                     </Grid>
                                 </Stack>
@@ -43,7 +97,7 @@ function Budget() {
                         </Grid>
                         <Grid item xs={12} xl={6}>
                             <MDBox mt={3}>
-                                <Expenses />
+                                <Expenses data={ bucketsData }/>
                             </MDBox>
                         </Grid>
                     </Grid>

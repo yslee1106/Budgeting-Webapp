@@ -16,21 +16,33 @@ class ExpenseSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 class BucketSerializer(serializers.ModelSerializer):
+    expense_name = serializers.SerializerMethodField()
+    percentage = serializers.SerializerMethodField()
+
     class Meta:
         model = Bucket
-        fields = '__all__'
+        fields = ['id', 'expense', 'expense_name', 'session', 'next_due', 'target_amount', 'amount', 'percentage', 'fulfilled']
         read_only_fields = ['id']
+
+    def get_percentage(self, obj):
+        return round(obj.amount / obj.target_amount * 100)
+    
+    def get_expense_name(self, obj):
+        return obj.expense.name
 
 class GoalsSerializer(serializers.ModelSerializer):
+    percentage = serializers.SerializerMethodField()
+
     class Meta:
         model = Goals
-        fields = '__all__'
+        fields = ['id', 'name', 'category', 'target_amount', 'current_amount', 'percentage', 'fulfilled']
         read_only_fields = ['id']
 
-class SessionSerializer(serializers.ModelSerializer):
-    buckets = BucketSerializer(many=True, read_only=True)
+    def get_percentage(self, obj):
+        return round(obj.current_amount / obj.target_amount * 100)
 
+class SessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Session
-        fields = ['period', 'total_funds', 'available_funds', 'total_expense', 'total_goals', 'carry_forward', 'buckets', ]
-        read_only_fields = ['id', 'buckets']
+        fields = '__all__'
+        read_only_fields = ['id']

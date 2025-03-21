@@ -1,6 +1,5 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 
-import Grid from '@mui/material/Grid2';
 import Icon from "@mui/material/Icon";
 import Stack from "@mui/material/Stack";
 import Card from "@mui/material/Card";
@@ -10,52 +9,135 @@ import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
 import MDBox from "components/MDBox";
 
-import DefaultInfoCard from "layouts/InfoCards/DefaultInfoCard";
-import { Button } from '@mui/material';
-
-function Session() {
+function Session({ data, selected, setSelected }) {
     const containerRef = useRef(null);
+    const [capacity, setCapacity] = useState(0);
+    const buttonWidth = 140;
 
+
+    // Scrolling Functions  
     const scroll = (scrollOffset) => {
         if (containerRef.current) {
             containerRef.current.scrollBy({
                 left: scrollOffset,
-                behavior: "smooth", // Smooth scrolling
+                behavior: "smooth",
             });
         }
     };
 
-    return (
 
+    // Blank Period Buttons Functions
+    const calculateCapacity = (containerWidth, itemWidth) => {
+        return Math.floor(containerWidth / itemWidth);
+    };
+
+    const fillList = (data, capacity) => {
+        const filledList = [...data];
+
+
+        while (filledList.length < capacity) {        // Add blank items if the data length is less than the capacity
+            filledList.push({ id: `blank-${filledList.length}`, isBlank: true });
+        }
+
+        return filledList;
+    };
+
+    useEffect(() => {           // Set maximum number of buttons that can fit into the session box
+        const containerWidth = containerRef.current.offsetWidth;
+        console.log(containerWidth);
+        const calculatedCapacity = calculateCapacity(containerWidth, buttonWidth);
+        setCapacity(calculatedCapacity);
+        console.log(calculatedCapacity);
+    }, []);
+
+
+    // Updated Data List
+    const filledList = fillList(data, capacity);            // Data + blanks (if needed according to function)
+
+
+    // Period Button Mapping
+    const periodButton = filledList.map((item) => {
+        let ret;
+
+        const formatDate = (period, format) => {
+            const [year, month, day] = period.split('-');
+            const date = new Date(`${year}-${month}-${day}`);
+
+            let formattedDate
+            if (format === 'month') {
+                formattedDate = date.toLocaleString('default', { month: 'long' });
+            } else {
+                formattedDate = date.toLocaleString('default', { year: 'numeric' });
+            }
+
+            return formattedDate;
+        }
+
+        if (item.isBlank) {
+            ret = (
+                <MDButton
+                    variant='contained'
+                    color='secondary'>
+                    <Stack width={buttonWidth}>
+
+                    </Stack>
+                </MDButton>
+            )
+        } else {
+            ret = (
+                <MDButton
+                    key={item}
+                    variant={selected === item ? "contained" : "outlined"}
+                    onClick={() => setSelected(item)}
+                    color='dark'
+                >
+                    <Stack width={buttonWidth}>
+                        <MDTypography
+                            variant="h8"
+                            color={selected === item ? 'light' : 'dark'}
+                            fontSize={8}
+                        >
+                            {formatDate(item.period, 'year')}
+                        </MDTypography>
+                        <MDTypography
+                            variant="h6"
+                            color={selected === item ? 'light' : 'dark'}
+                        >
+                            {formatDate(item.period, 'month')}
+                        </MDTypography>
+                    </Stack>
+                </MDButton>
+            );
+        }
+
+        return ret;
+    });
+
+    return (
         <MDBox
             display="flex"
-            flex-direction="horizontal"
+            flexDirection="horizontal"
             justifyContent="space-between"
             gap={2}
             py={2}
             px={2}
         >
-
             <IconButton
                 variant="contained"
                 color="info"
                 onClick={() => scroll(-100)}
-                fullwidth
             >
                 <Icon sx={{ fontWeight: "bold" }}>navigate_before</Icon>
             </IconButton>
 
             <Card>
-
-
                 <MDBox
                     ref={containerRef}
                     sx={{
                         display: "flex",
-                        flexDirection: "horizontal",
-                        justifyContent: "space-between",
+                        flexDirection: "row-reverse",
                         overflowX: "auto",
-                        gap: 5,
+                        gap: 3,
                         scrollbarWidth: "none", // Hide scrollbar for Firefox
                         msOverflowStyle: "none", // Hide scrollbar for IE/Edge
                         "&::-webkit-scrollbar": {
@@ -63,144 +145,21 @@ function Session() {
                         },
                         py: 2,
                         px: 5,
+                        width: '50rem'
                     }}
                 >
-                    <MDButton variant="outlined" color="dark">
-                        <Stack>
-                            <MDTypography variant="h8" color="dark" fontSize={8}>
-                                2025
-                            </MDTypography>
-                            <MDTypography variant="h6" color="dark">
-                                May
-                            </MDTypography>
-                        </Stack>
-                    </MDButton>
-                    <MDButton variant="contained" color="info">
-                        <Stack>
-                            <MDTypography variant="h8" color="white" fontSize={8}>
-                                2025
-                            </MDTypography>
-                            <MDTypography variant="h6" color="white">
-                                May
-                            </MDTypography>
-                        </Stack>
-                    </MDButton>
-                    <MDButton variant="outlined" color="dark">
-                        <Stack>
-                            <MDTypography variant="h8" color="dark" fontSize={8}>
-                                2025
-                            </MDTypography>
-                            <MDTypography variant="h6" color="dark">
-                                May
-                            </MDTypography>
-                        </Stack>
-                    </MDButton><MDButton variant="outlined" color="dark">
-                        <Stack>
-                            <MDTypography variant="h8" color="dark" fontSize={8}>
-                                2025
-                            </MDTypography>
-                            <MDTypography variant="h6" color="dark">
-                                May
-                            </MDTypography>
-                        </Stack>
-                    </MDButton><MDButton variant="outlined" color="dark">
-                        <Stack>
-                            <MDTypography variant="h8" color="dark" fontSize={8}>
-                                2025
-                            </MDTypography>
-                            <MDTypography variant="h6" color="dark">
-                                May
-                            </MDTypography>
-                        </Stack>
-                    </MDButton><MDButton variant="outlined" color="dark">
-                        <Stack>
-                            <MDTypography variant="h8" color="dark" fontSize={8}>
-                                2025
-                            </MDTypography>
-                            <MDTypography variant="h6" color="dark">
-                                May
-                            </MDTypography>
-                        </Stack>
-                    </MDButton><MDButton variant="outlined" color="dark">
-                        <Stack>
-                            <MDTypography variant="h8" color="dark" fontSize={8}>
-                                2025
-                            </MDTypography>
-                            <MDTypography variant="h6" color="dark">
-                                May
-                            </MDTypography>
-                        </Stack>
-                    </MDButton><MDButton variant="outlined" color="dark">
-                        <Stack>
-                            <MDTypography variant="h8" color="dark" fontSize={8}>
-                                2025
-                            </MDTypography>
-                            <MDTypography variant="h6" color="dark">
-                                May
-                            </MDTypography>
-                        </Stack>
-                    </MDButton><MDButton variant="outlined" color="dark">
-                        <Stack>
-                            <MDTypography variant="h8" color="dark" fontSize={8}>
-                                2025
-                            </MDTypography>
-                            <MDTypography variant="h6" color="dark">
-                                May
-                            </MDTypography>
-                        </Stack>
-                    </MDButton><MDButton variant="outlined" color="dark">
-                        <Stack>
-                            <MDTypography variant="h8" color="dark" fontSize={8}>
-                                2025
-                            </MDTypography>
-                            <MDTypography variant="h6" color="dark">
-                                May
-                            </MDTypography>
-                        </Stack>
-                    </MDButton><MDButton variant="outlined" color="dark">
-                        <Stack>
-                            <MDTypography variant="h8" color="dark" fontSize={8}>
-                                2025
-                            </MDTypography>
-                            <MDTypography variant="h6" color="dark">
-                                May
-                            </MDTypography>
-                        </Stack>
-                    </MDButton><MDButton variant="outlined" color="dark">
-                        <Stack>
-                            <MDTypography variant="h8" color="dark" fontSize={8}>
-                                2025
-                            </MDTypography>
-                            <MDTypography variant="h6" color="dark">
-                                May
-                            </MDTypography>
-                        </Stack>
-                    </MDButton><MDButton variant="outlined" color="dark">
-                        <Stack>
-                            <MDTypography variant="h8" color="dark" fontSize={8}>
-                                2025
-                            </MDTypography>
-                            <MDTypography variant="h6" color="dark">
-                                May
-                            </MDTypography>
-                        </Stack>
-                    </MDButton><MDButton variant="outlined" color="dark">
-                        <Stack>
-                            <MDTypography variant="h8" color="dark" fontSize={8}>
-                                2025
-                            </MDTypography>
-                            <MDTypography variant="h6" color="dark">
-                                May
-                            </MDTypography>
-                        </Stack>
-                    </MDButton>
+                    {periodButton}
                 </MDBox>
             </Card>
-            <IconButton varient="contained" color="info" onClick={() => scroll(100)}>
+
+            <IconButton
+                varient="contained"
+                color="info"
+                onClick={() => scroll(100)}
+            >
                 <Icon sx={{ fontWeight: "bold" }}>navigate_next</Icon>
             </IconButton>
         </MDBox>
-
     );
 }
 
