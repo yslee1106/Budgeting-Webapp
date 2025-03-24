@@ -38,6 +38,7 @@ Coded by www.creative-tim.com
 // Material Dashboard 2 React pages
 // import Dashboard from "pages/dashboard";
 import Budget from "pages/budget";
+import Profile from 'pages/profile'
 // import Investment from "pages/investment";
 
 // @mui icons
@@ -67,6 +68,22 @@ const routes = [
     icon: <Icon fontSize="small">monetization_on</Icon>,
     route: "/investment",
     component: <Budget />,
+  },
+  {
+    type: "collapse",
+    name: "Taxes",
+    key: "taxes",
+    icon: <Icon fontSize="small">request_quote</Icon>,
+    route: "/taxes",
+    component: <Budget />,
+  },
+  {
+    type: "collapse",
+    name: "Profile",
+    key: "profile",
+    icon: <Icon fontSize="small">person</Icon>,
+    route: "/profile",
+    component: <Profile />,
   },
 ];
 
