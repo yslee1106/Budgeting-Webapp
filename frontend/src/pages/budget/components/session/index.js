@@ -36,7 +36,7 @@ function Session({ data, selected, setSelected }) {
 
 
         while (filledList.length < capacity) {        // Add blank items if the data length is less than the capacity
-            filledList.push({ id: `blank-${filledList.length}`, isBlank: true });
+            filledList.unshift({ id: `blank-${filledList.length}`, isBlank: true });
         }
 
         return filledList;
@@ -77,7 +77,7 @@ function Session({ data, selected, setSelected }) {
             ret = (
                 <MDButton
                     variant='contained'
-                    color='secondary'>
+                    color='lightBlue'>
                     <Stack width={buttonWidth}>
 
                     </Stack>

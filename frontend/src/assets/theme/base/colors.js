@@ -86,6 +86,11 @@ const colors = {
     focus: "#2c3c58",
   },
 
+  lightBlue: {
+    main: '#91acf3',
+    focus: '#7397f3',
+  },
+
   grey: {
     100: "#f8f9fa",
     200: "#f0f2f5",
