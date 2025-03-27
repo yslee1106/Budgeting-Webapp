@@ -29,7 +29,7 @@ import MDButton from "components/MDButton";
 // Custom styles for the Configurator
 import ConfiguratorRoot from "layouts/Configurator/ConfiguratorRoot";
 
-// Material Dashboard 2 React context
+// Material Dashboard 2 React context/theme
 import {
   useMaterialUIController,
   setOpenConfigurator,
@@ -38,7 +38,7 @@ import {
   setFixedNavbar,
   setSidenavColor,
   setDarkMode,
-} from "context";
+} from "context/theme";
 
 function Configurator() {
   const [controller, dispatch] = useMaterialUIController();

@@ -7,8 +7,6 @@ import MDTypography from "components/MDTypography";
 
 import DataTable from "layouts/DataTable";
 
-import expensesData from "pages/budget/components/expenses/data";
-
 
 function Expenses({ data }) {
     const Expense = ({ icon, name }) => (

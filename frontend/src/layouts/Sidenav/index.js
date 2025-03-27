@@ -39,13 +39,13 @@ import SidenavCollapse from "layouts/Sidenav/SidenavCollapse";
 import SidenavRoot from "layouts/Sidenav/SidenavRoot";
 import sidenavLogoLabel from "layouts/Sidenav/styles/sidenav";
 
-// Material Dashboard 2 React context
+// Material Dashboard 2 React context/theme
 import {
   useMaterialUIController,
   setMiniSidenav,
   setTransparentSidenav,
   setWhiteSidenav,
-} from "context";
+} from "context/theme";
 
 function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();

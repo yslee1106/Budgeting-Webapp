@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "App";
 
 // Material Dashboard 2 React Context Provider
-import { MaterialUIControllerProvider } from "context";
+import { MaterialUIControllerProvider } from "context/theme";
 
 const container = document.getElementById("app");
 const root = createRoot(container);

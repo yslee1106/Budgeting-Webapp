@@ -33,8 +33,8 @@ import {
   collapseText,
 } from "layouts/Sidenav/styles/sidenavCollapse";
 
-// Material Dashboard 2 React context
-import { useMaterialUIController } from "context";
+// Material Dashboard 2 React context/theme
+import { useMaterialUIController } from "context/theme";
 
 function SidenavCollapse({ icon, name, active, ...rest }) {
   const [controller] = useMaterialUIController();

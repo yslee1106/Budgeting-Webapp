@@ -45,13 +45,13 @@ import {
   navbarMobileMenu,
 } from "layouts/Navbars/DashboardNavbar/styles";
 
-// Material Dashboard 2 React context
+// Material Dashboard 2 React context/theme
 import {
   useMaterialUIController,
   setTransparentNavbar,
   setMiniSidenav,
   setOpenConfigurator,
-} from "context";
+} from "context/theme";
 
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
