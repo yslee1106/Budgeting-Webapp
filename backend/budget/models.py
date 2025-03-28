@@ -1,14 +1,14 @@
 from django.db import models
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from decimal import Decimal
-from datetime import timedelta
+from django.contrib.auth import get_user_model
 
 # Create your models here.
+User = get_user_model()
 
 class Session(models.Model):
     class Meta:
-        unique_together = (('period'),)
+        unique_together = (('user'), ('period'))
     
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sessions')
     period = models.DateField(null=False, blank=False)
     total_funds = models.DecimalField(max_digits=20, decimal_places=2, null=False)
     available_funds = models.DecimalField(max_digits=20, decimal_places=2, null=False)
@@ -33,7 +33,7 @@ class Session(models.Model):
 
 class Income(models.Model):
     class Meta:
-        unique_together = (('name'),)
+        unique_together = (('user'), ('name'),)
 
     INCOME_CATEGORIES = [
     ('SALARY', 'Salary'),
@@ -54,6 +54,7 @@ class Income(models.Model):
         ('ANNUALLY', 'Annually')
     ]
 
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='income')
     name = models.CharField(max_length=60, null=False)
     category = models.CharField(max_length=32, choices=INCOME_CATEGORIES, null=False)
     pay_frequency = models.DurationField(choices=FREQUENCY)
@@ -77,7 +78,7 @@ class Income(models.Model):
 
 class Expense(models.Model):
     class Meta:
-        unique_together = (('name'), ('category'))
+        unique_together = (('user'), ('name'))
 
     EXPENSE_CATEGORIES = [
         ('HOUSING', 'Housing'), 
@@ -175,6 +176,7 @@ class Expense(models.Model):
         ('OTHER EXPENSES', 'Other Expenses')
     ]
 
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='expense')
     name = models.CharField(max_length=60, null=False)
     category = models.CharField(max_length=30, choices=EXPENSE_CATEGORIES, null=False)
     percentage_of_income = models.IntegerField(null=True, blank=True)
@@ -202,10 +204,11 @@ class Expense(models.Model):
 
 class Bucket(models.Model):
     class Meta:
-        unique_together = (('expense'), ('session'))
+        unique_together = (('user'), ('expense'), ('session'))
 
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bucket')
     expense = models.ForeignKey(Expense, on_delete=models.SET_DEFAULT, related_name='expense', null=False, blank=True, default='')
-    session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='buckets')
+    session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='bucket')
     next_due = models.DateField(null=False, blank=True)
     target_amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
     amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
@@ -228,7 +231,7 @@ class Bucket(models.Model):
 
 class Goals(models.Model):
     class Meta:
-        unique_together = (('name'), ('category'))
+        unique_together = (('user'), ('name'))
 
     GOAL_CATEGORIES = [
         ('SAVINGS', 'Savings'),
@@ -243,6 +246,7 @@ class Goals(models.Model):
         ('OTHER', 'Other'),
     ]
 
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='goals')
     name = models.CharField(max_length=60, null=False)
     category = models.CharField(max_length=30, choices=GOAL_CATEGORIES, null=False)
     target_amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)

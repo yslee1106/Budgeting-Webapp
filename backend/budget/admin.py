@@ -1,6 +1,59 @@
 from django.contrib import admin
-from .models import Income, Expense
+from .models import Session, Income, Expense, Bucket, Goals
 
 # Register your models here.
-admin.site.register(Income)
-admin.site.register(Expense)
+class SessionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'period', 'total_funds')
+    list_filter = ('user',)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(user=request.user)
+
+class IncomeAdmin(admin.ModelAdmin):
+    list_display = ('user', 'name', 'category')
+    list_filter = ('user',)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(user=request.user)
+
+class ExpenseAdmin(admin.ModelAdmin):
+    list_display = ('user', 'name', 'category')
+    list_filter = ('user',)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(user=request.user)
+
+class BucketAdmin(admin.ModelAdmin):
+    list_display = ('user', 'expense', 'session')
+    list_filter = ('user',)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(user=request.user)
+
+class GoalsAdmin(admin.ModelAdmin):
+    list_display = ('user', 'name', 'category')
+    list_filter = ('user',)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(user=request.user)
+
+admin.site.register(Session, SessionAdmin)
+admin.site.register(Income, IncomeAdmin)
+admin.site.register(Expense, ExpenseAdmin)
+admin.site.register(Bucket, BucketAdmin)
+admin.site.register(Goals, GoalsAdmin)

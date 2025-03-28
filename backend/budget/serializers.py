@@ -7,13 +7,21 @@ class IncomeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Income
         fields = '__all__'
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'user']
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
 
 class ExpenseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Expense
         fields = '__all__'
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'user']
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
 
 class BucketSerializer(serializers.ModelSerializer):
     expense_name = serializers.SerializerMethodField()
@@ -22,7 +30,11 @@ class BucketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bucket
         fields = ['id', 'expense', 'expense_name', 'session', 'next_due', 'target_amount', 'amount', 'percentage', 'fulfilled']
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'user']
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
 
     def get_percentage(self, obj):
         return round(obj.amount / obj.target_amount * 100)
@@ -36,7 +48,11 @@ class GoalsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Goals
         fields = ['id', 'name', 'category', 'target_amount', 'current_amount', 'percentage', 'fulfilled']
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'user']
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
 
     def get_percentage(self, obj):
         return round(obj.current_amount / obj.target_amount * 100)
@@ -45,4 +61,8 @@ class SessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Session
         fields = '__all__'
-        read_only_fields = ['id']
+        read_only_fields = ['id', 'user']
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
