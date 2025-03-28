@@ -10,16 +10,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
 
     # Personal Fields
-    first_name = models.CharField(max_length=100, null=False, blank=False)
-    last_name = models.CharField(max_length=100, null=False, blank=False)
-    country = models.CharField(max_length=56, null=False, blank=False)
-    phone_number = models.CharField(max_length=20, null=False, blank=False)
-    date_of_birth = models.DateField(null=False, blank=False)
+    first_name = models.CharField(max_length=100, null=True, blank=False)
+    last_name = models.CharField(max_length=100, null=True, blank=False)
+    country = models.CharField(max_length=56, null=True, blank=False)
+    phone_number = models.CharField(max_length=20, null=True, blank=False)
+    date_of_birth = models.DateField(null=True, blank=False)
     
 
     # Preference Fields
-    currency = models.CharField(max_length=3, null=False, blank=False)
-    language = models.CharField(max_length=85, null=False, blank=False)
+    currency = models.CharField(max_length=3, null=True, blank=False)
+    language = models.CharField(max_length=85, null=True, blank=False)
     time_zone = models.CharField(max_length=32, default='UTC', null=False, blank=False)
 
     # Security Fields
@@ -27,7 +27,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     # Metadata Fields
     date_joined = models.DateTimeField(default=timezone.now)
-    is_active = models.BooleanField(default=True,   null=False, blank=False)
+    is_active = models.BooleanField(default=True, null=False, blank=False)
     last_login = models.DateTimeField(default=timezone.now)
 
 
