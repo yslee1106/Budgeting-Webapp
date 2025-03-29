@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchSessions, fetchBucketBySession, fetchGoals } from 'services/budgetService';
+import { useAuth } from 'context/authentication';
 
 import Grid from "@mui/material/Grid2";
 import Stack from '@mui/material/Stack';
@@ -13,13 +14,13 @@ import Session from "pages/budget/components/session"
 import Funds from "pages/budget/components/funds";
 import Goals from "pages/budget/components/goals";
 import Expenses from "pages/budget/components/expenses";
-import expensesData from "./components/expenses/data";
 
 function Budget() {
     const [sessionsData, setSessionsData] = useState([]);
     const [bucketsData, setBucketsData] = useState([]);
     const [goalsData, setGoalsData] = useState([]);
     const [selectedSession, setSelectedSession] = useState([]);
+    const { logout } = useAuth()
 
     // Session State
     useEffect(() => {
@@ -30,6 +31,9 @@ function Budget() {
                 setSelectedSession(items[0]);
             } catch (error) {
                 console.error('Error:', error);
+                if (error.response?.status === 401) {
+                    logout(); // Handle unauthorized access
+                }
             }
         };
 
@@ -45,12 +49,15 @@ function Budget() {
                     setBucketsData(buckets);
                 } catch (error) {
                     console.error('Error', error);
+                    if (error.response?.status === 401) {
+                        logout(); // Handle unauthorized access
+                    }
                 }
             };
 
             fetchData();
         }
-    }, [selectedSession]);    
+    }, [selectedSession]);
 
     // Goals State
     useEffect(() => {
@@ -60,11 +67,14 @@ function Budget() {
                 setGoalsData(items);
             } catch (error) {
                 console.error('Error:', error);
+                if (error.response?.status === 401) {
+                    logout(); // Handle unauthorized access
+                }
             }
         };
 
         getData();
-    }, []);    
+    }, []);
 
     return (
         <DashboardLayout>
@@ -73,7 +83,7 @@ function Budget() {
                 <MDBox mb={3}>
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
-                            <Session data={ sessionsData } selected={ selectedSession } setSelected={ setSelectedSession }/>
+                            <Session data={sessionsData} selected={selectedSession} setSelected={setSelectedSession} />
                         </Grid>
                     </Grid>
                 </MDBox>
@@ -84,12 +94,12 @@ function Budget() {
                                 <Stack>
                                     <Grid item xs={12}>
                                         <MDBox mb={3}>
-                                            <Funds data={ selectedSession }/>
+                                            <Funds data={selectedSession} />
                                         </MDBox>
                                     </Grid>
                                     <Grid item xs={12}>
                                         <MDBox mt={3}>
-                                            <Goals data={ goalsData }/>
+                                            <Goals data={goalsData} />
                                         </MDBox>
                                     </Grid>
                                 </Stack>
@@ -97,7 +107,7 @@ function Budget() {
                         </Grid>
                         <Grid item xs={12} xl={6}>
                             <MDBox mt={3}>
-                                <Expenses data={ bucketsData }/>
+                                <Expenses data={bucketsData} />
                             </MDBox>
                         </Grid>
                     </Grid>
