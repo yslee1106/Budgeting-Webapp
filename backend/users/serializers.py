@@ -41,7 +41,6 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    
     username_field = 'email'
 
     @classmethod
@@ -49,3 +48,8 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         token['email'] = user.email
         return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        del data['refresh']  # Remove refresh token from response body
+        return data  # Only returns access token

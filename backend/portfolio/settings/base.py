@@ -35,6 +35,7 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 INSTALLED_APPS = [
     'daphne',
     'rest_framework', 
+    'rest_framework_simplejwt',
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -85,6 +86,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Add your frontend URL
 ]
 
+CORS_ALLOW_CREDENTIALS = True  # Allow cookies in cross-origin requests
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -127,9 +130,19 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,  # Issues new refresh token on refresh
+    'BLACKLIST_AFTER_ROTATION': True,  # Invalidate old refresh tokens
+    'AUTH_COOKIE': 'refresh_token',  # Cookie name for refresh token
+    'AUTH_COOKIE_SECURE': True,  # HTTPS only
+    'AUTH_COOKIE_HTTP_ONLY': True,  # No JS access
+    'AUTH_COOKIE_SAMESITE': 'Lax',  # CSRF protection
 }
+
+# Security Headers (for production)
+SESSION_COOKIE_SECURE = True  # HTTPS-only
+CSRF_COOKIE_SECURE = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/

@@ -24,6 +24,14 @@ const signup = async (email, password) => {
     }
 };
 
+const logout = async () => {
+    try {
+        const response = await api.post('user/logout/');
+    } catch (error) {
+        throw error.response.data
+    }
+}
+
 const getProfile = async () => {
     try {
         const response = await api.get('user/profile/', {
@@ -37,5 +45,6 @@ const getProfile = async () => {
 export default {
     login,
     signup,
-    getProfile
+    getProfile,
+    logout
 };
