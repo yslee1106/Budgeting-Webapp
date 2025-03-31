@@ -17,7 +17,7 @@ Coded by www.creative-tim.com
 import colors from "assets/theme/base/colors";
 import typography from "assets/theme/base/typography";
 
-const { text_dark, info } = colors;
+const { text_dark } = colors;
 const { size } = typography;
 
 const inputLabel = {
@@ -26,10 +26,6 @@ const inputLabel = {
       fontSize: size.sm,
       color: text_dark.main,
       lineHeight: 0.9,
-
-      "&.Mui-focused": {
-        color: info.main,
-      },
 
       "&.MuiInputLabel-shrink": {
         lineHeight: 1.5,

@@ -18,7 +18,7 @@ import colors from "assets/theme/base/colors";
 import typography from "assets/theme/base/typography";
 import borders from "assets/theme/base/borders";
 
-const { info, inputBorderColor, dark } = colors;
+const { grey, inputBorderColor, dark } = colors;
 const { size } = typography;
 const { borderWidth } = borders;
 
@@ -37,7 +37,7 @@ const input = {
       },
 
       "&:after": {
-        borderColor: info.main,
+        borderColor: grey[300],
       },
     },
   },

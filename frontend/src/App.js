@@ -18,9 +18,6 @@ import Configurator from "layouts/Configurator";
 // Material Dashboard 2 React themes
 import theme from "assets/theme";
 
-// Material Dashboard 2 React Dark Mode themes
-import themeDark from "assets/theme-dark";
-
 // Material Dashboard 2 React routes
 import AllRoutes from "routes";
 import { PrivateRouteList } from 'routes/privateRoutes';
@@ -99,7 +96,7 @@ export default function App() {
   );
 
   return (
-    <ThemeProvider theme={darkMode ? themeDark : theme}>
+    <ThemeProvider theme={ theme }>
       <AuthProvider>
         <CssBaseline />
         {layout === "dashboard" && (
