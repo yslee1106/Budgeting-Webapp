@@ -20,7 +20,7 @@ import typography from "assets/theme/base/typography";
 // Material Dashboard 2 React Helper Functions
 import pxToRem from "assets/theme/functions/pxToRem";
 
-const { transparent, light, info, secondary } = colors;
+const { transparent, light, dark, secondary } = colors;
 const { size } = typography;
 
 const outlined = {
@@ -62,7 +62,7 @@ const outlined = {
 
   primary: {
     backgroundColor: transparent.main,
-    borderColor: info.main,
+    borderColor: dark.main,
 
     "&:hover": {
       backgroundColor: transparent.main,

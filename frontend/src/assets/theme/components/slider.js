@@ -22,7 +22,7 @@ import boxShadows from "assets/theme/base/boxShadows";
 import pxToRem from "assets/theme/functions/pxToRem";
 import boxShadow from "assets/theme/functions/boxShadow";
 
-const { grey, white, black, info } = colors;
+const { grey, white, black, secondary } = colors;
 const { borderRadius, borderWidth } = borders;
 const { sliderBoxShadow } = boxShadows;
 
@@ -48,7 +48,7 @@ const slider = {
     },
 
     track: {
-      background: info.main,
+      background: secondary.main,
       height: pxToRem(2),
       position: "relative",
       border: "none",
@@ -62,7 +62,7 @@ const slider = {
       backgroundColor: white.main,
       zIndex: 10,
       boxShadow: sliderBoxShadow.thumb,
-      border: `${borderWidth[1]} solid ${info.main}`,
+      border: `${borderWidth[1]} solid ${secondary.main}`,
       transition: "all 200ms linear",
 
       "&:hover": {
@@ -73,7 +73,7 @@ const slider = {
         transform: "translate(-50%, -50%) scale(1.4)",
       },
 
-      "&.Mui-active": { boxShadow: boxShadow([0, 0], [0, 14], info.main, 0.16) },
+      "&.Mui-active": { boxShadow: boxShadow([0, 0], [0, 14], secondary.main, 0.16) },
     },
   },
 };

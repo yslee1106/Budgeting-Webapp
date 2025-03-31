@@ -63,16 +63,10 @@ const boxShadows = {
       coloredShadows.secondary,
       0.4
     )}`,
-    info: `${boxShadow([0, 4], [20, 0], black.main, 0.14)}, ${boxShadow(
+    positive: `${boxShadow([0, 4], [20, 0], black.main, 0.14)}, ${boxShadow(
       [0, 7],
       [10, -5],
-      coloredShadows.info,
-      0.4
-    )}`,
-    success: `${boxShadow([0, 4], [20, 0], black.main, 0.14)}, ${boxShadow(
-      [0, 7],
-      [10, -5],
-      coloredShadows.success,
+      coloredShadows.positive,
       0.4
     )}`,
     warning: `${boxShadow([0, 4], [20, 0], black.main, 0.14)}, ${boxShadow(
@@ -81,10 +75,10 @@ const boxShadows = {
       coloredShadows.warning,
       0.4
     )}`,
-    error: `${boxShadow([0, 4], [20, 0], black.main, 0.14)}, ${boxShadow(
+    negative: `${boxShadow([0, 4], [20, 0], black.main, 0.14)}, ${boxShadow(
       [0, 7],
       [10, -5],
-      coloredShadows.error,
+      coloredShadows.negative,
       0.4
     )}`,
     light: `${boxShadow([0, 4], [20, 0], black.main, 0.14)}, ${boxShadow(

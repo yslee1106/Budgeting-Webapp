@@ -24,7 +24,7 @@ import pxToRem from "assets/theme/functions/pxToRem";
 
 const { lg } = boxShadows;
 const { size } = typography;
-const { text, white } = colors;
+const { text_dark, white } = colors;
 const { borderRadius } = borders;
 
 const menu = {
@@ -38,7 +38,7 @@ const menu = {
       boxShadow: lg,
       padding: `${pxToRem(16)} ${pxToRem(8)}`,
       fontSize: size.sm,
-      color: text.main,
+      color: text_dark.main,
       textAlign: "left",
       backgroundColor: `${white.main} !important`,
       borderRadius: borderRadius.md,

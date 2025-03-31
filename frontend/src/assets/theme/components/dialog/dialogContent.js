@@ -22,7 +22,7 @@ import colors from "assets/theme/base/colors";
 import pxToRem from "assets/theme/functions/pxToRem";
 
 const { size } = typography;
-const { text } = colors;
+const { text_dark } = colors;
 const { borderWidth, borderColor } = borders;
 
 const dialogContent = {
@@ -30,7 +30,7 @@ const dialogContent = {
     root: {
       padding: pxToRem(16),
       fontSize: size.md,
-      color: text.main,
+      color: text_dark.main,
     },
 
     dividers: {

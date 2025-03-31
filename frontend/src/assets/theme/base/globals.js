@@ -16,7 +16,7 @@ Coded by www.creative-tim.com
 // Material Dashboard 2 React Base Styles
 import colors from "assets/theme/base/colors";
 
-const { info, dark } = colors;
+const { dark } = colors;
 
 const globals = {
   html: {
@@ -32,9 +32,6 @@ const globals = {
   "a.link, .link, a.link:link, .link:link, a.link:visited, .link:visited": {
     color: `${dark.main} !important`,
     transition: "color 150ms ease-in !important",
-  },
-  "a.link:hover, .link:hover, a.link:focus, .link:focus": {
-    color: `${info.main} !important`,
   },
 };
 

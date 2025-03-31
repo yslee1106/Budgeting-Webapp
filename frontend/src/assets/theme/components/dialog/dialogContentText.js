@@ -21,13 +21,13 @@ import colors from "assets/theme/base/colors";
 // import pxToRem from "assets/theme/functions/pxToRem";
 
 const { size } = typography;
-const { text } = colors;
+const { text_dark } = colors;
 
 const dialogContentText = {
   styleOverrides: {
     root: {
       fontSize: size.md,
-      color: text.main,
+      color: text_dark.main,
     },
   },
 };

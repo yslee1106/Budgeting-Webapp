@@ -16,12 +16,12 @@ Coded by www.creative-tim.com
 // Material Dashboard 2 React base styles
 import colors from "assets/theme/base/colors";
 
-const { text } = colors;
+const { text_dark } = colors;
 
 const formLabel = {
   styleOverrides: {
     root: {
-      color: text.main,
+      color: text_dark.main,
     },
   },
 };

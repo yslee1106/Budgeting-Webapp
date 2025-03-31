@@ -22,7 +22,7 @@ import pxToRem from "assets/theme/functions/pxToRem";
 import linearGradient from "assets/theme/functions/linearGradient";
 
 const { borderWidth, borderColor } = borders;
-const { transparent, info } = colors;
+const { transparent, dark } = colors;
 
 const radio = {
   styleOverrides: {
@@ -42,7 +42,7 @@ const radio = {
         width: pxToRem(14),
         height: pxToRem(14),
         borderRadius: "50%",
-        backgroundImage: linearGradient(info.main, info.main),
+        backgroundImage: linearGradient(dark.main, dark.main),
         opacity: 0,
         left: 0,
         right: 0,
@@ -56,7 +56,7 @@ const radio = {
       },
 
       "&.Mui-focusVisible": {
-        border: `${borderWidth[2]} solid ${info.main} !important`,
+        border: `${borderWidth[2]} solid ${dark.main} !important`,
       },
     },
 
@@ -64,10 +64,10 @@ const radio = {
       color: borderColor,
 
       "&.Mui-checked": {
-        color: info.main,
+        color: dark.main,
 
         "& .MuiSvgIcon-root": {
-          borderColor: info.main,
+          borderColor: dark.main,
         },
 
         "&:after": {
@@ -80,10 +80,10 @@ const radio = {
       color: borderColor,
 
       "&.Mui-checked": {
-        color: info.main,
+        color: dark.main,
 
         "& .MuiSvgIcon-root": {
-          borderColor: info.main,
+          borderColor: dark.main,
         },
 
         "&:after": {

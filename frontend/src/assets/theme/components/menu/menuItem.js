@@ -21,7 +21,7 @@ import typography from "assets/theme/base/typography";
 // Material Dashboard 2 React helper functions
 import pxToRem from "assets/theme/functions/pxToRem";
 
-const { light, text, dark } = colors;
+const { light, text_dark, dark } = colors;
 const { borderRadius } = borders;
 const { size } = typography;
 
@@ -33,7 +33,7 @@ const menuItem = {
       padding: `${pxToRem(4.8)} ${pxToRem(16)}`,
       borderRadius: borderRadius.md,
       fontSize: size.sm,
-      color: text.main,
+      color: text_dark.main,
       transition: "background-color 300ms ease, color 300ms ease",
 
       "&:hover, &:focus, &.Mui-selected, &.Mui-selected:hover, &.Mui-selected:focus": {
