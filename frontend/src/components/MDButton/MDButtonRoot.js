@@ -20,7 +20,7 @@ import { styled } from "@mui/material/styles";
 
 export default styled(Button)(({ theme, ownerState }) => {
   const { palette, functions, borders, boxShadows } = theme;
-  const { color, variant, size, circular, iconOnly, darkMode } = ownerState;
+  const { color, variant, size, circular, iconOnly } = ownerState;
 
   const { white, text, transparent, gradients, grey } = palette;
   const { boxShadow, linearGradient, pxToRem, rgba } = functions;
@@ -58,12 +58,6 @@ export default styled(Button)(({ theme, ownerState }) => {
     // color value
     let colorValue = white.main;
 
-    if (!darkMode && (color === "white" || color === "light" || !palette[color])) {
-      colorValue = text.main;
-    } else if (darkMode && (color === "white" || color === "light" || !palette[color])) {
-      colorValue = grey[600];
-    }
-
     // color value when button is focused
     let focusedColorValue = white.main;
 
@@ -81,13 +75,6 @@ export default styled(Button)(({ theme, ownerState }) => {
       "&:hover": {
         backgroundColor: backgroundValue,
         boxShadow: hoveredBoxShadowValue,
-      },
-
-      "&:focus:not(:hover)": {
-        backgroundColor: focusedBackgroundValue,
-        boxShadow: palette[color]
-          ? boxShadow([0, 0], [0, 3.2], palette[color].main, 0.5)
-          : boxShadow([0, 0], [0, 3.2], white.main, 0.5),
       },
 
       "&:disabled": {
@@ -125,11 +112,6 @@ export default styled(Button)(({ theme, ownerState }) => {
       "&:hover": {
         background: transparent.main,
         borderColor: colorValue,
-      },
-
-      "&:focus:not(:hover)": {
-        background: transparent.main,
-        boxShadow: boxShadowValue,
       },
 
       "&:active:not(:hover)": {

@@ -75,6 +75,16 @@ const colors = {
     focus: "#D32F2F",
   },
 
+  success: {
+    main: "#4CAF50",
+    focus: "#67bb6a",
+  },
+
+  error: {
+    main: "#F44335",
+    focus: "#f65f53",
+  },
+
   light: {
     main: "#ffffff",
     focus: "#b3b3b3",
