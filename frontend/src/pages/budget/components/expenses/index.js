@@ -1,78 +1,28 @@
-import Card from "@mui/material/Card";
-import Icon from "@mui/material/Icon";
+import React, { useState } from "react";
 
-import MDBox from "components/MDBox";
-import MDProgress from "components/MDProgress";
-import MDTypography from "components/MDTypography";
-
-import DataTable from "layouts/DataTable";
-
+import ProgressTable from "layouts/Table/ProgressTable";
 
 function Expenses({ data }) {
-    const Expense = ({ icon, name }) => (
-        <MDBox display="flex" alignItems="center" lineHeight={1} width='6rem'>
-            <Icon fontSize="small">{icon}</Icon>
-            <MDTypography display="block" variant="button" fontWeight="medium" ml={1} lineHeight={1}>
-                {name}
-            </MDTypography>
-        </MDBox>
-    );
+    const [sortBy, setSortBy] = useState("");
 
-    const Progress = ({ color, value }) => (
-        <MDBox display="flex" alignItems="center">
-            <MDBox ml={2} mr={2} width="8rem">
-                <MDProgress variant="gradient" color={color} value={value} />
-            </MDBox>
-            <MDTypography width="3rem" variant="caption" color="text" fontWeight="medium">
-                {value}%
-            </MDTypography>
-        </MDBox>
-    );
+    const handleSortChange = (event) => {
+        setSortBy(event.target.value);
+        console.log(`sort expense by ${event.target.vale} clicked`);
+    };
 
-    const Action = () => (
-        <MDTypography component="a" href="#" color="text">
-            <Icon>more_vert</Icon>
-        </MDTypography>
-    )
-
-    const columns = [
-        { Header: "Expense", accessor: "expense", width: "50%", align: "left" },
-        { Header: "Progress", accessor: "progress", width: "40%", align: "center" },
-        { Header: "More", accessor: "action", width: "10%", align: "right" },
-    ]
-
-    const rows = data.map((item) => ({
-        expense: <Expense icon="bolt" name={ item.expense_name } />,
-        progress: <Progress color={ item.fulfilled ? 'success' : 'info' } value={ item.percentage } />,
-        action: <Action />
-    }))
+    const handleMoreOptionsClick = (event, goalId) => {
+        event.stopPropagation();
+        console.log(`More options for expense ${goalId} clicked`);
+    };
 
     return (
-        <Card>
-            <MDBox
-                mx={2}
-                mt={-3}
-                py={3}
-                px={2}
-                variant="gradient"
-                bgColor="info"
-                borderRadius="lg"
-                coloredShadow="info"
-            >
-                <MDTypography variant="h6" color="white">
-                    Expenses
-                </MDTypography>
-            </MDBox>
-            <MDBox pt={3}>
-                <DataTable
-                    table={{ columns, rows }}
-                    isSorted={false}
-                    entriesPerPage={false}
-                    showTotalEntries={false}
-                    noEndBorder
+        <ProgressTable
+                    title='Expenses'
+                    data={data}
+                    handleSortChange={handleSortChange}
+                    sortBy={sortBy}
+                    handleMoreOptionsClick={handleMoreOptionsClick}
                 />
-            </MDBox>
-        </Card>
     )
 }
 

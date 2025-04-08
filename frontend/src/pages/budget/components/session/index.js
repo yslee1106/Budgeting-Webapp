@@ -1,19 +1,19 @@
 import React, { useRef, useState, useEffect } from "react";
+import { useTheme } from "@emotion/react";
 
 import Icon from "@mui/material/Icon";
 import Stack from "@mui/material/Stack";
-import Card from "@mui/material/Card";
 import IconButton from "@mui/material/IconButton";
-
-import MDButton from "components/MDButton";
-import MDTypography from "components/MDTypography";
-import MDBox from "components/MDBox";
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from "@mui/material/Typography";
 
 function Session({ data, selected, setSelected }) {
+    const theme = useTheme();
+
     const containerRef = useRef(null);
     const [capacity, setCapacity] = useState(0);
     const buttonWidth = 140;
-
 
     // Scrolling Functions  
     const scroll = (scrollOffset) => {
@@ -34,20 +34,24 @@ function Session({ data, selected, setSelected }) {
     const fillList = (data, capacity) => {
         const filledList = [...data];
 
-
         while (filledList.length < capacity) {        // Add blank items if the data length is less than the capacity
-            filledList.unshift({ id: `blank-${filledList.length}`, isBlank: true });
+            filledList.push({ id: `blank-${filledList.length}`, isBlank: true });
         }
 
         return filledList;
     };
 
     useEffect(() => {           // Set maximum number of buttons that can fit into the session box
-        const containerWidth = containerRef.current.offsetWidth;
-        console.log(containerWidth);
-        const calculatedCapacity = calculateCapacity(containerWidth, buttonWidth);
-        setCapacity(calculatedCapacity);
-        console.log(calculatedCapacity);
+        const updateCapacity = () => {
+            const containerWidth = containerRef.current?.offsetWidth || 0;
+            setCapacity(calculateCapacity(containerWidth, buttonWidth));
+        };
+
+        updateCapacity();
+        const resizeObserver = new ResizeObserver(updateCapacity);
+        if (containerRef.current) resizeObserver.observe(containerRef.current);
+
+        return () => resizeObserver.disconnect();
     }, []);
 
 
@@ -75,91 +79,153 @@ function Session({ data, selected, setSelected }) {
 
         if (item.isBlank) {
             ret = (
-                <MDButton
-                    variant='contained'
-                    color='lightBlue'>
-                    <Stack width={buttonWidth}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                    }}
+                >
+                    <Button
+                        variant='contained'
+                        color={theme.palette.white.main}
+                        sx={{
+                            backgroundColor: selected === item ? theme.palette.primary.main : theme.palette.white.main,
+                            border: '1px solid',
+                            borderColor: theme.palette.black.main,
+                            height: '80px',
+                            width: buttonWidth,
+                            px: 0,
+                        }}>
+                        <Stack width={buttonWidth}>
 
-                    </Stack>
-                </MDButton>
+                        </Stack>
+                    </Button>
+                </Box>
+
             )
         } else {
             ret = (
-                <MDButton
-                    key={item}
-                    variant={selected === item ? "contained" : "outlined"}
-                    onClick={() => setSelected(item)}
-                    color='dark'
-                >
-                    <Stack width={buttonWidth}>
-                        <MDTypography
-                            variant="h8"
-                            color={selected === item ? 'light' : 'dark'}
-                            fontSize={8}
-                        >
-                            {formatDate(item.period, 'year')}
-                        </MDTypography>
-                        <MDTypography
-                            variant="h6"
-                            color={selected === item ? 'light' : 'dark'}
-                        >
-                            {formatDate(item.period, 'month')}
-                        </MDTypography>
-                    </Stack>
-                </MDButton>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                    }}>
+                    <Button
+                        key={item}
+                        variant="contained"
+                        onClick={() => setSelected(item)}
+                        sx={{
+                            backgroundColor: selected === item ? theme.palette.primary.main : theme.palette.white.main,
+                            border: '1px solid',
+                            borderColor: theme.palette.black.main,
+                            height: '80px',
+                            width: buttonWidth,
+                            px: 0
+                        }}
+                    >
+                        <Stack width={buttonWidth}>
+                            <Typography
+                                variant="h8"
+                                color={selected === item ? 'light' : 'dark'}
+                                fontSize='10px'
+                            >
+                                {formatDate(item.period, 'year')}
+                            </Typography>
+                            <Typography
+                                variant="h6"
+                                color={selected === item ? 'light' : 'dark'}
+                            >
+                                {formatDate(item.period, 'month')}
+                            </Typography>
+                        </Stack>
+                    </Button>
+                </Box>
+
             );
         }
 
         return ret;
     });
 
-    return (
-        <MDBox
-            display="flex"
-            flexDirection="horizontal"
-            justifyContent="space-between"
-            gap={2}
-            py={2}
-            px={2}
-        >
+    const ControlButton = ({ icon, scrollValue }) => {
+        return (
             <IconButton
                 variant="contained"
-                color="info"
-                onClick={() => scroll(-100)}
-            >
-                <Icon sx={{ fontWeight: "bold" }}>navigate_before</Icon>
-            </IconButton>
+                onClick={() => scroll(scrollValue)}
+                sx={{
+                    backgroundColor: theme.palette.black.main,
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '50%',
+                    zIndex: 1,
 
-            <Card>
-                <MDBox
-                    ref={containerRef}
+                    '&:hover': {
+                        backgroundColor: theme.palette.black.hover, // Custom hover background color
+                    },
+                }}
+            >
+                <Icon
                     sx={{
-                        display: "flex",
-                        flexDirection: "row-reverse",
-                        overflowX: "auto",
-                        gap: 3,
-                        scrollbarWidth: "none", // Hide scrollbar for Firefox
-                        msOverflowStyle: "none", // Hide scrollbar for IE/Edge
-                        "&::-webkit-scrollbar": {
-                            display: "none", // Hide scrollbar for Chrome, Safari, and Opera
-                        },
-                        py: 2,
-                        px: 5,
-                        width: '50rem'
-                    }}
-                >
-                    {periodButton}
-                </MDBox>
-            </Card>
-
-            <IconButton
-                varient="contained"
-                color="info"
-                onClick={() => scroll(100)}
-            >
-                <Icon sx={{ fontWeight: "bold" }}>navigate_next</Icon>
+                        fontSize: '20px',
+                        color: theme.palette.white.main
+                    }}>
+                    {icon}
+                </Icon>
             </IconButton>
-        </MDBox>
+        )
+    }
+
+    return (
+        <Box
+            sx={{
+                width: '100%',
+                display: "flex",
+                position: 'relative',
+                alignItems: 'center',
+                gap: 2,
+                px: 2,
+                boxSizing: 'border-box', // Includes padding in width calculation
+
+                '&::before': { // horizontal line
+                    content: '""',
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    mx: '30px',
+                    top: '50%', // centers vertically
+                    height: '1.5px', // line thickness
+                    backgroundColor: '#000000', // or any color
+                    zIndex: -1 // sends line behind content
+                }
+            }}
+        >
+            <ControlButton icon='navigate_before' scrollValue={-100} />
+
+
+            <Box
+                ref={containerRef}
+                sx={{
+                    flex: 1,
+                    width: '100%',
+                    display: "flex",
+                    overflowX: "auto",
+                    gap: 3,
+                    scrollbarWidth: "none", // Hide scrollbar for Firefox
+                    msOverflowStyle: "none", // Hide scrollbar for IE/Edge
+                    "&::-webkit-scrollbar": {
+                        display: "none", // Hide scrollbar for Chrome, Safari, and Opera
+                    },
+                    py: 2,
+                    px: 5,
+                }}
+            >
+                {periodButton}
+            </Box>
+
+            <ControlButton icon='navigate_next' scrollValue={100} />
+
+        </Box>
+
     );
 }
 

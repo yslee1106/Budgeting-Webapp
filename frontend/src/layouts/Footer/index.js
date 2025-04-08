@@ -1,16 +1,25 @@
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 function Footer() {
   const company = 'Financial Tracker';
 
   return (
-    <Typography
-      variant="caption"
-      color="white"
-      fontweight='medium'
-    >
-      © 2021. - 2025 All Rights Reserved. { company }
-    </Typography>
+    <Box
+      sx={{
+        position: 'absolute',
+        bottom: '0%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+      }}>
+      <Typography
+        variant="caption"
+        color="white"
+        fontweight='medium'
+      >
+        © 2021. - 2025 All Rights Reserved. {company}
+      </Typography>
+    </Box>
+
   )
 }
 

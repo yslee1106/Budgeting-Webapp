@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useAuth } from 'context/authentication';
 import { useNavigate } from 'react-router-dom';
 
-import MDBox from 'components/MDBox'
-import MDButton from "components/MDButton";
+import Box from '@mui/material/Box'
+import Button from "@mui/material/Button";
 
 import PageLayout from "layouts/Containers/PageLayout";
 import Logo from "layouts/Logo";
@@ -60,83 +60,69 @@ const SignUp = () => {
     };
 
     return (
-        <PageLayout>
-            <MDBox
+        <PageLayout background='primary'>
+            <Background />
+            <Box
                 sx={{
-                    height: '100vh', // Full viewport height
-                    width: '100vw', // Full viewport width
                     display: 'flex',
-                    flexDirection: 'column',
-                    backgroundColor: '#2b2b2b',
-                    position: 'relative'
+                    justifyContent: 'space-between',
+                    pt: '2rem',
+                    px: '3rem',
                 }}
             >
-                {/* Background */}
-                <Background />
 
-                <MDBox
+                <Logo color='#000000' size='md'/>
+                {/* Login */}
+                <Box
                     sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        pt: 2,
-                        pl: 5,
-                        pr: 5
+                        display: "flex",
+                        alignItems: "center",
                     }}
                 >
-                    {/* Logo */}
-                    <MDBox
+                    <Button
+                        variant="outlined"
+                        onClick={toLogin}
                         sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: '1rem',
-                            zIndex: 1
+                            borderColor: '#000000',
+                            borderWidth: '2px',
+                            borderRadius: '10px',
+                            color: '#000000',
+                            fontWeight: 'bold',
+                            fontSize: '12px',
+                            px: '30px',
+                            py: '12px'
                         }}
+
                     >
-                        <Logo />
-                    </MDBox>
+                        LOGIN
+                    </Button>
+                </Box>
 
-                    {/* Login */}
-                    <MDBox
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                        }}
-                    >
-                        <MDButton
-                            variant="outlined"
-                            color="primary"
-                            onClick={toLogin}
-                        >
-                            LOGIN
-                        </MDButton>
-                    </MDBox>
+            </Box>
 
-                </MDBox>
+            {/* SignUp Card */}
+            <CenterCard
+                setEmail={setEmail}
+                setPassword={setPassword}
+                showPassword={showPassword}
+                setConfirmPassword={setConfirmPassword}
+                showConfirmPassword={showConfirmPassword}
+                handleClickShowPassword={handleClickShowPassword}
+                handleClickShowConfirmPassword={handleClickShowConfirmPassword}
+                handleSubmit={handleSubmit}
+                rememberMe={rememberMe}
+                handleRememberMeChange={handleRememberMeChange}
+            />
 
-                {/* SignUp Card */}
-                <CenterCard
-                    setEmail={setEmail}
-                    setPassword={setPassword}
-                    showPassword={showPassword}
-                    setConfirmPassword={setConfirmPassword}
-                    showConfirmPassword={showConfirmPassword}
-                    handleClickShowPassword={handleClickShowPassword}
-                    handleClickShowConfirmPassword={handleClickShowConfirmPassword}
-                    handleSubmit={handleSubmit}
-                    rememberMe={rememberMe}
-                    handleRememberMeChange={handleRememberMeChange}
-                />
+            {/* Footer */}
+            <Box
+                display='flex'
+                justifyContent='center'
+            >
+                <Footer />
+            </Box>
 
-                {/* Footer */}
-                <MDBox
-                    display='flex'
-                    justifyContent='center'
-                >
-                    <Footer />
-                </MDBox>
-
-            </MDBox>
-        </PageLayout>
+        </PageLayout >
     );
 };
 

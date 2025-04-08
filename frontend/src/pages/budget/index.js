@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { fetchSessions, fetchBucketBySession, fetchGoals } from 'services/budgetService';
 import { useAuth } from 'context/authentication';
 
-import Grid from "@mui/material/Grid2";
+import Grid from "@mui/material/Grid";
 import Stack from '@mui/material/Stack';
-import MDBox from "components/MDBox";
+import Box from "@mui/material/Box";
 
 import DashboardLayout from "layouts/Containers/DashboardLayout";
 import Footer from "layouts/Footer";
-import DashboardNavbar from "layouts/Navbars/DashboardNavbar";
+import DashboardNavbar from "layouts/DashboardNavbar";
 
-import Session from "pages/budget/components/session"
+import Session from "pages/budget/components/session";
 import Funds from "pages/budget/components/funds";
 import Goals from "pages/budget/components/goals";
 import Expenses from "pages/budget/components/expenses";
@@ -28,7 +28,7 @@ function Budget() {
             try {
                 const items = await fetchSessions(); // Use the API function
                 setSessionsData(items);
-                setSelectedSession(items[0]);
+                setSelectedSession(items[items.length - 1]);
             } catch (error) {
                 console.error('Error:', error);
                 if (error.response?.status === 401) {
@@ -78,42 +78,36 @@ function Budget() {
 
     return (
         <DashboardLayout>
-            <DashboardNavbar absolute isMini />
-            <MDBox mt={8}>
-                <MDBox mb={3}>
+            <DashboardNavbar absolute />
+            <Box mt='3rem'>
+                <Box mb='1rem'>
                     <Grid container spacing={3}>
-                        <Grid item xs={12}>
+                        <Grid size={12}>
                             <Session data={sessionsData} selected={selectedSession} setSelected={setSelectedSession} />
                         </Grid>
                     </Grid>
-                </MDBox>
-                <MDBox mb={3}>
+                </Box>
+                <Box mb='1rem'>
                     <Grid container spacing={3}>
-                        <Grid item xs={12} xl={6}>
+                        <Grid size={{ xs: 12, xl: 6 }}>
                             <Grid container spacing={3}>
-                                <Stack>
-                                    <Grid item xs={12}>
-                                        <MDBox mb={3}>
-                                            <Funds data={selectedSession} />
-                                        </MDBox>
+                                <Stack sx={{ width: '100%', gap: '1rem' }}>
+                                    <Grid size={12}>
+                                        <Funds data={selectedSession} />
                                     </Grid>
-                                    <Grid item xs={12}>
-                                        <MDBox mt={3}>
-                                            <Goals data={goalsData} />
-                                        </MDBox>
+                                    <Grid size={12}>
+                                        <Goals data={goalsData} />
                                     </Grid>
                                 </Stack>
                             </Grid>
                         </Grid>
-                        <Grid item xs={12} xl={6}>
-                            <MDBox mt={3}>
-                                <Expenses data={bucketsData} />
-                            </MDBox>
+                        <Grid size={{ xs: 12, xl: 6 }}>
+                            <Expenses data={bucketsData} />
                         </Grid>
                     </Grid>
-                </MDBox>
-            </MDBox>
-        </DashboardLayout>
+                </Box>
+            </Box>
+        </DashboardLayout >
     )
 }
 

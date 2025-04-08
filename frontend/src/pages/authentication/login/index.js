@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useAuth } from 'context/authentication';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTheme } from "@emotion/react";
 
-import MDBox from 'components/MDBox'
-import MDButton from "components/MDButton";
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 
 import PageLayout from "layouts/Containers/PageLayout";
 import Logo from "layouts/Logo";
@@ -22,6 +23,9 @@ const LogIn = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
 
+    const theme = useTheme();
+    const { functions } = theme;
+
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
     };
@@ -33,6 +37,12 @@ const LogIn = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            
+            // REMOVE THIS
+            setEmail('test@gmail.com');
+            setPassword('testPassword');
+            // REMOVE THIS
+
             await login(email, password);
             // Redirect to the originally requested page or home
             navigate(location.state?.from?.pathname || '/budget', { replace: true });
@@ -47,79 +57,61 @@ const LogIn = () => {
     };
 
     return (
-        <PageLayout>
-            <MDBox
+        <PageLayout background='primary'>
+            {/* Background */}
+            <Background />
+
+            {/* Top Row */}
+            <Box
                 sx={{
-                    height: '100vh', // Full viewport height
-                    width: '100vw', // Full viewport width
                     display: 'flex',
-                    flexDirection: 'column',
-                    backgroundColor: '#2b2b2b',
-                    position: 'relative'
+                    justifyContent: 'space-between',
+                    pt: '2rem',
+                    px: '3rem',
                 }}
             >
-                {/* Background */}
-                <Background/>
-
-                <MDBox
+                {/* Logo */}
+                <Logo color='#000000' size='md'/>
+                {/* Sign Up MDButton */}
+                <Box
                     sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        pt: 2,
-                        pl: 5,
-                        pr: 5
+                        display: "flex",
+                        alignItems: "center",
                     }}
                 >
-                    {/* Logo */}
-                    <MDBox
+                    <Button
+                        variant="outlined"
+                        onClick={toSignUp}
                         sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: '1rem',
-                            zIndex: 1
+                            borderColor: '#000000',
+                            borderWidth: '2px',
+                            borderRadius: '10px',
+                            color: '#000000',
+                            fontWeight: 'bold',
+                            fontSize: '12px',
+                            px: '30px',
+                            py: '12px'
                         }}
                     >
-                        <Logo />
-                    </MDBox>
+                        SIGN UP
+                    </Button>
+                </Box>
 
-                    {/* Sign Up MDButton */}
-                    <MDBox
-                        sx={{
-                            display: "flex",
-                            alignItems: "center",
-                        }}
-                    >
-                        <MDButton
-                            variant="outlined"
-                            color="primary"
-                            onClick={toSignUp}
-                        >
-                            SIGN UP
-                        </MDButton>
-                    </MDBox>
+            </Box>
 
-                </MDBox>
+            {/* Login Card */}
+            <CenterCard
+                setEmail={setEmail}
+                setPassword={setPassword}
+                showPassword={showPassword}
+                handleClickShowPassword={handleClickShowPassword}
+                handleSubmit={handleSubmit}
+                rememberMe={rememberMe}
+                handleRememberMeChange={handleRememberMeChange}
+            />
 
-                {/* Login Card */}
-                <CenterCard
-                    setEmail={setEmail}
-                    setPassword={setPassword}
-                    showPassword={showPassword}
-                    handleClickShowPassword={handleClickShowPassword}
-                    handleSubmit={handleSubmit}
-                    rememberMe={rememberMe}
-                    handleRememberMeChange={handleRememberMeChange}
-                />
-
-                {/* Footer */}
-                <MDBox
-                    display='flex'
-                    justifyContent='center'
-                >
-                    <Footer/>
-                </MDBox>
-
-            </MDBox>
+            {/* Footer */}
+            <Footer />
         </PageLayout>
     );
 

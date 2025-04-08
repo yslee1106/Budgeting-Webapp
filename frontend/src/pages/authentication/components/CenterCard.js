@@ -1,20 +1,24 @@
-import MDBox from 'components/MDBox'
-import MDButton from "components/MDButton";
-import MDTypography from "components/MDTypography";
-import MDInput from "components/MDInput";
-
+import Box from '@mui/material/Box'
+import Typography from "@mui/material/Typography";
+import Button from '@mui/material/Button';
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
+import FormControl from '@mui/material/FormControl';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import TextField from '@mui/material/TextField';
+
 
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const EmailField = ({ setEmail }) => {
     return (
-        <MDInput
+        <TextField
             id="Email"
             label="Email Address"
             variant="outlined"
@@ -32,25 +36,28 @@ const PasswordField = ({
     handleClickShowPassword
 }) => {
     return (
-        <MDInput
-            id={label}
-            label={label}
-            variant="outlined"
-            type={showPassword ? "text" : "password"}
-            fullWidth
-            InputProps={{
-                endAdornment: (
-                    <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        edge="end"
-                    >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                ),
-            }}
-            onChange={(e) => setPassword(e.target.value)}
-        />
+        <FormControl sx={{ m: 1 }} variant="outlined">
+            <InputLabel>Password</InputLabel>
+            <OutlinedInput
+                id={label}
+                type={showPassword ? 'text' : 'password'}
+                endAdornment={
+                    <InputAdornment position="end">
+                        <IconButton
+                            aria-label={
+                                showPassword ? 'hide the password' : 'display the password'
+                            }
+                            onClick={handleClickShowPassword}
+                            edge="end"
+                        >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                    </InputAdornment>
+                }
+                label="Password"
+                onChange={(e) => setPassword(e.target.value)}
+            />
+        </FormControl>
     )
 }
 
@@ -96,32 +103,37 @@ function CenterCard({
     handleRememberMeChange
 }) {
     return (
-        <MDBox
+        <Box
             sx={{
-                flex: 1, // Takes up remaining space
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
             }}
         >
-            <Card sx={{ bgcolor: '#ffffff', px: 6, py: 4 }}>
-                
+            <Card
+                sx={{
+                    bgcolor: '#ffffff',
+                    px: 6,
+                    py: 5,
+                    zIndex: 1
+                }}>
+
                 {/* Title */}
-                <MDTypography
+                <Typography
                     variant="h3"
                     color='text_light'
                     sx={{
                         fontFamily: "Roboto",
-                        fontWeight: 500,
                         textAlign: "center",
                         marginBottom: 4,
                     }}
                 >
                     {setConfirmPassword ? 'SIGN UP' : 'LOGIN'}
-                </MDTypography>
+                </Typography>
 
                 {/* Form */}
-                <MDBox sx={{ width: "20rem" }}>
+                <Box sx={{ width: "20rem" }}>
                     <Stack spacing={2}>
                         <Fields
                             setEmail={setEmail}
@@ -133,7 +145,7 @@ function CenterCard({
                             handleClickShowConfirmPassword={handleClickShowConfirmPassword}
                         />
 
-                        <MDBox
+                        <Box
                             sx={{
                                 display: "flex",
                                 justifyContent: "space-between",
@@ -141,23 +153,23 @@ function CenterCard({
                             }}
                         >
                             {/* Remember Me */}
-                            <MDBox display="flex" alignItems="center" m={-1}>
+                            <Box display="flex" alignItems="center" m={-1}>
                                 <Checkbox
                                     checked={rememberMe}
                                     onChange={handleRememberMeChange}
                                     size="small"
                                 />
-                                <MDTypography
+                                <Typography
                                     variant='caption'
                                     fontWeight='light'
                                 >
                                     Remember Me
-                                </MDTypography>
-                            </MDBox>
+                                </Typography>
+                            </Box>
 
                             {/* Forget Password */}
                             {/* Wrap with Link */}
-                            <MDTypography
+                            <Typography
                                 variant="caption"
                                 sx={{
                                     color: "#616161",
@@ -167,11 +179,11 @@ function CenterCard({
                                 }}
                             >
                                 Forgot Password?
-                            </MDTypography>
-                        </MDBox>
+                            </Typography>
+                        </Box>
 
                         {/* Proceed Button */}
-                        <MDButton
+                        <Button
                             variant="contained"
                             type='submit'
                             color='primary'
@@ -182,12 +194,12 @@ function CenterCard({
                             }}
                         >
                             PROCEED
-                        </MDButton>
+                        </Button>
                     </Stack>
-                </MDBox>
+                </Box>
 
                 {/* OR USE divider */}
-                <MDBox
+                <Box
                     sx={{
                         width: "100%",
                         display: "flex",
@@ -196,7 +208,7 @@ function CenterCard({
                     }}
                 >
                     <Divider sx={{ flexGrow: 1, mx: 2 }} />
-                    <MDTypography
+                    <Typography
                         variant="caption"
                         sx={{
                             color: "black",
@@ -204,15 +216,15 @@ function CenterCard({
                         }}
                     >
                         OR USE
-                    </MDTypography>
+                    </Typography>
                     <Divider sx={{ flexGrow: 1, mx: 2 }} />
-                </MDBox>
+                </Box>
 
                 {/* Social Login Options */}
                 {/* TODO */}
             </Card>
 
-        </MDBox>
+        </Box>
 
     )
 }

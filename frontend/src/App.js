@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
-// import SideNav from "layouts/SideNav";
+import SideNav from "layouts/Sidenav";
 
 import theme from "assets/theme";
 
@@ -19,7 +19,7 @@ import { AuthProvider } from './context/authentication';
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
-  const { miniSidenav } = controller;
+  const { miniSidenav, layout } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const { pathname } = useLocation();
 
@@ -51,14 +51,13 @@ export default function App() {
         <CssBaseline />
         {layout === "dashboard" && (
           <>
-            {/* <SideNav
-              color={sidenavColor}
+            <SideNav
               brandLogo="logo_dev"
               brandName="Financial Tracker"
               routes={PrivateRouteList}
               onMouseEnter={handleOnMouseEnter}
               onMouseLeave={handleOnMouseLeave}
-            /> */}
+            />
           </>
         )}
         <AllRoutes />

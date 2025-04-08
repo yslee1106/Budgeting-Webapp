@@ -1,0 +1,20 @@
+import Box from '@mui/material/Box'
+
+import TableHeader from "layouts/Table/ProgressTable/tableHeader";
+import TableRow from "layouts/Table/ProgressTable/tableRow";
+
+function ProgressTable({ title, data, handleMoreOptionsClick, handleSortChange, sortBy }) {
+    return (
+        <Box
+            sx={{
+                width: "100%",
+                display: 'flex',
+                flexDirection: 'column',
+            }}>
+            <TableHeader title={title} handleSortChange={handleSortChange} sortBy={sortBy} />
+            <TableRow data={data} handleMoreOptionsClick={handleMoreOptionsClick} />
+        </Box>
+    )
+}
+
+export default ProgressTable;
