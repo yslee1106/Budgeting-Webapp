@@ -18,7 +18,7 @@ import colors from "assets/theme/base/colors";
 import typography from "assets/theme/base/typography";
 import borders from "assets/theme/base/borders";
 
-const { grey, inputBorderColor, light } = colors;
+const { inputBorderColor, dark } = colors;
 const { size } = typography;
 const { borderWidth } = borders;
 
@@ -26,7 +26,7 @@ const input = {
   styleOverrides: {
     root: {
       fontSize: size.sm,
-      color: light.main,
+      color: dark.main,
 
       "&:hover:not(.Mui-disabled):before": {
         borderBottom: `${borderWidth[1]} solid ${inputBorderColor}`,
@@ -37,7 +37,7 @@ const input = {
       },
 
       "&:after": {
-        borderColor: grey[500],
+        borderColor: dark.main,
       },
     },
   },

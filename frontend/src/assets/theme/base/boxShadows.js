@@ -25,7 +25,7 @@ import colors from "assets/theme/base/colors";
 // Material Dashboard 2 React Helper Functions
 import boxShadow from "assets/theme/functions/boxShadow";
 
-const { black, white, tabs, coloredShadows } = colors;
+const { black, white, tabs } = colors;
 
 const boxShadows = {
   xs: boxShadow([0, 2], [9, -5], black.main, 0.15),
@@ -50,50 +50,6 @@ const boxShadows = {
   )}`,
   xxl: boxShadow([0, 20], [27, 0], black.main, 0.05),
   inset: boxShadow([0, 1], [2, 0], black.main, 0.075, "inset"),
-  colored: {
-    primary: `${boxShadow([0, 4], [20, 0], black.main, 0.14)}, ${boxShadow(
-      [0, 7],
-      [10, -5],
-      coloredShadows.primary,
-      0.4
-    )}`,
-    secondary: `${boxShadow([0, 4], [20, 0], black.main, 0.14)}, ${boxShadow(
-      [0, 7],
-      [10, -5],
-      coloredShadows.secondary,
-      0.4
-    )}`,
-    positive: `${boxShadow([0, 4], [20, 0], black.main, 0.14)}, ${boxShadow(
-      [0, 7],
-      [10, -5],
-      coloredShadows.positive,
-      0.4
-    )}`,
-    warning: `${boxShadow([0, 4], [20, 0], black.main, 0.14)}, ${boxShadow(
-      [0, 7],
-      [10, -5],
-      coloredShadows.warning,
-      0.4
-    )}`,
-    negative: `${boxShadow([0, 4], [20, 0], black.main, 0.14)}, ${boxShadow(
-      [0, 7],
-      [10, -5],
-      coloredShadows.negative,
-      0.4
-    )}`,
-    light: `${boxShadow([0, 4], [20, 0], black.main, 0.14)}, ${boxShadow(
-      [0, 7],
-      [10, -5],
-      coloredShadows.light,
-      0.4
-    )}`,
-    dark: `${boxShadow([0, 4], [20, 0], black.main, 0.14)}, ${boxShadow(
-      [0, 7],
-      [10, -5],
-      coloredShadows.dark,
-      0.4
-    )}`,
-  },
 
   navbarBoxShadow: `${boxShadow([0, 0], [1, 1], white.main, 0.9, "inset")}, ${boxShadow(
     [0, 20],

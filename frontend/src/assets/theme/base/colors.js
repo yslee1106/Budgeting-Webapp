@@ -29,11 +29,13 @@ const colors = {
   text_light: {
     main: "#000000",
     focus: "#000000",
+    hover: '#333333',
   },
 
   text_dark: {
     main: "#ffffff",
     focus: "#ffffff",
+    hover: '#e6e6e6',
   },
 
   transparent: {
@@ -43,21 +45,30 @@ const colors = {
   white: {
     main: "#ffffff",
     focus: "#ffffff",
+    hover: "#f2f2f2",
   },
 
   black: {
     main: "#000000",
     focus: "#000000",
+    hover: "#262626",
   },
 
   primary: {
     main: "#2b2b2b",
     focus: "#2b2b2b",
+    hover: "#3d3d3d",
   },
 
   secondary: {
     main: "#d4d4d4",
     focus: "#d4d4d4",
+    hover: "#c0c0c0",
+  },
+
+  selected: {
+    main: '#CCCCCC',
+    focus: '#b3b3b3',
   },
 
   positive: {
@@ -78,21 +89,25 @@ const colors = {
   success: {
     main: "#4CAF50",
     focus: "#67bb6a",
+    hover: "#5cbf60",
   },
 
   error: {
     main: "#F44335",
     focus: "#f65f53",
+    hover: "#f55b4f",
   },
 
   light: {
     main: "#ffffff",
     focus: "#b3b3b3",
+    hover: "#d9d9d9",
   },
 
   dark: {
     main: "#2b2b2b",
     focus: "#d4d4d4",
+    hover: "#4a4a4a",
   },
 
   grey: {
@@ -106,49 +121,6 @@ const colors = {
     800: "#343a40",
     900: "#212529",
   },
-
-  gradients: {
-    primary: {
-      main: "#EC407A",
-      state: "#D81B60",
-    },
-
-    secondary: {
-      main: "#747b8a",
-      state: "#495361",
-    },
-
-    info: {
-      main: "#49a3f1",
-      state: "#1A73E8",
-    },
-
-    success: {
-      main: "#66BB6A",
-      state: "#43A047",
-    },
-
-    warning: {
-      main: "#FFA726",
-      state: "#FB8C00",
-    },
-
-    error: {
-      main: "#EF5350",
-      state: "#E53935",
-    },
-
-    light: {
-      main: "#EBEFF4",
-      state: "#CED4DA",
-    },
-
-    dark: {
-      main: "#42424a",
-      state: "#191919",
-    },
-  },
-
 
   badgeColors: {
     primary: {
@@ -170,16 +142,6 @@ const colors = {
       background: "#D32F2F",
       text: "#ffffff",
     },
-  },
-
-  coloredShadows: {
-    primary: "#e91e62",
-    secondary: "#110e0e",
-    positive: "#4caf4f",
-    warning: "#ff9900",
-    negative: "#f44336",
-    light: "#adb5bd",
-    dark: "#404040",
   },
 
   inputBorderColor: "#d2d6da",

@@ -26,7 +26,7 @@ const select = {
     select: {
       display: "grid",
       alignItems: "center",
-      padding: `0 ${pxToRem(12)} !important`,
+      textAlign: 'left',
 
       "& .Mui-selected": {
         backgroundColor: transparent.main,
@@ -38,10 +38,6 @@ const select = {
       height: "none",
       minHeight: "none",
       overflow: "unset",
-    },
-
-    icon: {
-      display: "none",
     },
   },
 };

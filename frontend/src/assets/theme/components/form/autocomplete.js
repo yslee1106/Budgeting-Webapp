@@ -24,7 +24,7 @@ import pxToRem from "assets/theme/functions/pxToRem";
 
 const { lg } = boxShadows;
 const { size } = typography;
-const { text_dark, white, transparent, light, dark, gradients } = colors;
+const { text_light, white, transparent, light, dark } = colors;
 const { borderRadius } = borders;
 
 const autocomplete = {
@@ -33,7 +33,7 @@ const autocomplete = {
       boxShadow: lg,
       padding: pxToRem(8),
       fontSize: size.sm,
-      color: text_dark.main,
+      color: text_light.main,
       textAlign: "left",
       backgroundColor: `${white.main} !important`,
       borderRadius: borderRadius.md,
@@ -48,7 +48,7 @@ const autocomplete = {
       padding: `${pxToRem(4.8)} ${pxToRem(16)}`,
       borderRadius: borderRadius.md,
       fontSize: size.sm,
-      color: text_dark.main,
+      color: text_light.main,
       transition: "background-color 300ms ease, color 300ms ease",
 
       "&:hover, &:focus, &.Mui-selected, &.Mui-selected:hover, &.Mui-selected:focus": {
@@ -64,7 +64,7 @@ const autocomplete = {
 
     noOptions: {
       fontSize: size.sm,
-      color: text_dark.main,
+      color: text_light.main,
     },
 
     groupLabel: {
@@ -73,7 +73,7 @@ const autocomplete = {
 
     loading: {
       fontSize: size.sm,
-      color: text_dark.main,
+      color: text_light.main,
     },
 
     tag: {
@@ -81,7 +81,7 @@ const autocomplete = {
       alignItems: "center",
       height: "auto",
       padding: pxToRem(4),
-      backgroundColor: gradients.dark.state,
+      backgroundColor: dark.main,
       color: white.main,
 
       "& .MuiChip-label": {

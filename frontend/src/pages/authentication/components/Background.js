@@ -1,15 +1,15 @@
-import MDBox from "components/MDBox";
+import Box from "@mui/material/Box";
 
 function Background() {
     return (
-        <MDBox
+        <Box
             sx={{
+                backgroundColor: (theme) => theme.palette.grey[300],
                 position: 'absolute',
                 top: 0,
                 left: 0,
                 width: '100%',
                 height: '55vh', // Goes from top to center of viewport
-                backgroundColor: '#CCCCCC', // Or use theme color: theme.palette.grey[300]
                 clipPath: 'polygon(0 0, 100% 0, 100% 50%, 0 100%)'
             }}
         />

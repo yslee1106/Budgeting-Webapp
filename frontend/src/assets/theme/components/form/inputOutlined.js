@@ -21,7 +21,7 @@ import typography from "assets/theme/base/typography";
 // Material Dashboard 2 React helper functions
 import pxToRem from "assets/theme/functions/pxToRem";
 
-const { inputBorderColor, grey, transparent } = colors;
+const { inputBorderColor, grey, transparent, dark } = colors;
 const { borderRadius } = borders;
 const { size } = typography;
 
@@ -38,7 +38,7 @@ const inputOutlined = {
 
       "&.Mui-focused": {
         "& .MuiOutlinedInput-notchedOutline": {
-          borderColor: grey[300],
+          borderColor: dark.main,
         },
       },
     },

@@ -17,15 +17,19 @@ Coded by www.creative-tim.com
 import colors from "assets/theme/base/colors";
 import typography from "assets/theme/base/typography";
 
-const { grey } = colors;
+const { text_light, dark } = colors;
 const { size } = typography;
 
 const inputLabel = {
   styleOverrides: {
     root: {
       fontSize: size.sm,
-      color: grey[600],
+      color: text_light.main,
       lineHeight: 0.9,
+
+      "&.Mui-focused": {
+        color: dark.main,
+      },
 
       "&.MuiInputLabel-shrink": {
         lineHeight: 1.5,
