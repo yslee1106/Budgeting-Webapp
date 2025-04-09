@@ -211,20 +211,20 @@ class Bucket(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='bucket')
     next_due = models.DateField(null=False, blank=True)
     target_amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
-    amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
+    current_amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
     fulfilled = models.BooleanField(null=False)
 
     def __repr__(self):
             return (
                 f"Bucket(id={self.id}, expense_id={self.expense.id}, session_id={self.session.id}, "
                 f"next_due='{self.next_due}', target_amount={self.target_amount}, "
-                f"amount={self.amount}, fulfilled={self.fulfilled})"
+                f"current_amount={self.current_amount}, fulfilled={self.fulfilled})"
             )
 
     def __str__(self):
         return (
             f"Bucket for Expense {self.expense.id} in Session {self.session.id} - "
-            f"Target: ${self.target_amount}, Amount: ${self.amount}, "
+            f"Target: ${self.target_amount}, Amount: ${self.current_amount}, "
             f"Next Due: {self.next_due}, Fulfilled: {self.fulfilled}"
         )
 

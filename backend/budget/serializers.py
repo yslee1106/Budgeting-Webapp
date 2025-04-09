@@ -24,12 +24,12 @@ class ExpenseSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 class BucketSerializer(serializers.ModelSerializer):
-    expense_name = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
     percentage = serializers.SerializerMethodField()
 
     class Meta:
         model = Bucket
-        fields = ['id', 'expense', 'expense_name', 'session', 'next_due', 'target_amount', 'amount', 'percentage', 'fulfilled']
+        fields = ['id', 'expense', 'name', 'session', 'next_due', 'target_amount', 'current_amount', 'percentage', 'fulfilled']
         read_only_fields = ['id', 'user']
 
     def create(self, validated_data):
@@ -37,9 +37,9 @@ class BucketSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
     def get_percentage(self, obj):
-        return round(obj.amount / obj.target_amount * 100)
+        return round(obj.current_amount / obj.target_amount * 100)
     
-    def get_expense_name(self, obj):
+    def get_name(self, obj):
         return obj.expense.name
 
 class GoalsSerializer(serializers.ModelSerializer):

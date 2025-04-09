@@ -69,7 +69,7 @@ function TableRow({ data, handleMoreOptionsClick }) {
                     >
                         <LinearProgress
                             variant="determinate"
-                            value={Math.min(100, (item.current_amount / item.target_amount) * 100)}
+                            value={item.percentage}
                             sx={{
                                 height: 5,
                                 borderRadius: "20px",
