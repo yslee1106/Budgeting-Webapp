@@ -2,7 +2,7 @@
 from rest_framework import serializers
 from .models import Session, Income, Expense, Bucket, Goals
 
-
+# Main Data Serializers
 class IncomeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Income
@@ -66,3 +66,11 @@ class SessionSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
         return super().create(validated_data)
+    
+
+# CRUD Helper Data Serializers 
+class ModelChoicesSerializer(serializers.Serializer):
+    income_categories = serializers.DictField()
+    income_frequency = serializers.DictField()
+    expense_categories = serializers.DictField()
+    goal_categories = serializers.DictField()
