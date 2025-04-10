@@ -32,6 +32,7 @@ import input from "assets/theme/components/form/input";
 import inputLabel from "assets/theme/components/form/inputLabel";
 import inputOutlined from "assets/theme/components/form/inputOutlined";
 import textField from "assets/theme/components/form/textField";
+import switchButton from "assets/theme/components/form/switchButton";
 
 // Material Dashboard 2 React helper functions
 import boxShadow from "assets/theme/functions/boxShadow";
@@ -66,5 +67,6 @@ export default createTheme({
     MuiFormControlLabel: { ...formControlLabel },
     MuiFormLabel: { ...formLabel },
     MuiAutocomplete: { ...autocomplete },
+    MuiSwitch: { ...switchButton}
   }
 });

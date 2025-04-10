@@ -49,7 +49,8 @@ const inputOutlined = {
 
     input: {
       color: grey[700],
-      padding: pxToRem(12),
+      paddingTop: pxToRem(12),
+      paddingBottom: pxToRem(12),
       backgroundColor: transparent.main,
     },
 

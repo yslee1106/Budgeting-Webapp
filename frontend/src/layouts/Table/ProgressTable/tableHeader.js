@@ -4,11 +4,10 @@ import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import Typography from "@mui/material/Typography";
 import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Icon from '@mui/material/Icon';
 
-function TableHeader({ title, handleSortChange, sortBy }) {
+function TableHeader({ title, handleSortChange, sortBy, handleAdd }) {
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
     const MenuProps = {
@@ -74,15 +73,16 @@ function TableHeader({ title, handleSortChange, sortBy }) {
                     </Select>
                 </FormControl>
 
-                <IconButton sx={{
-                    borderRadius: '2px', // Square corners (adjust for slight rounding if needed)
-                    width: '26px',      // Fixed width
-                    height: '26px',
-                    backgroundColor: (theme) => theme.palette.dark.main,
-                    '&:hover': {
-                        backgroundColor: (theme) => theme.palette.dark.hover,
-                    }
-                }}>
+                <IconButton onClick={handleAdd}
+                    sx={{
+                        borderRadius: '2px', // Square corners (adjust for slight rounding if needed)
+                        width: '26px',      // Fixed width
+                        height: '26px',
+                        backgroundColor: (theme) => theme.palette.dark.main,
+                        '&:hover': {
+                            backgroundColor: (theme) => theme.palette.dark.hover,
+                        }
+                    }}>
                     <Icon sx={{
                         fontSize: '18px',
                         color: (theme) => theme.palette.white.main
