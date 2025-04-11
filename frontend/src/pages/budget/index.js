@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchSessions, fetchBucketBySession, fetchGoals } from 'services/budgetService';
 import { useAuth } from 'context/authentication';
+import { BudgetCategoriesProvider } from "context/helpers/budgetCategories";
 
 import Grid from "@mui/material/Grid";
 import Stack from '@mui/material/Stack';
@@ -16,13 +17,16 @@ import Goals from "pages/budget/components/goals";
 import Expenses from "pages/budget/components/expenses";
 
 function Budget() {
+    const { logout } = useAuth()
+
+    // API DATA
+
     const [sessionsData, setSessionsData] = useState([]);
     const [bucketsData, setBucketsData] = useState([]);
     const [goalsData, setGoalsData] = useState([]);
     const [selectedSession, setSelectedSession] = useState([]);
-    const { logout } = useAuth()
 
-    // Session State
+    // Session
     useEffect(() => {
         const getData = async () => {
             try {
@@ -39,8 +43,7 @@ function Budget() {
 
         getData();
     }, []);
-
-    // Buckets State
+    // Buckets
     useEffect(() => {
         if (selectedSession) {
             const fetchData = async () => {
@@ -58,8 +61,7 @@ function Budget() {
             fetchData();
         }
     }, [selectedSession]);
-
-    // Goals State
+    // Goals
     useEffect(() => {
         const getData = async () => {
             try {
@@ -79,34 +81,39 @@ function Budget() {
     return (
         <DashboardLayout>
             <DashboardNavbar absolute />
-            <Box mt='3rem'>
-                <Box mb='1rem'>
-                    <Grid container spacing={3}>
-                        <Grid size={12}>
-                            <Session data={sessionsData} selected={selectedSession} setSelected={setSelectedSession} />
-                        </Grid>
-                    </Grid>
-                </Box>
-                <Box mb='1rem'>
-                    <Grid container spacing={3}>
-                        <Grid size={{ xs: 12, xl: 6 }}>
-                            <Grid container spacing={3}>
-                                <Stack sx={{ width: '100%', gap: '1rem' }}>
-                                    <Grid size={12}>
-                                        <Funds data={selectedSession} />
-                                    </Grid>
-                                    <Grid size={12}>
-                                        <Goals data={goalsData} />
-                                    </Grid>
-                                </Stack>
+            <BudgetCategoriesProvider>
+                <Box mt='3rem'>
+                    <Box mb='1rem'>
+                        <Grid container spacing={3}>
+                            <Grid size={12}>
+                                <Session 
+                                    data={sessionsData} 
+                                    selected={selectedSession} 
+                                    setSelected={setSelectedSession} />
                             </Grid>
                         </Grid>
-                        <Grid size={{ xs: 12, xl: 6 }}>
-                            <Expenses data={bucketsData} />
+                    </Box>
+                    <Box mb='1rem'>
+                        <Grid container spacing={3}>
+                            <Grid size={{ xs: 12, xl: 6 }}>
+                                <Grid container spacing={3}>
+                                    <Stack sx={{ width: '100%', gap: '1rem' }}>
+                                        <Grid size={12}>
+                                            <Funds data={selectedSession} />
+                                        </Grid>
+                                        <Grid size={12}>
+                                            <Goals data={goalsData} />
+                                        </Grid>
+                                    </Stack>
+                                </Grid>
+                            </Grid>
+                            <Grid size={{ xs: 12, xl: 6 }}>
+                                <Expenses data={bucketsData} />
+                            </Grid>
                         </Grid>
-                    </Grid>
+                    </Box>
                 </Box>
-            </Box>
+            </BudgetCategoriesProvider>
         </DashboardLayout >
     )
 }

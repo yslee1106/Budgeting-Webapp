@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 
+import dayjs from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -25,15 +26,18 @@ import {
 } from '@mui/material';
 
 import ProgressTable from "layouts/Table/ProgressTable";
+import BudgetCategorySelect from "layouts/Selects/Budget";
 
 
 function Goals({ data }) {
     // FORM VARIABLES
-    const [name, setName] = useState(null);
-    const [category, setCategory] = useState(null);
-    const [targetAmount, setTargetAmount] = useState(null);
-    const [enableTargetDate, setEnableTargetDate] = useState(true);
-    const [targetDate, setTargetDate] = useState(null);
+    const [formData, setFormData] = useState({
+        name: '',
+        category: '',
+        targetAmount: '',
+        enableTargetDate: false,
+        targetDate: null,
+    });
 
     // CONTROL STATES
     const [sortBy, setSortBy] = useState("");
@@ -41,7 +45,7 @@ function Goals({ data }) {
 
     const handleSortChange = (event) => {
         setSortBy(event.target.value);
-        console.log(`sort goal by ${event.target.vale} clicked`);
+        console.log(`sort goal by ${event.target.value} clicked`);
     };
 
     const handleMoreOptionsClick = (event, goalId) => {
@@ -50,26 +54,30 @@ function Goals({ data }) {
     };
 
     const handleAddGoalsSubmit = (event) => {
+        event.preventDefault();
         try {
-            console.log(`Submit New Goals`);
+            console.log(`Submit New Goals`, formData);
             setOpenAddGoals(false);
         } catch (error) {
-            console.log(`Error Submitting New Goals: ${error}`);
+            console.error(`Error Submitting New Goals:`, error);
         }
     }
 
     const clearVariables = () => {
-        setName(null);
-        setCategory(null);
-        setTargetAmount(null);
-        setEnableTargetDate(true);
-        setTargetDate(null);
+        setFormData({
+            name: '',
+            category: '',
+            targetAmount: '',
+            enableTargetDate: '',
+            targetDate: '',
+        });
     }
 
     const handleOpen = () => {
         clearVariables();
         setOpenAddGoals(true);
     }
+
     const handleClose = () => {
         clearVariables();
         setOpenAddGoals(false);
@@ -97,7 +105,6 @@ function Goals({ data }) {
                             display: 'flex',
                             flexDirection: 'column',
                             position: 'absolute',
-                            top: '50%',
                             top: '50%',
                             left: '50%',
                             transform: 'translate(-50%, -50%)',
@@ -128,22 +135,19 @@ function Goals({ data }) {
                                 label="Name"
                                 fullWidth
                                 variant="outlined"
-                                onChange={(e) => setName(e.target.value)}
+                                value={formData.name}
+                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             />
 
                             {/* Category Field */}
-                            <FormControl fullWidth>
-                                <InputLabel>Category</InputLabel>
-                                <Select
-                                    label="Category"
-                                    onChange={(e) => setCategory(e.target.value)}
-                                >
-                                    <MenuItem value="Retirement">Retirement</MenuItem>
-                                </Select>
-                            </FormControl>
+                            <BudgetCategorySelect
+                                modelType='goal'
+                                value={formData.category}
+                                onChange={value => setFormData({ ...formData, category: value })} />
 
                             {/* Target Amount Field */}
-                            <FormControl fullWidth>
+                            <FormControl
+                                fullWidth>
                                 <InputLabel>Target Amount</InputLabel>
                                 <OutlinedInput
                                     inputProps={{
@@ -156,6 +160,7 @@ function Goals({ data }) {
                                         </InputAdornment>
                                     }
                                     label="Target Amount"
+                                    value={formData.targetAmount}
                                     onKeyDown={(e) => {
                                         // Block all non-numeric keys except Backspace, Tab, etc.
                                         if (!/[0-9.]/.test(e.key) &&
@@ -163,14 +168,14 @@ function Goals({ data }) {
                                             e.preventDefault();
                                         }
                                     }}
-                                    onChange={(e) => {
-                                        const value = e.target.value;
+                                    onChange={(event) => {
+                                        const value = event.target.value;
                                         // Validate only one decimal point and numbers
                                         if (/^\d*\.?\d*$/.test(value)) {
-                                            setTargetAmount(value);
+                                            setFormData({ ...formData, targetAmount: value });
                                         } else {
                                             // If invalid, revert to last valid value
-                                            e.target.value = targetAmount || '';
+                                            value = formData.targetAmount || '';
                                         }
                                     }}
                                 />
@@ -180,7 +185,12 @@ function Goals({ data }) {
                             <FormControlLabel
                                 label="Target Date"
                                 labelPlacement="left"
-                                control={<Switch defaultChecked onChange={(e) => setEnableTargetDate(e.target.checked)} sx={{ ml: '10px' }} />}
+                                control={
+                                    <Switch
+                                        value={formData.enableTargetDate}
+                                        onChange={(e) => setFormData({ ...formData, enableTargetDate: e.target.checked })}
+                                        sx={{ ml: '10px' }}
+                                    />}
                                 sx={{
                                     pl: '5px',
                                     flexDirection: 'row-reverse',
@@ -193,8 +203,9 @@ function Goals({ data }) {
                                 <DemoContainer components={['DesktopDatePicker']}>
                                     <DesktopDatePicker
                                         label="Target Date"
-                                        onChange={(value) => setTargetDate(value)}
-                                        disabled={!enableTargetDate} />
+                                        value={formData.targetDate ? dayjs(formData.targetDate) : null}
+                                        onChange={(value) => setFormData({ ...formData, targetDate: value })}
+                                        disabled={!formData.enableTargetDate} />
                                 </DemoContainer>
                             </LocalizationProvider>
 

@@ -50,10 +50,21 @@ const fetchGoals = async () => {
     }
 };
 
+const fetchModelChoices = async () => {
+    try {
+        const response = await api.get('/budget/choices/');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching items:', error);
+        throw error;
+    }
+};
+
 export {
     fetchSessions,
     fetchBucketBySession,
     fetchIncome,
     fetchExpense,
     fetchGoals,
+    fetchModelChoices,
 };
