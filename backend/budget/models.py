@@ -250,14 +250,16 @@ class Goals(models.Model):
     name = models.CharField(max_length=60, null=False)
     category = models.CharField(max_length=30, choices=GOAL_CATEGORIES, null=False)
     target_amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
-    current_amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
-    fulfilled = models.BooleanField(null=False)
+    current_amount = models.DecimalField(max_digits=20, decimal_places=2, default=0.00, null=False)
+    fulfilled = models.BooleanField(default=False, null=False)
+    target_date = models.DateField(null=True)
 
     def __repr__(self):
         return (
             f"Goals(id={self.id}, name='{self.name}', category='{self.category}', "
             f"target_amount={self.target_amount}, current_amount={self.current_amount}, "
             f"fulfilled={self.fulfilled})"
+            f"target_date={self.target_date}"
         )
 
     def __str__(self):
@@ -265,4 +267,5 @@ class Goals(models.Model):
             f"{self.name} ({self.category}) - "
             f"Target: ${self.target_amount}, Current: ${self.current_amount}, "
             f"Fulfilled: {self.fulfilled}"
+            f"Target Date: {self.target_date}"
         )

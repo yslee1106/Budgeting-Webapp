@@ -47,12 +47,12 @@ class GoalsSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Goals
-        fields = ['id', 'name', 'category', 'target_amount', 'current_amount', 'percentage', 'fulfilled']
+        fields = ['id', 'name', 'category', 'target_amount', 'current_amount', 'percentage', 'fulfilled', 'target_date']
         read_only_fields = ['id', 'user']
 
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
-        return super().create(validated_data)
+        return Goals.objects.create(**validated_data)
 
     def get_percentage(self, obj):
         return round(obj.current_amount / obj.target_amount * 100)
