@@ -103,7 +103,7 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.AnonRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '5/hour',
+        'anon': '10/hour',
         'choices': '100/day',  # 100 requests/day per user
     }
 }
