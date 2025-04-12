@@ -1,6 +1,7 @@
 import api from 'services/api';
 
 const fetchSessions = async () => {
+    console.log('here')
     try {
         const response = await api.get('/budget/session/');
         return response.data;

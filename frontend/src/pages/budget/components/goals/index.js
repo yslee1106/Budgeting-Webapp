@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+import { useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
+
+import { createGoal } from 'services/budget/post'
 
 import dayjs from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -14,14 +18,12 @@ import {
     TextField,
     FormControl,
     FormControlLabel,
-    Select,
     InputLabel,
     InputAdornment,
     OutlinedInput,
     Icon,
     Switch,
     Fade,
-    MenuItem,
     Button,
 } from '@mui/material';
 
@@ -30,6 +32,9 @@ import BudgetCategorySelect from "layouts/Selects/Budget";
 
 
 function Goals({ data }) {
+    // REACT OBJECTS
+    const queryClient = useQueryClient();
+
     // FORM VARIABLES
     const [formData, setFormData] = useState({
         name: '',
@@ -43,6 +48,41 @@ function Goals({ data }) {
     const [sortBy, setSortBy] = useState("");
     const [openAddGoals, setOpenAddGoals] = useState(false);
 
+    // CONTROL METHODS
+    const mutation = useMutation({
+        mutationFn: createGoal,
+        onMutate: async (newGoal) => {
+            // Cancel current queries
+            await queryClient.cancelQueries(['goals']);
+
+            // Optimistically update cache
+            const previousGoals = queryClient.getQueryData(['goals']) || [];
+            queryClient.setQueryData(['goals'], [...previousGoals, {
+                ...newGoal,
+                id: Date.now().toString(), // temporary ID
+                isOptimistic: true
+            }]);
+
+            return { previousGoals };
+        },
+        onError: (err, newGoal, context) => {
+            // If there's an error, roll back to the previous value
+            if (context?.previousGoals) {
+                queryClient.setQueryData(['goals'], context.previousGoals);
+            }
+            alert(`Error creating goal: ${err.message}`);
+        },
+        onSuccess: (data) => {
+            // Success handler - data contains the server response
+            console.log('Goal created:', data);
+            alert('Goal created successfully!');
+        },
+        onSettled: () => {
+            // Refresh goals list
+            queryClient.invalidateQueries(['goals']);
+        }
+    });
+
     const handleSortChange = (event) => {
         setSortBy(event.target.value);
         console.log(`sort goal by ${event.target.value} clicked`);
@@ -53,13 +93,21 @@ function Goals({ data }) {
         console.log(`More options for goal ${goalId} clicked`);
     };
 
-    const handleAddGoalsSubmit = (event) => {
+    const handleAddGoalsSubmit = async (event) => {
         event.preventDefault();
+
+        if (!formData.name || !formData.category || !formData.targetAmount || (formData.enableTargetDate && !formData.targetDate)) {
+            alert('Please fill in the required fields');
+            return;
+        }
+
         try {
-            console.log(`Submit New Goals`, formData);
+            await mutation.mutateAsync(formData);
+
+            clearVariables();
             setOpenAddGoals(false);
         } catch (error) {
-            console.error(`Error Submitting New Goals:`, error);
+            console.error('Submission error:', error); // Should show any errors
         }
     }
 
@@ -87,7 +135,7 @@ function Goals({ data }) {
         <>
             <ProgressTable
                 title='Goals'
-                data={data}
+                data={data?.filter(g => !g.isOptimistic)}
                 handleSortChange={handleSortChange}
                 sortBy={sortBy}
                 handleMoreOptionsClick={handleMoreOptionsClick}

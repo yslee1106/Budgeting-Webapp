@@ -3,6 +3,8 @@ import { useLocation } from "react-router-dom";
 
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import SideNav from "layouts/Sidenav";
 
@@ -15,13 +17,23 @@ import { PrivateRouteList } from 'routes/privateRoutes';
 import { useMaterialUIController, setMiniSidenav } from "context/theme";
 
 // Authentication
-import { AuthProvider } from './context/authentication';
+import { AuthProvider } from 'context/authentication';
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, layout } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const { pathname } = useLocation();
+
+  // Create query client (before App component)
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: 1000 * 60 * 5, // 5 minutes
+        retry: 2,
+      },
+    },
+  });
 
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
@@ -47,21 +59,23 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <AuthProvider>
-        <CssBaseline />
-        {layout === "dashboard" && (
-          <>
-            <SideNav
-              brandLogo="logo_dev"
-              brandName="Financial Tracker"
-              routes={PrivateRouteList}
-              onMouseEnter={handleOnMouseEnter}
-              onMouseLeave={handleOnMouseLeave}
-            />
-          </>
-        )}
-        <AllRoutes />
-      </AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <CssBaseline />
+          {layout === "dashboard" && (
+            <>
+              <SideNav
+                brandLogo="logo_dev"
+                brandName="Financial Tracker"
+                routes={PrivateRouteList}
+                onMouseEnter={handleOnMouseEnter}
+                onMouseLeave={handleOnMouseLeave}
+              />
+            </>
+          )}
+          <AllRoutes />
+        </AuthProvider>
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }

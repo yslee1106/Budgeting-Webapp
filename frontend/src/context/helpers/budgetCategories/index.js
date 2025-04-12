@@ -1,35 +1,32 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { fetchModelChoices } from 'services/budgetService'
+import React, { createContext, useContext, } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { fetchModelChoices } from 'services/budget/get';
 
 const BudgetCategoriesContext = createContext();
 
 export const BudgetCategoriesProvider = ({ children }) => {
-  const [categories, setCategories] = useState();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetchModelChoices();
-        setCategories({
-          income: response.income_categories,
-          frequency: response.income_frequency,
-          expenses: response.expense_categories,
-          goals: response.goal_categories
-        });
-      } catch (err) {
-        setError(err.message || 'Failed to load categories');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCategories();
-  }, []);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['modelChoices'],
+    queryFn: fetchModelChoices,
+    initialData: {
+      income_categories: [],
+      income_frequency: [],
+      expense_categories: [],
+      goal_categories: []
+    }
+  });
 
   return (
-    <BudgetCategoriesContext.Provider value={{ categories, loading, error }}>
+    <BudgetCategoriesContext.Provider value={{
+      categories: {
+        income: data.income_categories,
+        frequency: data.income_frequency,
+        expenses: data.expense_categories,
+        goals: data.goal_categories
+      },
+      loading: isLoading,
+      error
+    }}>
       {children}
     </BudgetCategoriesContext.Provider>
   );

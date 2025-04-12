@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import authService from '../../services/authService';
-import api, { configureApiInterceptor } from '../../services/api';
+import authService from 'services/user/post';
+import api, { configureApiInterceptor } from 'services/api';
 
 const AuthContext = createContext();
 

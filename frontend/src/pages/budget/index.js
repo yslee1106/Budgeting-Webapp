@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { fetchSessions, fetchBucketBySession, fetchGoals } from 'services/budgetService';
+import { useSessions, useBuckets, useGoals } from 'services/budget/queryHooks';
 import { useAuth } from 'context/authentication';
 import { BudgetCategoriesProvider } from "context/helpers/budgetCategories";
 
@@ -19,64 +19,20 @@ import Expenses from "pages/budget/components/expenses";
 function Budget() {
     const { logout } = useAuth()
 
+    // STATES
+    const [selectedSession, setSelectedSession] = useState(null)
+
     // API DATA
+    const { data: sessionsData = [], isLoading, error } = useSessions();
+    const { data: bucketsData = [] } = useBuckets(selectedSession?.id);
+    const { data: goalsData = [] } = useGoals();
 
-    const [sessionsData, setSessionsData] = useState([]);
-    const [bucketsData, setBucketsData] = useState([]);
-    const [goalsData, setGoalsData] = useState([]);
-    const [selectedSession, setSelectedSession] = useState([]);
-
-    // Session
+    // Auto-select last session when sessions load
     useEffect(() => {
-        const getData = async () => {
-            try {
-                const items = await fetchSessions(); // Use the API function
-                setSessionsData(items);
-                setSelectedSession(items[items.length - 1]);
-            } catch (error) {
-                console.error('Error:', error);
-                if (error.response?.status === 401) {
-                    logout(); // Handle unauthorized access
-                }
-            }
-        };
-
-        getData();
-    }, []);
-    // Buckets
-    useEffect(() => {
-        if (selectedSession) {
-            const fetchData = async () => {
-                try {
-                    const buckets = await fetchBucketBySession(selectedSession.id);
-                    setBucketsData(buckets);
-                } catch (error) {
-                    console.error('Error', error);
-                    if (error.response?.status === 401) {
-                        logout(); // Handle unauthorized access
-                    }
-                }
-            };
-
-            fetchData();
+        if (sessionsData.length > 0) {
+            setSelectedSession(sessionsData[sessionsData.length - 1]);
         }
-    }, [selectedSession]);
-    // Goals
-    useEffect(() => {
-        const getData = async () => {
-            try {
-                const items = await fetchGoals(); // Use the API function
-                setGoalsData(items);
-            } catch (error) {
-                console.error('Error:', error);
-                if (error.response?.status === 401) {
-                    logout(); // Handle unauthorized access
-                }
-            }
-        };
-
-        getData();
-    }, []);
+    }, [sessionsData]);
 
     return (
         <DashboardLayout>
@@ -86,32 +42,34 @@ function Budget() {
                     <Box mb='1rem'>
                         <Grid container spacing={3}>
                             <Grid size={12}>
-                                <Session 
-                                    data={sessionsData} 
-                                    selected={selectedSession} 
+                                <Session
+                                    data={sessionsData}
+                                    selected={selectedSession}
                                     setSelected={setSelectedSession} />
                             </Grid>
                         </Grid>
                     </Box>
-                    <Box mb='1rem'>
-                        <Grid container spacing={3}>
-                            <Grid size={{ xs: 12, xl: 6 }}>
-                                <Grid container spacing={3}>
-                                    <Stack sx={{ width: '100%', gap: '1rem' }}>
-                                        <Grid size={12}>
-                                            <Funds data={selectedSession} />
-                                        </Grid>
-                                        <Grid size={12}>
-                                            <Goals data={goalsData} />
-                                        </Grid>
-                                    </Stack>
+                    {selectedSession && (
+                        <Box mb='1rem'>
+                            <Grid container spacing={3}>
+                                <Grid size={{ xs: 12, xl: 6 }}>
+                                    <Grid container spacing={3}>
+                                        <Stack sx={{ width: '100%', gap: '1rem' }}>
+                                            <Grid size={12}>
+                                                <Funds data={selectedSession} />
+                                            </Grid>
+                                            <Grid size={12}>
+                                                <Goals data={goalsData} />
+                                            </Grid>
+                                        </Stack>
+                                    </Grid>
+                                </Grid>
+                                <Grid size={{ xs: 12, xl: 6 }}>
+                                    <Expenses data={bucketsData} />
                                 </Grid>
                             </Grid>
-                            <Grid size={{ xs: 12, xl: 6 }}>
-                                <Expenses data={bucketsData} />
-                            </Grid>
-                        </Grid>
-                    </Box>
+                        </Box>
+                    )}
                 </Box>
             </BudgetCategoriesProvider>
         </DashboardLayout >
