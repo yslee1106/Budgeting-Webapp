@@ -33,10 +33,8 @@ import BudgetCategorySelect from "layouts/Selects/Budget";
 
 
 function Goals() {
-    const queryClient = useQueryClient();
-
     const { data: goalsData = [] } = useGoals();
-
+    
     const [formData, setFormData] = useState({
         name: '',
         category: '',
@@ -44,6 +42,8 @@ function Goals() {
         enableTargetDate: false,
         targetDate: null,
     });
+
+    const queryClient = useQueryClient();
 
     const [sortBy, setSortBy] = useState("");
 
