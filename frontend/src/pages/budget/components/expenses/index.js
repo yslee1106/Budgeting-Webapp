@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 
+import { useBuckets } from 'services/budget/queryHooks';
+
 import ProgressTable from "layouts/Table/ProgressTable";
 
-function Expenses({ data }) {
+function Expenses({ selectedSession }) {
+    const { data: bucketsData = [] } = useBuckets(selectedSession?.id);
     const [sortBy, setSortBy] = useState("");
 
     const handleSortChange = (event) => {
         setSortBy(event.target.value);
-        console.log(`sort expense by ${event.target.vale} clicked`);
+        console.log(`sort expense by ${event.target.value} clicked`);
     };
 
     const handleMoreOptionsClick = (event, goalId) => {
@@ -17,12 +20,12 @@ function Expenses({ data }) {
 
     return (
         <ProgressTable
-                    title='Expenses'
-                    data={data}
-                    handleSortChange={handleSortChange}
-                    sortBy={sortBy}
-                    handleMoreOptionsClick={handleMoreOptionsClick}
-                />
+            title='Expenses'
+            data={bucketsData}
+            handleSortChange={handleSortChange}
+            sortBy={sortBy}
+            handleMoreOptionsClick={handleMoreOptionsClick}
+        />
     )
 }
 

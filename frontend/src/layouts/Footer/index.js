@@ -14,7 +14,7 @@ function Footer() {
       <Typography
         variant="caption"
         color="white"
-        fontweight='medium'
+        fontWeight='medium'
       >
         © 2021. - 2025 All Rights Reserved. {company}
       </Typography>

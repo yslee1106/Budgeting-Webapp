@@ -107,11 +107,6 @@ function DashboardNavbar({ absolute }) {
   );
 }
 
-// Setting default values for the props of DashboardNavbar
-DashboardNavbar.defaultProps = {
-  absolute: false,
-};
-
 // Typechecking props for the DashboardNavbar
 DashboardNavbar.propTypes = {
   absolute: PropTypes.bool,

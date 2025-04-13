@@ -18,7 +18,7 @@ import Logo from 'layouts/Logo';
 // Material Dashboard 2 React context
 import { useMaterialUIController, setMiniSidenav } from "context/theme";
 
-function Sidenav({ brand, brandName, routes, ...rest }) {
+function Sidenav({ routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav } = controller;
   const location = useLocation();
@@ -37,7 +37,7 @@ function Sidenav({ brand, brandName, routes, ...rest }) {
   }, [dispatch, location]);
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
-  const renderRoutes = routes.map(({ name, icon, noCollapse, key, href }) => {
+  const renderRoutes = routes.map(({ name, icon, key, href }) => {
     return (
       <Link
         href={href}
@@ -50,7 +50,6 @@ function Sidenav({ brand, brandName, routes, ...rest }) {
           name={name}
           icon={icon}
           active={key === collapseName}
-          noCollapse={noCollapse}
         />
       </Link>
     )
@@ -101,8 +100,6 @@ function Sidenav({ brand, brandName, routes, ...rest }) {
 
 // Typechecking props for the Sidenav
 Sidenav.propTypes = {
-  brand: PropTypes.string,
-  brandName: PropTypes.string.isRequired,
   routes: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 

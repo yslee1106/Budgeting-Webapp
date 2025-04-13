@@ -43,8 +43,8 @@ function TableRow({ data, handleMoreOptionsClick }) {
                         }
                         secondary={
                             <Typography variant="body2" fontSize="12px">
-                                $ {' '} {item.current_amount.toLocaleString()} / 
-                                $ {' '} {item.target_amount.toLocaleString()}
+                                $ {' '} {item.current_amount} / 
+                                $ {' '} {item.target_amount}
                             </Typography>
                         }
                     />

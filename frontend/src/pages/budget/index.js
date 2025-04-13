@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSessions, useBuckets, useGoals } from 'services/budget/queryHooks';
+
 import { useAuth } from 'context/authentication';
 import { BudgetCategoriesProvider } from "context/helpers/budgetCategories";
 
@@ -20,19 +20,7 @@ function Budget() {
     const { logout } = useAuth()
 
     // STATES
-    const [selectedSession, setSelectedSession] = useState(null)
-
-    // API DATA
-    const { data: sessionsData = [], isLoading, error } = useSessions();
-    const { data: bucketsData = [] } = useBuckets(selectedSession?.id);
-    const { data: goalsData = [] } = useGoals();
-
-    // Auto-select last session when sessions load
-    useEffect(() => {
-        if (sessionsData.length > 0) {
-            setSelectedSession(sessionsData[sessionsData.length - 1]);
-        }
-    }, [sessionsData]);
+    const [selectedSession, setSelectedSession] = useState(null)  
 
     return (
         <DashboardLayout>
@@ -43,7 +31,6 @@ function Budget() {
                         <Grid container spacing={3}>
                             <Grid size={12}>
                                 <Session
-                                    data={sessionsData}
                                     selected={selectedSession}
                                     setSelected={setSelectedSession} />
                             </Grid>
@@ -59,13 +46,13 @@ function Budget() {
                                                 <Funds data={selectedSession} />
                                             </Grid>
                                             <Grid size={12}>
-                                                <Goals data={goalsData} />
+                                                <Goals />
                                             </Grid>
                                         </Stack>
                                     </Grid>
                                 </Grid>
                                 <Grid size={{ xs: 12, xl: 6 }}>
-                                    <Expenses data={bucketsData} />
+                                    <Expenses selectedSession={selectedSession} />
                                 </Grid>
                             </Grid>
                         </Box>

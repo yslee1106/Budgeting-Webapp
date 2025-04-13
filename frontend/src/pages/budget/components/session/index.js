@@ -1,6 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useTheme } from "@emotion/react";
 
+import { useSessions } from 'services/budget/queryHooks';
+
 import Icon from "@mui/material/Icon";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
@@ -8,12 +10,21 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from "@mui/material/Typography";
 
-function Session({ data, selected, setSelected }) {
+function Session({ selected, setSelected }) {
     const theme = useTheme();
+
+    const { data: sessionsData = [], isLoading, error } = useSessions();
 
     const containerRef = useRef(null);
     const [capacity, setCapacity] = useState(0);
     const buttonWidth = 140;
+
+    // Auto-select last session when sessions load
+    useEffect(() => {
+        if (sessionsData.length > 0) {
+            setSelected(sessionsData[sessionsData.length - 1]);
+        }
+    }, [sessionsData]);
 
     // Scrolling Functions  
     const scroll = (scrollOffset) => {
@@ -24,7 +35,6 @@ function Session({ data, selected, setSelected }) {
             });
         }
     };
-
 
     // Blank Period Buttons Functions
     const calculateCapacity = (containerWidth, itemWidth) => {
@@ -56,7 +66,7 @@ function Session({ data, selected, setSelected }) {
 
 
     // Updated Data List
-    const filledList = fillList(data, capacity);            // Data + blanks (if needed according to function)
+    const filledList = fillList(sessionsData, capacity);            // Data + blanks (if needed according to function)
 
 
     // Period Button Mapping
@@ -80,6 +90,7 @@ function Session({ data, selected, setSelected }) {
         if (item.isBlank) {
             ret = (
                 <Box
+                    key={item.id}
                     sx={{
                         display: 'flex',
                         alignItems: 'center',
@@ -106,6 +117,7 @@ function Session({ data, selected, setSelected }) {
         } else {
             ret = (
                 <Box
+                    key={item.id}
                     sx={{
                         display: 'flex',
                         alignItems: 'center',

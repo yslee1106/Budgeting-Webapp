@@ -8,24 +8,31 @@ export const BudgetCategoriesProvider = ({ children }) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ['modelChoices'],
     queryFn: fetchModelChoices,
-    initialData: {
-      income_categories: [],
-      income_frequency: [],
-      expense_categories: [],
-      goal_categories: []
-    }
   });
+
+  // Provide fallback values to prevent undefined errors
+  const defaultCategories = {
+    income: [],
+    frequency: [],
+    expenses: [],
+    goals: [],
+  };
+
+  // Use data if available, otherwise use defaults·
+  const categories = data
+    ? {
+      income: data.income_categories || [],
+      frequency: data.income_frequency || [],
+      expenses: data.expense_categories || [],
+      goals: data.goal_categories || [],
+    }
+    : defaultCategories;
 
   return (
     <BudgetCategoriesContext.Provider value={{
-      categories: {
-        income: data.income_categories,
-        frequency: data.income_frequency,
-        expenses: data.expense_categories,
-        goals: data.goal_categories
-      },
+      categories,
       loading: isLoading,
-      error
+      error,
     }}>
       {children}
     </BudgetCategoriesContext.Provider>

@@ -1,14 +1,18 @@
 import api from 'services/api'
+import dayjs from 'dayjs';
 
 const createGoal = async (goalData) => {
   try {
     const payload = {
-      ...goalData,
-      target_amount: parseFloat(goalData.targetAmount),
+      name: goalData.name,
+      category: goalData.category,
+      target_amount: goalData.targetAmount,
       target_date: goalData.enableTargetDate ?
-        new Date(goalData.targetDate).toISOString() :
+        new dayjs(goalData.target_date).format('YYYY-MM-DD') :
         null
     };
+
+    console.log(payload);
 
     const response = await api.post('/budget/goals/', payload);
     return response.data;

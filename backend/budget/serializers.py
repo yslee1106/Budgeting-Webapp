@@ -1,4 +1,4 @@
-# serializers.py
+import decimal
 from rest_framework import serializers
 from .models import Session, Income, Expense, Bucket, Goals
 
@@ -55,7 +55,7 @@ class GoalsSerializer(serializers.ModelSerializer):
         return Goals.objects.create(**validated_data)
 
     def get_percentage(self, obj):
-        return round(obj.current_amount / obj.target_amount * 100)
+        return round(decimal.Decimal(obj.current_amount) / decimal.Decimal(obj.target_amount) * 100)
 
 class SessionSerializer(serializers.ModelSerializer):
     class Meta:

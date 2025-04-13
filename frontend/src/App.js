@@ -29,7 +29,7 @@ export default function App() {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 1000 * 60 * 5, // 5 minutes
+        staleTime: 1000 * 60 * 1000, 
         retry: 2,
       },
     },
@@ -60,13 +60,12 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools initialIsOpen={true} />
         <AuthProvider>
           <CssBaseline />
           {layout === "dashboard" && (
             <>
               <SideNav
-                brandLogo="logo_dev"
-                brandName="Financial Tracker"
                 routes={PrivateRouteList}
                 onMouseEnter={handleOnMouseEnter}
                 onMouseLeave={handleOnMouseLeave}
@@ -75,6 +74,7 @@ export default function App() {
           )}
           <AllRoutes />
         </AuthProvider>
+
       </QueryClientProvider>
     </ThemeProvider>
   );

@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useMutation } from '@tanstack/react-query';
 
 import { createGoal } from 'services/budget/post'
+import { useGoals } from 'services/budget/queryHooks';
 
 import dayjs from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -31,11 +32,11 @@ import ProgressTable from "layouts/Table/ProgressTable";
 import BudgetCategorySelect from "layouts/Selects/Budget";
 
 
-function Goals({ data }) {
-    // REACT OBJECTS
+function Goals() {
     const queryClient = useQueryClient();
 
-    // FORM VARIABLES
+    const { data: goalsData = [] } = useGoals();
+
     const [formData, setFormData] = useState({
         name: '',
         category: '',
@@ -44,11 +45,10 @@ function Goals({ data }) {
         targetDate: null,
     });
 
-    // CONTROL STATES
     const [sortBy, setSortBy] = useState("");
+
     const [openAddGoals, setOpenAddGoals] = useState(false);
 
-    // CONTROL METHODS
     const mutation = useMutation({
         mutationFn: createGoal,
         onMutate: async (newGoal) => {
@@ -57,13 +57,14 @@ function Goals({ data }) {
 
             // Optimistically update cache
             const previousGoals = queryClient.getQueryData(['goals']) || [];
+            const tempId = Date.now().toString();
             queryClient.setQueryData(['goals'], [...previousGoals, {
                 ...newGoal,
-                id: Date.now().toString(), // temporary ID
+                id: tempId,
                 isOptimistic: true
             }]);
 
-            return { previousGoals };
+            return { previousGoals, tempId };
         },
         onError: (err, newGoal, context) => {
             // If there's an error, roll back to the previous value
@@ -72,14 +73,25 @@ function Goals({ data }) {
             }
             alert(`Error creating goal: ${err.message}`);
         },
-        onSuccess: (data) => {
+        onSuccess: (data, variables, context) => {
             // Success handler - data contains the server response
             console.log('Goal created:', data);
+
+            // Merge server response with cache
+            queryClient.setQueryData(['goals'], (old) => {
+                return old.map(item =>
+                    item.id === context.tempId ? data : item
+                );
+            });
             alert('Goal created successfully!');
+
+
+
+            clearFormVariables();
+            setOpenAddGoals(false);
         },
         onSettled: () => {
-            // Refresh goals list
-            queryClient.invalidateQueries(['goals']);
+            queryClient.refetchQueries(['goals'], { active: true });
         }
     });
 
@@ -103,15 +115,12 @@ function Goals({ data }) {
 
         try {
             await mutation.mutateAsync(formData);
-
-            clearVariables();
-            setOpenAddGoals(false);
         } catch (error) {
             console.error('Submission error:', error); // Should show any errors
         }
     }
 
-    const clearVariables = () => {
+    const clearFormVariables = () => {
         setFormData({
             name: '',
             category: '',
@@ -121,13 +130,13 @@ function Goals({ data }) {
         });
     }
 
-    const handleOpen = () => {
-        clearVariables();
+    const handleFormOpen = () => {
+        clearFormVariables();
         setOpenAddGoals(true);
     }
 
-    const handleClose = () => {
-        clearVariables();
+    const handleFormClose = () => {
+        clearFormVariables();
         setOpenAddGoals(false);
     }
 
@@ -135,17 +144,17 @@ function Goals({ data }) {
         <>
             <ProgressTable
                 title='Goals'
-                data={data?.filter(g => !g.isOptimistic)}
+                data={goalsData}
                 handleSortChange={handleSortChange}
                 sortBy={sortBy}
                 handleMoreOptionsClick={handleMoreOptionsClick}
-                handleAdd={handleOpen}
+                handleAdd={handleFormOpen}
             />
 
             {/* Add Goals */}
             <Modal
                 open={openAddGoals}
-                onClose={handleClose}>
+                onClose={handleFormClose}>
 
                 <Fade in={openAddGoals}>
                     <Box
@@ -232,7 +241,6 @@ function Goals({ data }) {
                             {/* Target Date Switch */}
                             <FormControlLabel
                                 label="Target Date"
-                                labelPlacement="left"
                                 control={
                                     <Switch
                                         value={formData.enableTargetDate}
@@ -287,7 +295,7 @@ function Goals({ data }) {
                             {/* Cancel Button */}
                             <Button
                                 variant="outlined"
-                                onClick={handleClose}
+                                onClick={handleFormClose}
                                 sx={{
                                     px: '2rem',
                                     py: '0.7rem',
