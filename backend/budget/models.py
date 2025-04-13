@@ -180,7 +180,7 @@ class Expense(models.Model):
     name = models.CharField(max_length=60, null=False)
     category = models.CharField(max_length=30, choices=EXPENSE_CATEGORIES, null=False)
     payment_frequency = models.DurationField(null=True)
-    next_due = models.DateField(null=True)
+    next_payment = models.DateField(null=True)
     target_amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
 
     date_created = models.DateField(auto_now_add=True)
@@ -188,7 +188,7 @@ class Expense(models.Model):
     def __repr__(self):
         return (
             f"Expense(id={self.id}, name='{self.name}', category='{self.category}', "
-            f"payment_frequency={self.payment_frequency}, next_due='{self.next_due}', "
+            f"payment_frequency={self.payment_frequency}, next_payment='{self.next_payment}', "
             f"target_amount={self.target_amount})"
         )
 
@@ -196,7 +196,7 @@ class Expense(models.Model):
         return (
             f"{self.name} ({self.category}) - "
             f"Target: ${self.target_amount}"
-            f"Next Due: {self.next_due}, Frequency: Every {self.payment_frequency.days} days"
+            f"Next Due: {self.next_payment}, Frequency: Every {self.payment_frequency.days} days"
         )
 
 
@@ -207,7 +207,7 @@ class Bucket(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bucket')
     expense = models.ForeignKey(Expense, on_delete=models.SET_DEFAULT, related_name='expense', null=False, blank=True, default='')
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='bucket')
-    next_due = models.DateField(null=False, blank=True)
+    next_payment = models.DateField(null=False, blank=True)
     target_amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
     current_amount = models.DecimalField(default=0.00, max_digits=20, decimal_places=2, null=False)
     fulfilled = models.BooleanField(default=False, null=False)
@@ -215,7 +215,7 @@ class Bucket(models.Model):
     def __repr__(self):
             return (
                 f"Bucket(id={self.id}, expense_id={self.expense.id}, session_id={self.session.id}, "
-                f"next_due='{self.next_due}', target_amount={self.target_amount}, "
+                f"next_payment='{self.next_payment}', target_amount={self.target_amount}, "
                 f"current_amount={self.current_amount}, fulfilled={self.fulfilled})"
             )
 
@@ -223,7 +223,7 @@ class Bucket(models.Model):
         return (
             f"Bucket for Expense {self.expense.id} in Session {self.session.id} - "
             f"Target: ${self.target_amount}, Amount: ${self.current_amount}, "
-            f"Next Due: {self.next_due}, Fulfilled: {self.fulfilled}"
+            f"Next Due: {self.next_payment}, Fulfilled: {self.fulfilled}"
         )
 
 

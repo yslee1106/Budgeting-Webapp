@@ -30,7 +30,7 @@ class BucketSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bucket
-        fields = ['id', 'expense', 'name', 'session', 'next_due', 'target_amount', 'current_amount', 'percentage', 'fulfilled']
+        fields = ['id', 'expense', 'name', 'session', 'next_payment', 'target_amount', 'current_amount', 'percentage', 'fulfilled']
         read_only_fields = ['id', 'user']
 
     def create(self, validated_data):
