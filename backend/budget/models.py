@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 from django.contrib.auth import get_user_model
 
 # Create your models here.
@@ -180,16 +179,16 @@ class Expense(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='expense')
     name = models.CharField(max_length=60, null=False)
     category = models.CharField(max_length=30, choices=EXPENSE_CATEGORIES, null=False)
-    due_frequency = models.DurationField(null=True)
+    payment_frequency = models.DurationField(null=True)
     next_due = models.DateField(null=True)
     target_amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
 
-    date_created = models.DateField(default=timezone.now().date)
+    date_created = models.DateField(auto_now_add=True)
 
     def __repr__(self):
         return (
             f"Expense(id={self.id}, name='{self.name}', category='{self.category}', "
-            f"due_frequency={self.due_frequency}, next_due='{self.next_due}', "
+            f"payment_frequency={self.payment_frequency}, next_due='{self.next_due}', "
             f"target_amount={self.target_amount})"
         )
 
@@ -197,7 +196,7 @@ class Expense(models.Model):
         return (
             f"{self.name} ({self.category}) - "
             f"Target: ${self.target_amount}"
-            f"Next Due: {self.next_due}, Frequency: Every {self.due_frequency.days} days"
+            f"Next Due: {self.next_due}, Frequency: Every {self.payment_frequency.days} days"
         )
 
 
