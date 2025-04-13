@@ -33,8 +33,9 @@ import BudgetCategorySelect from "layouts/Selects/Budget";
 
 
 function Goals() {
+    // VARIABLES
     const { data: goalsData = [] } = useGoals();
-    
+
     const [formData, setFormData] = useState({
         name: '',
         category: '',
@@ -43,11 +44,12 @@ function Goals() {
         targetDate: null,
     });
 
-    const queryClient = useQueryClient();
-
     const [sortBy, setSortBy] = useState("");
 
     const [openAddGoals, setOpenAddGoals] = useState(false);
+
+    // OBJECTS
+    const queryClient = useQueryClient();
 
     const mutation = useMutation({
         mutationFn: createGoal,
@@ -95,6 +97,7 @@ function Goals() {
         }
     });
 
+    // FUNCTIONS
     const handleSortChange = (event) => {
         setSortBy(event.target.value);
         console.log(`sort goal by ${event.target.value} clicked`);
