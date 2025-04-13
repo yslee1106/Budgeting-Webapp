@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 
 # Create your models here.
@@ -179,25 +180,23 @@ class Expense(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='expense')
     name = models.CharField(max_length=60, null=False)
     category = models.CharField(max_length=30, choices=EXPENSE_CATEGORIES, null=False)
-    percentage_of_income = models.IntegerField(null=True, blank=True)
-    due_frequency = models.DurationField()
-    next_due = models.DateField(null=False, blank=True)
+    due_frequency = models.DurationField(null=True)
+    next_due = models.DateField(null=True)
     target_amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
-    current_amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
-    fulfilled = models.BooleanField(null=False)
+
+    date_created = models.DateField(default=timezone.now().date)
 
     def __repr__(self):
         return (
             f"Expense(id={self.id}, name='{self.name}', category='{self.category}', "
-            f"percentage_of_income={self.percentage_of_income}, "
             f"due_frequency={self.due_frequency}, next_due='{self.next_due}', "
-            f"target_amount={self.target_amount}, current_amount={self.current_amount})"
+            f"target_amount={self.target_amount})"
         )
 
     def __str__(self):
         return (
             f"{self.name} ({self.category}) - "
-            f"Target: ${self.target_amount}, Current: ${self.current_amount}, "
+            f"Target: ${self.target_amount}"
             f"Next Due: {self.next_due}, Frequency: Every {self.due_frequency.days} days"
         )
 
@@ -211,8 +210,8 @@ class Bucket(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='bucket')
     next_due = models.DateField(null=False, blank=True)
     target_amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
-    current_amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
-    fulfilled = models.BooleanField(null=False)
+    current_amount = models.DecimalField(default=0.00, max_digits=20, decimal_places=2, null=False)
+    fulfilled = models.BooleanField(default=False, null=False)
 
     def __repr__(self):
             return (

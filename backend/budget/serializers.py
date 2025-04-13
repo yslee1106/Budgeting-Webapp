@@ -1,6 +1,7 @@
 import decimal
 from rest_framework import serializers
 from .models import Session, Income, Expense, Bucket, Goals
+from .services import ExpenseService
 
 # Main Data Serializers
 class IncomeSerializer(serializers.ModelSerializer):
@@ -21,7 +22,7 @@ class ExpenseSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
-        return super().create(validated_data)
+        return ExpenseService.create_expense(validated_data)
 
 class BucketSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
@@ -34,10 +35,10 @@ class BucketSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
-        return super().create(validated_data)
+        return Bucket.objects.create(**validated_data)
 
     def get_percentage(self, obj):
-        return round(obj.current_amount / obj.target_amount * 100)
+        return round(decimal.Decimal(obj.current_amount) / decimal.Decimal(obj.target_amount) * 100)
     
     def get_name(self, obj):
         return obj.expense.name
