@@ -247,7 +247,7 @@ function Goals() {
                                 control={
                                     <Switch
                                         value={formData.enableTargetDate}
-                                        onChange={(e) => setFormData({ ...formData, enableTargetDate: e.target.checked })}
+                                        onChange={(e) => setFormData({ ...formData, enableTargetDate: e.target.checked, targetDate: null })}
                                         sx={{ ml: '10px' }}
                                     />}
                                 sx={{
