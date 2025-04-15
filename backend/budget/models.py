@@ -42,14 +42,15 @@ class Income(models.Model):
     ('RENTAL INCOME', 'Rental Income'), 
     ('SIDE HUSTLE', 'Side Hustle'), 
     ('GIFTS', 'Gifts'), 
-    ('REavailable_funds/REIMBURSEMENTS', 'Reavailable_funds/Reimbursements'), 
+    ('REIMBURSEMENTS', 'Reimbursements'), 
     ('OTHER INCOME', 'Other Income')
 ]
   
     FREQUENCY = [
         ('WEEKLY', 'Weekly'), 
         ('BI-WEEKLY', 'Bi-weekly'), 
-        ('SEMI-MONTHLYMONTHLY', 'Semi-monthlyMonthly'), 
+        ('SEMI-MONTHLY', 'Semi-monthly'),
+        ('MONTHLY', 'Monthly'), 
         ('BI-MONTHLY', 'Bi-monthly'), 
         ('ANNUALLY', 'Annually')
     ]
