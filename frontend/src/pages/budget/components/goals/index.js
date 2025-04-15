@@ -100,6 +100,7 @@ function Goals() {
                 handleMoreOptionsClick={handleMoreOptionsClick}
                 handleAdd={handleOpenForm}
                 fieldMappings={{
+                    due: 'target_date',
                     targetAmount: 'target_amount',
                     currentAmount: 'current_amount',
                     name: 'name',

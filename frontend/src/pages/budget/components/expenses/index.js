@@ -101,6 +101,7 @@ function Expenses({ selectedSession, currentSession }) {
                 handleMoreOptionsClick={handleMoreOptionsClick}
                 handleAdd={handleOpenForm}
                 fieldMappings={{
+                    due: 'next_payment',
                     targetAmount: 'spending_limit',
                     currentAmount: 'current_amount',
                     name: 'name',

@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
@@ -13,6 +14,7 @@ function TableRow({
     data,
     handleMoreOptionsClick,
     fieldMappings = {
+        due: 'target_date',
         targetAmount: 'target_amount',
         currentAmount: 'current_amount',
         name: 'name',
@@ -30,6 +32,7 @@ function TableRow({
 
                 const getField = (field) => item[fieldMappings[field]] ?? item[field] ?? '';
 
+                const due = getField('due');
                 const targetAmount = getField('targetAmount');
                 const currentAmount = getField('currentAmount');
                 const name = getField('name');
@@ -46,6 +49,8 @@ function TableRow({
                             pb: 3,
                         }}
                     >
+
+                        {/* Icon */}
                         <ListItemIcon sx={{
                             minWidth: 56,
                             ml: '10px'
@@ -64,10 +69,26 @@ function TableRow({
                                 </Typography>
                             }
                             secondary={
-                                <Typography variant="body2" fontSize="12px">
-                                    $ {' '} {currentAmount} /
-                                    $ {' '} {targetAmount}
-                                </Typography>
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        width: '100%',
+                                        pr: '1rem'
+                                    }}>
+
+                                    <Typography fontSize="12px" fontWeight='regular' color='black'>
+                                        $ {' '} {currentAmount} / $ {' '} {targetAmount}
+                                    </Typography>
+
+                                    {due && (
+                                        <Typography fontSize="12px" fontWeight='medium' color='black'>
+                                            Due: {' '} {dayjs(due).format('DD/MM/YYYY')}
+                                        </Typography>
+                                    )}
+
+                                </Box>
+
                             }
                         />
 
