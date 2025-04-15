@@ -30,7 +30,7 @@ class BucketSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bucket
-        fields = ['id', 'expense', 'name', 'session', 'next_payment', 'target_amount', 'current_amount', 'percentage', 'fulfilled']
+        fields = ['id', 'expense', 'name', 'session', 'next_payment', 'spending_limit', 'current_amount', 'percentage', 'fulfilled']
         read_only_fields = ['id', 'user']
 
     def create(self, validated_data):
@@ -38,7 +38,7 @@ class BucketSerializer(serializers.ModelSerializer):
         return Bucket.objects.create(**validated_data)
 
     def get_percentage(self, obj):
-        return round(decimal.Decimal(obj.current_amount) / decimal.Decimal(obj.target_amount) * 100)
+        return round(decimal.Decimal(obj.current_amount) / decimal.Decimal(obj.spending_limit) * 100)
     
     def get_name(self, obj):
         return obj.expense.name

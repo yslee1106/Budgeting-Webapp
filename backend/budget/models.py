@@ -181,7 +181,7 @@ class Expense(models.Model):
     category = models.CharField(max_length=30, choices=EXPENSE_CATEGORIES, null=False)
     payment_frequency = models.DurationField(null=True)
     next_payment = models.DateField(null=True)
-    target_amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
+    spending_limit = models.DecimalField(max_digits=20, decimal_places=2, null=False)
 
     date_created = models.DateField(auto_now_add=True)
 
@@ -189,13 +189,13 @@ class Expense(models.Model):
         return (
             f"Expense(id={self.id}, name='{self.name}', category='{self.category}', "
             f"payment_frequency={self.payment_frequency}, next_payment='{self.next_payment}', "
-            f"target_amount={self.target_amount})"
+            f"spending_limit={self.spending_limit})"
         )
 
     def __str__(self):
         return (
             f"{self.name} ({self.category}) - "
-            f"Target: ${self.target_amount}"
+            f"Limit: ${self.spending_limit}"
             f"Next Due: {self.next_payment}, Frequency: Every {self.payment_frequency.days} days"
         )
 
@@ -208,21 +208,21 @@ class Bucket(models.Model):
     expense = models.ForeignKey(Expense, on_delete=models.SET_DEFAULT, related_name='expense', null=False, blank=True, default='')
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='bucket')
     next_payment = models.DateField(null=False, blank=True)
-    target_amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
+    spending_limit = models.DecimalField(max_digits=20, decimal_places=2, null=False)
     current_amount = models.DecimalField(default=0.00, max_digits=20, decimal_places=2, null=False)
     fulfilled = models.BooleanField(default=False, null=False)
 
     def __repr__(self):
             return (
                 f"Bucket(id={self.id}, expense_id={self.expense.id}, session_id={self.session.id}, "
-                f"next_payment='{self.next_payment}', target_amount={self.target_amount}, "
+                f"next_payment='{self.next_payment}', spending_limit={self.spending_limit}, "
                 f"current_amount={self.current_amount}, fulfilled={self.fulfilled})"
             )
 
     def __str__(self):
         return (
             f"Bucket for Expense {self.expense.id} in Session {self.session.id} - "
-            f"Target: ${self.target_amount}, Amount: ${self.current_amount}, "
+            f"Limit: ${self.spending_limit}, Amount: ${self.current_amount}, "
             f"Next Due: {self.next_payment}, Fulfilled: {self.fulfilled}"
         )
 
