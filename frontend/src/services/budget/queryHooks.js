@@ -1,6 +1,6 @@
 // Create a new file services/budget/queryHooks.js
 import { useQuery } from '@tanstack/react-query';
-import { fetchSessions, fetchBucketBySession, fetchGoals, fetchIncome, fetchExpense } from 'services/budget/get';
+import { fetchSessions, fetchBucketBySession, fetchGoals, fetchIncome, fetchExpense } from 'services/budget/requests/get';
 
 const useSessions = () => useQuery({
     queryKey: ['sessions'],
@@ -13,7 +13,7 @@ const useIncome = () => useQuery({
 });
 
 const useExpense = () => useQuery({
-    queryKey: ['expense'],
+    queryKey: ['expenses'],
     queryFn: fetchExpense,
 });
 

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { fetchModelChoices } from 'services/budget/get';
+import { fetchModelChoices } from 'services/budget/requests/get';
 
 const BudgetCategoriesContext = createContext();
 

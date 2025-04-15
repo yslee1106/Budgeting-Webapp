@@ -14,7 +14,7 @@ class ExpenseService:
             user=user,
             expense=newExpense,
             session=currentSession,
-            next_due=newExpense.next_payment,
+            next_payment=newExpense.next_payment,
             spending_limit=newExpense.spending_limit,
         )
         return newExpense

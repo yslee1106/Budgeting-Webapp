@@ -6,7 +6,7 @@ import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { useCategories } from 'context/helpers/budgetCategories';
 
 
-const BudgetCategorySelect = ({ modelType, value, onChange }) => {
+const SelectField = ({ modelType, label, dataState, onChange, disabled }) => {
     const { categories, loading, error } = useCategories();
 
     const getOptions = () => {
@@ -30,17 +30,17 @@ const BudgetCategorySelect = ({ modelType, value, onChange }) => {
     };
 
       if (error) return <div className="error">{error}</div>;
-      if (loading) return <div>Loading categories...</div>;
+      if (loading) return <div>Loading {label}...</div>;
 
     return (
-        <FormControl fullWidth>
-            <InputLabel>Category</InputLabel>
+        <FormControl fullWidth disabled={disabled}>
+            <InputLabel>{label}</InputLabel>
             <Select
-                label="Category"
-                value={value}
+                label={label}
+                value={dataState}
                 onChange={(e) => onChange(e.target.value)}
             >
-                <MenuItem value="">Select a category</MenuItem>
+                <MenuItem value="">-----</MenuItem>
                 {getOptions().map(option => (
                     <MenuItem key={option.value} value={option.value}>
                         {option.label}
@@ -51,4 +51,4 @@ const BudgetCategorySelect = ({ modelType, value, onChange }) => {
     );
 };
 
-export default BudgetCategorySelect;
+export default SelectField;

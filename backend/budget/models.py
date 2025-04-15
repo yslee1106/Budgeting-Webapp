@@ -208,7 +208,7 @@ class Bucket(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bucket')
     expense = models.ForeignKey(Expense, on_delete=models.SET_DEFAULT, related_name='expense', null=False, blank=True, default='')
     session = models.ForeignKey(Session, on_delete=models.CASCADE, related_name='bucket')
-    next_payment = models.DateField(null=False, blank=True)
+    next_payment = models.DateField(null=True, blank=True)
     spending_limit = models.DecimalField(max_digits=20, decimal_places=2, null=False)
     current_amount = models.DecimalField(default=0.00, max_digits=20, decimal_places=2, null=False)
     fulfilled = models.BooleanField(default=False, null=False)

@@ -20,7 +20,8 @@ function Budget() {
     const { logout } = useAuth()
 
     // STATES
-    const [selectedSession, setSelectedSession] = useState(null)  
+    const [selectedSession, setSelectedSession] = useState(null);
+    const [currentSession, setCurrentSession] = useState(null);
 
     return (
         <DashboardLayout>
@@ -32,7 +33,8 @@ function Budget() {
                             <Grid size={12}>
                                 <Session
                                     selected={selectedSession}
-                                    setSelected={setSelectedSession} />
+                                    setSelected={setSelectedSession}
+                                    setCurrent={setCurrentSession} />
                             </Grid>
                         </Grid>
                     </Box>
@@ -52,7 +54,7 @@ function Budget() {
                                     </Grid>
                                 </Grid>
                                 <Grid size={{ xs: 12, xl: 6 }}>
-                                    <Expenses selectedSession={selectedSession} />
+                                    <Expenses selectedSession={selectedSession} currentSession={currentSession}/>
                                 </Grid>
                             </Grid>
                         </Box>

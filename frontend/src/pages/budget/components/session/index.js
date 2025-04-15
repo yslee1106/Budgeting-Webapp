@@ -10,23 +10,30 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from "@mui/material/Typography";
 
-function Session({ selected, setSelected }) {
+function Session({ selected, setSelected, setCurrent }) {
     const theme = useTheme();
-
+    
+    //
+    // VARIABLES
+    //
     const { data: sessionsData = [], isLoading, error } = useSessions();
-
     const containerRef = useRef(null);
     const [capacity, setCapacity] = useState(0);
     const buttonWidth = 140;
 
-    // Auto-select last session when sessions load
+    //
+    // FUNCTIONS
+    //
     useEffect(() => {
         if (sessionsData.length > 0) {
-            setSelected(sessionsData[sessionsData.length - 1]);
+            const currentSession = sessionsData[sessionsData.length - 1];
+
+            setCurrent(currentSession);
+            setSelected(currentSession);
         }
     }, [sessionsData]);
 
-    // Scrolling Functions  
+    // scroll effect
     const scroll = (scrollOffset) => {
         if (containerRef.current) {
             containerRef.current.scrollBy({
@@ -36,7 +43,7 @@ function Session({ selected, setSelected }) {
         }
     };
 
-    // Blank Period Buttons Functions
+    // blank selection buttons effect
     const calculateCapacity = (containerWidth, itemWidth) => {
         return Math.floor(containerWidth / itemWidth);
     };
@@ -51,7 +58,7 @@ function Session({ selected, setSelected }) {
         return filledList;
     };
 
-    useEffect(() => {           // Set maximum number of buttons that can fit into the session box
+    useEffect(() => {
         const updateCapacity = () => {
             const containerWidth = containerRef.current?.offsetWidth || 0;
             setCapacity(calculateCapacity(containerWidth, buttonWidth));
@@ -63,13 +70,12 @@ function Session({ selected, setSelected }) {
 
         return () => resizeObserver.disconnect();
     }, []);
+    
+    const filledList = fillList(sessionsData, capacity);
 
-
-    // Updated Data List
-    const filledList = fillList(sessionsData, capacity);            // Data + blanks (if needed according to function)
-
-
-    // Period Button Mapping
+    //
+    // UI OBJECTS
+    //
     const periodButton = filledList.map((item) => {
         let ret;
 

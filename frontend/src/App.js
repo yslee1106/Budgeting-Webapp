@@ -29,7 +29,9 @@ export default function App() {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 1000 * 60 * 1000, 
+        staleTime: 30 * 60 * 1000,
+        cacheTime: 30 * 60 * 1000,
+        refetchOnWindowFocus: false,
         retry: 2,
       },
     },
@@ -60,7 +62,7 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={true} />
+        <ReactQueryDevtools initialIsOpen={true} />
         <AuthProvider>
           <CssBaseline />
           {layout === "dashboard" && (

@@ -9,80 +9,104 @@ import Icon from '@mui/material/Icon'
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 
-function TableRow({ data, handleMoreOptionsClick }) {
-
+function TableRow({
+    data,
+    handleMoreOptionsClick,
+    fieldMappings = {
+        targetAmount: 'target_amount',
+        currentAmount: 'current_amount',
+        name: 'name',
+        percentage: 'percentage',
+        id: 'id'
+    }
+}) {
+    const items = Array.isArray(data)
+        ? data
+        : Object.keys(data).map(key => ({ ...data[key], id: key }));
 
     return (
         <List sx={{ width: "100%" }}>
-            {data.map((item) => (
-                <ListItem
-                    key={item.id}
-                    sx={{
-                        height: 80,
-                        cursor: "pointer",
-                        position: "relative",
-                        pb: 3,
-                    }}
-                >
-                    <ListItemIcon sx={{
-                        minWidth: 56,
-                        ml: '10px'
-                    }}>
-                        <Icon sx={{
-                            fontSize: '32px'
+            {items.map((item) => {
+
+                const getField = (field) => item[fieldMappings[field]] ?? item[field] ?? '';
+
+                const targetAmount = getField('targetAmount');
+                const currentAmount = getField('currentAmount');
+                const name = getField('name');
+                const percentage = getField('percentage');
+                const id = getField('id');
+
+                return (
+                    <ListItem
+                        key={id}
+                        sx={{
+                            height: 80,
+                            cursor: "pointer",
+                            position: "relative",
+                            pb: 3,
+                        }}
+                    >
+                        <ListItemIcon sx={{
+                            minWidth: 56,
+                            ml: '10px'
                         }}>
-                            error
-                        </Icon>
-                    </ListItemIcon>
+                            <Icon sx={{
+                                fontSize: '32px'
+                            }}>
+                                error
+                            </Icon>
+                        </ListItemIcon>
 
-                    <ListItemText
-                        primary={
-                            <Typography variant="h6" fontWeight="600">
-                                {item.name}
-                            </Typography>
-                        }
-                        secondary={
-                            <Typography variant="body2" fontSize="12px">
-                                $ {' '} {item.current_amount} / 
-                                $ {' '} {item.target_amount}
-                            </Typography>
-                        }
-                    />
-
-                    <IconButton
-                        edge="end"
-                        aria-label="more options"
-                        onClick={(e) => handleMoreOptionsClick(e, item.id)}
-                        sx={{
-                            mr: '10px'
-                        }}
-                    >
-                        <Icon>more_vert</Icon>
-                    </IconButton>
-
-                    <Box
-                        sx={{
-                            position: "absolute",
-                            bottom: 10,
-                            width: "calc(100% - 28px)",
-                        }}
-                    >
-                        <LinearProgress
-                            variant="determinate"
-                            value={item.percentage}
-                            sx={{
-                                height: 5,
-                                borderRadius: "20px",
-                                backgroundColor: "#d9d9d9",
-                                "& .MuiLinearProgress-bar": {
-                                    backgroundColor: "#2e7d32",
-                                    borderRadius: "20px",
-                                },
-                            }}
+                        <ListItemText
+                            primary={
+                                <Typography variant="h6" fontWeight="600">
+                                    {name}
+                                </Typography>
+                            }
+                            secondary={
+                                <Typography variant="body2" fontSize="12px">
+                                    $ {' '} {currentAmount} /
+                                    $ {' '} {targetAmount}
+                                </Typography>
+                            }
                         />
-                    </Box>
-                </ListItem>
-            ))}
+
+                        <IconButton
+                            edge="end"
+                            aria-label="more options"
+                            onClick={(e) => handleMoreOptionsClick(e, id)}
+                            sx={{
+                                mr: '10px'
+                            }}
+                        >
+                            <Icon>more_vert</Icon>
+                        </IconButton>
+
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                bottom: 10,
+                                width: "calc(100% - 28px)",
+                            }}
+                        >
+                            <LinearProgress
+                                variant="determinate"
+                                value={percentage}
+                                sx={{
+                                    height: 5,
+                                    borderRadius: "20px",
+                                    backgroundColor: "#d9d9d9",
+                                    "& .MuiLinearProgress-bar": {
+                                        backgroundColor: "#2e7d32",
+                                        borderRadius: "20px",
+                                    },
+                                }}
+                            />
+                        </Box>
+                    </ListItem>
+                )
+
+            })}
         </List>
     )
 
