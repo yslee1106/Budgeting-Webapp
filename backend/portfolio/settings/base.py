@@ -31,10 +31,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_celery_beat',
+    'django_celery_results',
     'users',
     'budget',
     'accounts',
     #'chatbot',
+    'core',
+    
 ]
 
 MIDDLEWARE = [
@@ -69,6 +73,14 @@ TEMPLATES = [
 ASGI_APPLICATION = 'portfolio.asgi.application'
 
 WSGI_APPLICATION = 'portfolio.wsgi.application'
+
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/1')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Etc/GMT+8'
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 # Alternatively, allow specific origins
 CORS_ALLOWED_ORIGINS = [
