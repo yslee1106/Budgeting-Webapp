@@ -14,13 +14,11 @@ class Session(models.Model):
     available_funds = models.DecimalField(max_digits=20, decimal_places=2, null=False)
     total_expense = models.DecimalField(max_digits=20, decimal_places=2, null=False)
     total_goals = models.DecimalField(max_digits=20, decimal_places=2, null=False)
-    carry_forward = models.DecimalField(max_digits=20, decimal_places=2, null=False)
 
     def __repr__(self):
         return (
             f"Session(id={self.id}, period='{self.period}',  total_funds={self.total_funds}"
             f"total_expense={self.total_expense}, total_goals={self.total_goals}, available_funds={self.available_funds},"
-            f"carry_forward={self.carry_forward})"
         )
 
     def __str__(self):
