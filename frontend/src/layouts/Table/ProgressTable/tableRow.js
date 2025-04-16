@@ -1,3 +1,5 @@
+import { useTheme } from "@emotion/react";
+
 import dayjs from "dayjs";
 
 import Box from "@mui/material/Box";
@@ -12,6 +14,7 @@ import Typography from "@mui/material/Typography";
 
 function TableRow({
     data,
+    limit,
     handleMoreOptionsClick,
     fieldMappings = {
         due: 'target_date',
@@ -22,6 +25,7 @@ function TableRow({
         id: 'id'
     }
 }) {
+    const theme = useTheme();
     const items = Array.isArray(data)
         ? data
         : Object.keys(data).map(key => ({ ...data[key], id: key }));
@@ -64,6 +68,7 @@ function TableRow({
 
                         <ListItemText
                             primary={
+                                // Title
                                 <Typography variant="h6" fontWeight="600">
                                     {name}
                                 </Typography>
@@ -77,12 +82,18 @@ function TableRow({
                                         pr: '1rem'
                                     }}>
 
+                                    {/* Amounts */}
                                     <Typography fontSize="12px" fontWeight='regular' color='black'>
                                         $ {' '} {currentAmount} / $ {' '} {targetAmount}
                                     </Typography>
 
+                                    {/* Due Date */}
                                     {due && (
-                                        <Typography fontSize="12px" fontWeight='medium' color='black'>
+                                        <Typography
+                                            fontSize="12px"
+                                            fontWeight={dayjs(due).isBefore(dayjs()) || dayjs(due).diff(dayjs(), 'day') <= 3 ? 900 : 500}
+                                            color={dayjs(due).isBefore(dayjs()) || dayjs(due).diff(dayjs(), 'day') <= 3 ? theme.palette.negative.main : theme.palette.black.main}>
+
                                             Due: {' '} {dayjs(due).format('DD/MM/YYYY')}
                                         </Typography>
                                     )}
@@ -92,6 +103,7 @@ function TableRow({
                             }
                         />
 
+                        {/* More Options Button */}
                         <IconButton
                             edge="end"
                             aria-label="more options"
@@ -110,6 +122,8 @@ function TableRow({
                                 width: "calc(100% - 28px)",
                             }}
                         >
+
+                            {/* Progress Bar */}
                             <LinearProgress
                                 variant="determinate"
                                 value={percentage}
@@ -118,7 +132,11 @@ function TableRow({
                                     borderRadius: "20px",
                                     backgroundColor: "#d9d9d9",
                                     "& .MuiLinearProgress-bar": {
-                                        backgroundColor: "#2e7d32",
+                                        backgroundColor: !limit
+                                            ? theme.palette.positive.main
+                                            : percentage < 70
+                                                ? theme.palette.warning.main
+                                                : theme.palette.negative.main,
                                         borderRadius: "20px",
                                     },
                                 }}

@@ -6,6 +6,7 @@ import TableRow from "layouts/Table/ProgressTable/tableRow";
 function ProgressTable({
     title,
     data,
+    limit,
     handleMoreOptionsClick,
     handleSortChange,
     handleAdd,
@@ -26,6 +27,7 @@ function ProgressTable({
                 handleAdd={handleAdd} />
             <TableRow
                 data={data}
+                limit={limit}
                 handleMoreOptionsClick={handleMoreOptionsClick}
                 fieldMappings={fieldMappings} />
         </Box>

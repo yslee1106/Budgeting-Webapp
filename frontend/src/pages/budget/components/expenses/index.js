@@ -95,6 +95,7 @@ function Expenses({ selectedSession, currentSession }) {
         <>
             <ProgressTable
                 title='Expenses'
+                limit
                 data={bucketsData}
                 handleSortChange={handleSortChange}
                 sortBy={sortBy}
