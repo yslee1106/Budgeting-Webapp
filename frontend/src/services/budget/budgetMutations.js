@@ -2,10 +2,10 @@ import { useOptimisticMutation } from "services/mutation";
 import { createGoal, createExpense } from "services/budget/requests/post";
 import { patchGoalCurrentAmount } from "services/budget/requests/patch";
 
-const useCreateExpense = (latestSession) => {
+const useCreateExpense = (currentPeriod) => {
     return useOptimisticMutation(
         createExpense,
-        [['buckets', latestSession.id], /*['expenses']*/],
+        [['buckets', currentPeriod], /*['expenses']*/],
         {
             ['buckets']: (oldBuckets, newExpense) => {
                 return [
@@ -56,8 +56,21 @@ const usePatchGoalCurrentAmount = (latestSession) => {
                     }
                     return goal;
                 });
-            }
-        },
+            },
+            // ['sessions']: (oldSession, updatedGoal) => {
+            //     if (oldSession === latestSession) {
+            //         return {
+            //             ...session,
+            //             available_funds: updatedGoal.type === 'increase' ?
+            //                 session.available_funds - updatedGoal.amount :
+            //                 session.available_funds + updatedGoal.amount,
+            //             total_funds: updatedGoal.type === 'increase' ?
+            //                 session.total_funds - updatedGoal.amount :
+            //                 session.total_funds + updatedGoal.amount,
+            //         }
+            //     }
+            // }
+        }
     );
 };
 

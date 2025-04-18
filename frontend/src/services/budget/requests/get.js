@@ -1,8 +1,8 @@
 import api from 'services/api';
 
-const fetchSessions = async () => {
+const fetchSession = async (period) => {
     try {
-        const response = await api.get('/budget/session/');
+        const response = await api.get(`/budget/session/?period=${period}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching items:', error);
@@ -10,9 +10,9 @@ const fetchSessions = async () => {
     }
 };
 
-const fetchBucketBySession = async (session) => {
+const fetchBucketByPeriod = async (period) => {
     try {
-        const response = await api.get(`/budget/bucket/?session=${session}`);
+        const response = await api.get(`/budget/bucket/?period=${period}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching items:', error);
@@ -61,8 +61,8 @@ const fetchModelChoices = async () => {
 };
 
 export {
-    fetchSessions,
-    fetchBucketBySession,
+    fetchSession,
+    fetchBucketByPeriod,
     fetchIncome,
     fetchExpense,
     fetchGoals,

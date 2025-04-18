@@ -1,5 +1,7 @@
 import { useTheme } from "@emotion/react";
 
+import { useSessions } from "services/budget/queryHooks";
+
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import Box from "@mui/material/Box";
@@ -84,7 +86,9 @@ const DefaultInfoCard = ({ icon, title, description, value, positive }) => {
     );
 }
 
-function Funds({ data }) {
+function Funds({ selectedPeriod }) {
+    const { data: sessionData = [], isLoading } = useSessions(selectedPeriod)
+
     return (
         <Grid container spacing={3}>
             <Grid size={{ xs: 12, xl: 4 }}>
@@ -93,7 +97,7 @@ function Funds({ data }) {
                     title="Funds"
                     description="Total Income"
                     positive
-                    value={data.total_funds}
+                    value={sessionData[0]?.total_funds}
                 />
             </Grid>
             <Grid size={{ xs: 12, xl: 4 }}>
@@ -101,7 +105,7 @@ function Funds({ data }) {
                     icon="local_mall"
                     title="Expenditure"
                     description="Total Expense"
-                    value={data.total_expense}
+                    value={sessionData[0]?.total_expense}
                 />
             </Grid>
             <Grid size={{ xs: 12, xl: 4 }}>
@@ -109,8 +113,8 @@ function Funds({ data }) {
                     icon="account_balance_wallet"
                     title="Available"
                     description="Funds Remaining"
-                    positive={data.total_funds - data.total_expense > 0 ? true : false}
-                    value={data.available_funds}
+                    positive={sessionData[0]?.total_funds - sessionData[0]?.total_expense > 0 ? true : false}
+                    value={sessionData[0]?.available_funds}
                 />
             </Grid>
         </Grid>

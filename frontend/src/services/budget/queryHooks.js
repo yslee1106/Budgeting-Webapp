@@ -1,10 +1,11 @@
 // Create a new file services/budget/queryHooks.js
 import { useQuery } from '@tanstack/react-query';
-import { fetchSessions, fetchBucketBySession, fetchGoals, fetchIncome, fetchExpense } from 'services/budget/requests/get';
+import { fetchSession, fetchBucketByPeriod, fetchGoals, fetchIncome, fetchExpense } from 'services/budget/requests/get';
 
-const useSessions = () => useQuery({
+const useSessions = (period) => useQuery({
     queryKey: ['sessions'],
-    queryFn: fetchSessions,
+    queryFn: () => fetchSession(period),
+    enabled: !!period,
 });
 
 const useIncome = () => useQuery({
@@ -17,10 +18,10 @@ const useExpense = () => useQuery({
     queryFn: fetchExpense,
 });
 
-const useBuckets = (sessionId) => useQuery({
-    queryKey: ['buckets', sessionId],
-    queryFn: () => fetchBucketBySession(sessionId),
-    enabled: !!sessionId, // Only fetch when sessionId exists
+const useBuckets = (period) => useQuery({
+    queryKey: ['buckets', period],
+    queryFn: () => fetchBucketByPeriod(period),
+    enabled: !!period,
 });
 
 const useGoals = () => useQuery({

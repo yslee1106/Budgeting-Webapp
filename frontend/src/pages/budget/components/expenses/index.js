@@ -17,17 +17,17 @@ import SelectField from "layouts/Form/components/selectField";
 import SwitchField from "layouts/Form/components/switchField";
 
 
-function Expenses({ selectedSession, currentSession }) {
+function Expenses({ selectedPeriod, currentPeriod }) {
     const { categories } = useCategories();
 
     //
     // VARIABLES
     //
-    const { data: bucketsData = [] } = useBuckets(selectedSession?.id);
+    const { data: bucketsData = [] } = useBuckets(selectedPeriod);
     const [sortBy, setSortBy] = useState("");
 
     // Add Expenses
-    const { mutateAsync: addExpense, isLoading } = useCreateExpense(currentSession);
+    const { mutateAsync: addExpense, isLoading } = useCreateExpense(currentPeriod);
     const [openAddExpense, setOpenAddExpense] = useState(false);
     const expenseOptions = Object.entries(categories.expenses).map(([value, label]) => ({
         value,
