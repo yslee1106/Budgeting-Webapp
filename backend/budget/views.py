@@ -15,7 +15,13 @@ class SessionViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def get_queryset(self):
-        return Session.objects.filter(user=self.request.user)
+        queryset = Session.objects.filter(user=self.request.user)
+        period = self.request.query_params.get('period', None)
+
+        if period is not None:
+            queryset = queryset.filter(period=period)
+        
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -48,10 +54,10 @@ class BucketViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Bucket.objects.filter(user=self.request.user)
-        session = self.request.query_params.get('session', None)
+        period = self.request.query_params.get('period', None)
 
-        if session is not None:
-            queryset = queryset.filter(session=session)
+        if period is not None:
+            queryset = queryset.filter(session__period=period)
         
         return queryset
 

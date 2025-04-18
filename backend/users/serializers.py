@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+from .services import UserAuthService
+
 User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
@@ -31,14 +33,8 @@ class UserSerializer(serializers.ModelSerializer):
         # Extract the password and remove it from the validated data
         password = validated_data.pop('password', None)
         email = validated_data.pop('email')
-        
-        # Create the user using the UserManager
-        user = User.objects.create_user(
-            email=email,
-            password=password,
-            **validated_data
-        )
-        return user
+
+        return UserAuthService.create_user(email, password, **validated_data)
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     username_field = 'email'
