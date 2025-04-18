@@ -19,7 +19,7 @@ export const useOptimisticMutation = (mutationFn, queryKeys, updateData, success
                 if (updateData[key]) {
                     const tempId = Date.now().toString() + Math.random().toString(36).substring(2);
                     tempIds[key] = tempId;
-                    
+
                     queryClient.setQueryData(key, (old) => {
                         const updatedData = updateData[key](old, variables);
                         // Add tempId and isOptimistic flag if the data is an object/array
@@ -54,13 +54,13 @@ export const useOptimisticMutation = (mutationFn, queryKeys, updateData, success
         },
         onSuccess: (data, variables, context) => {
             if (successFns) {
-                successFns.forEach(fn => fn({ 
-                    data, 
-                    variables, 
-                    context: { 
-                        ...context, 
-                        tempIds: context.tempIds 
-                    } 
+                successFns.forEach(fn => fn({
+                    data,
+                    variables,
+                    context: {
+                        ...context,
+                        tempIds: context.tempIds
+                    }
                 }));
             }
 
@@ -69,7 +69,7 @@ export const useOptimisticMutation = (mutationFn, queryKeys, updateData, success
                 Object.entries(context.tempIds).forEach(([key, tempId]) => {
                     queryClient.setQueryData(key, (old) => {
                         if (Array.isArray(old)) {
-                            return old.map(item => 
+                            return old.map(item =>
                                 item.id === tempId ? { ...item, ...data, isOptimistic: false } : item
                             );
                         }
@@ -78,9 +78,9 @@ export const useOptimisticMutation = (mutationFn, queryKeys, updateData, success
                 });
             }
         },
-        onSettled: () => {
-            queryKeys.forEach(key => {
-                queryClient.invalidateQueries(key);
+        onSettled: async () => {
+            queryKeys.forEach(async key => {
+                await queryClient.invalidateQueries({key});
             })
         }
     });

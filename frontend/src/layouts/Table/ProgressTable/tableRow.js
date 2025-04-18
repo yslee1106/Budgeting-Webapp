@@ -2,20 +2,27 @@ import { useTheme } from "@emotion/react";
 
 import dayjs from "dayjs";
 
-import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
-import LinearProgress from "@mui/material/LinearProgress";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import Icon from '@mui/material/Icon'
-import ListItemText from "@mui/material/ListItemText";
-import Typography from "@mui/material/Typography";
+import {
+    Box,
+    LinearProgress,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Typography,
+    Icon
+} from "@mui/material";
+
+
+import Options from "layouts/Table/ProgressTable/options";
 
 function TableRow({
     data,
     limit,
-    handleMoreOptionsClick,
+    onInfo,
+    onEdit,
+    onFunds,
+    onDelete,
     fieldMappings = {
         due: 'target_date',
         targetAmount: 'target_amount',
@@ -104,17 +111,14 @@ function TableRow({
                         />
 
                         {/* More Options Button */}
-                        <IconButton
-                            edge="end"
-                            aria-label="more options"
-                            onClick={(e) => handleMoreOptionsClick(e, id)}
-                            sx={{
-                                mr: '10px'
-                            }}
-                        >
-                            <Icon>more_vert</Icon>
-                        </IconButton>
+                        <Options
+                            item={item}
+                            onInfo={onInfo}
+                            onEdit={onEdit}
+                            onFunds={onFunds}
+                            onDelete={onDelete} />
 
+                        {/* Progress Bar */}
                         <Box
                             sx={{
                                 position: "absolute",
@@ -122,8 +126,6 @@ function TableRow({
                                 width: "calc(100% - 28px)",
                             }}
                         >
-
-                            {/* Progress Bar */}
                             <LinearProgress
                                 variant="determinate"
                                 value={percentage}

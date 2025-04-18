@@ -45,7 +45,7 @@ function Budget() {
                                     <Grid container spacing={3}>
                                         <Stack sx={{ width: '100%', gap: '1rem' }}>
                                             <Grid size={12}>
-                                                <Funds data={selectedSession} />
+                                                <Funds key={selectedSession?.id} data={selectedSession} />
                                             </Grid>
                                             <Grid size={12}>
                                                 <Goals />

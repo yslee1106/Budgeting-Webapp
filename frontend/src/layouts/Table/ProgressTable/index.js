@@ -7,10 +7,13 @@ function ProgressTable({
     title,
     data,
     limit,
-    handleMoreOptionsClick,
+    onInfo,
+    onEdit,
+    onFunds,
+    onDelete,
     handleSortChange,
-    handleAdd,
     sortBy,
+    handleAdd,
     fieldMappings,
 }) {
     return (
@@ -28,7 +31,10 @@ function ProgressTable({
             <TableRow
                 data={data}
                 limit={limit}
-                handleMoreOptionsClick={handleMoreOptionsClick}
+                onInfo={onInfo}
+                onEdit={onEdit}
+                onFunds={onFunds}
+                onDelete={onDelete}
                 fieldMappings={fieldMappings} />
         </Box>
     )

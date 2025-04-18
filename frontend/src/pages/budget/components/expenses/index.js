@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useBuckets } from 'services/budget/queryHooks';
 import { useCreateExpense } from "services/budget/budgetMutations";
+import { useCategories } from 'context/helpers/budgetCategories';
 
 import { TextField, Box } from '@mui/material';
 
@@ -17,14 +18,26 @@ import SwitchField from "layouts/Form/components/switchField";
 
 
 function Expenses({ selectedSession, currentSession }) {
+    const { categories } = useCategories();
+
     //
     // VARIABLES
     //
     const { data: bucketsData = [] } = useBuckets(selectedSession?.id);
-    const { mutateAsync: addExpense, isLoading } = useCreateExpense(currentSession);
     const [sortBy, setSortBy] = useState("");
+
+    // Add Expenses
+    const { mutateAsync: addExpense, isLoading } = useCreateExpense(currentSession);
     const [openAddExpense, setOpenAddExpense] = useState(false);
-    const [formData, setFormData] = useState({
+    const expenseOptions = Object.entries(categories.expenses).map(([value, label]) => ({
+        value,
+        label,
+    }));
+    const frequencyOptions = Object.entries(categories.frequency).map(([value, label]) => ({
+        value,
+        label,
+    }));
+    const [addExpenseData, setAddExpenseData] = useState({
         name: '',
         category: '',
         spendingLimit: '',
@@ -41,28 +54,23 @@ function Expenses({ selectedSession, currentSession }) {
         console.log(`sort expense by ${event.target.value} clicked`);
     };
 
-    const handleMoreOptionsClick = (event, bucketId) => {
-        event.stopPropagation();
-        console.log(`More options for expense ${bucketId} clicked`);
-    };
-
     const handleAddExpensesSubmit = async (event) => {
         event.preventDefault();
 
-        if (!formData.name ||
-            !formData.category ||
-            !formData.spendingLimit ||
-            (formData.recurring && !formData.paymentFrequency && !formData.nextPayment)) {
+        if (!addExpenseData.name ||
+            !addExpenseData.category ||
+            !addExpenseData.spendingLimit ||
+            (addExpenseData.recurring && !addExpenseData.paymentFrequency && !addExpenseData.nextPayment)) {
 
             alert('Please fill in the required fields');
             return;
         }
 
         try {
-            await addExpense(formData);
+            await addExpense(addExpenseData);
             alert('Expense added');
 
-            clearFormVariables();
+            clearAddExpenseVariables();
             setOpenAddExpense(false);
         } catch (error) {
             console.error('Submission error:', error); // Should show any errors
@@ -70,8 +78,8 @@ function Expenses({ selectedSession, currentSession }) {
         }
     }
 
-    const clearFormVariables = () => {
-        setFormData({
+    const clearAddExpenseVariables = () => {
+        setAddExpenseData({
             name: '',
             category: '',
             targetAmount: '',
@@ -81,14 +89,30 @@ function Expenses({ selectedSession, currentSession }) {
         });
     }
 
-    const handleOpenForm = () => {
-        clearFormVariables();
+    const handleOpenAddExpenseForm = () => {
+        clearAddExpenseVariables();
         setOpenAddExpense(true);
     }
 
-    const handleCloseForm = () => {
-        clearFormVariables();
+    const handleCloseAddExpenseForm = () => {
+        clearAddExpenseVariables();
         setOpenAddExpense(false);
+    }
+
+    const handleInfo = (expense) => {
+        console.log('open info for expense', expense);
+    }
+
+    const handleEdit = (expense) => {
+        console.log('open edit for expense', expense);
+    }
+
+    const handleFunds = (expense) => {
+        console.log('open funds for expense', expense);
+    }
+
+    const handleOnDelete = (expense) => {
+        console.log('open delete for expense', expense);
     }
 
     return (
@@ -97,10 +121,13 @@ function Expenses({ selectedSession, currentSession }) {
                 title='Expenses'
                 limit
                 data={bucketsData}
+                onInfo={handleInfo}
+                onEdit={handleEdit}
+                onFunds={handleFunds}
+                onDelete={handleOnDelete}
                 handleSortChange={handleSortChange}
                 sortBy={sortBy}
-                handleMoreOptionsClick={handleMoreOptionsClick}
-                handleAdd={handleOpenForm}
+                handleAdd={handleOpenAddExpenseForm}
                 fieldMappings={{
                     due: 'next_payment',
                     targetAmount: 'spending_limit',
@@ -115,7 +142,7 @@ function Expenses({ selectedSession, currentSession }) {
             <Form
                 title='Add Expenses'
                 formState={openAddExpense}
-                handleCloseForm={handleCloseForm}
+                handleCloseForm={handleCloseAddExpenseForm}
                 handleSubmit={handleAddExpensesSubmit}>
 
                 {/* Name Field */}
@@ -123,33 +150,34 @@ function Expenses({ selectedSession, currentSession }) {
                     label="Name"
                     fullWidth
                     variant="outlined"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    value={addExpenseData.name}
+                    onChange={(e) => setAddExpenseData({ ...addExpenseData, name: e.target.value })}
                 />
 
                 {/* Category Field */}
                 <SelectField
-                    modelType='expense'
                     label='Category'
-                    value={formData.category}
-                    onChange={value => setFormData({ ...formData, category: value })} />
+                    dataState={addExpenseData.category}
+                    onChange={value => setAddExpenseData({ ...addExpenseData, category: value })}
+                    options={expenseOptions}
+                />
 
                 {/* Target Amount Field */}
                 <NumberField
                     label='Spending Limit'
                     startAdornment='attach_money'
-                    dataState={formData.spendingLimit}
-                    onChange={value => setFormData({ ...formData, spendingLimit: value })} />
+                    dataState={addExpenseData.spendingLimit}
+                    onChange={value => setAddExpenseData({ ...addExpenseData, spendingLimit: value })} />
 
                 {/* Recurring Expense Switch */}
                 <SwitchField
                     label='Recurring Expense'
-                    dataState={formData.recurring}
-                    onChange={e => setFormData({
-                        ...formData,
+                    dataState={addExpenseData.recurring}
+                    onChange={e => setAddExpenseData({
+                        ...addExpenseData,
                         recurring: e.target.checked,
-                        paymentFrequency: e.target.checked ? formData.paymentFrequency : null,
-                        nextPayment: e.target.checked ? formData.nextPayment : null
+                        paymentFrequency: e.target.checked ? addExpenseData.paymentFrequency : null,
+                        nextPayment: e.target.checked ? addExpenseData.nextPayment : null
                     })} />
 
                 <Box
@@ -165,19 +193,19 @@ function Expenses({ selectedSession, currentSession }) {
 
                     {/* Payment Frequency Field */}
                     <SelectField
-                        modelType='frequency'
                         label='Payment Frequency'
-                        value={formData.paymentFrequency}
-                        onChange={value => setFormData({ ...formData, paymentFrequency: value })}
-                        disabled={!formData.recurring} />
+                        dataState={addExpenseData.paymentFrequency}
+                        onChange={value => setAddExpenseData({ ...addExpenseData, paymentFrequency: value })}
+                        options={frequencyOptions}
+                        disabled={!addExpenseData.recurring} />
 
                     {/* Next Payment Field */}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DesktopDatePicker
                             label="Next Payment"
-                            value={formData.nextPayment ? dayjs(formData.nextPayment) : null}
-                            onChange={(value) => setFormData({ ...formData, nextPayment: value })}
-                            disabled={!formData.recurring} />
+                            value={addExpenseData.nextPayment ? dayjs(addExpenseData.nextPayment) : null}
+                            onChange={(value) => setAddExpenseData({ ...addExpenseData, nextPayment: value })}
+                            disabled={!addExpenseData.recurring} />
                     </LocalizationProvider>
 
                 </Box>

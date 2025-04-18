@@ -89,6 +89,28 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True  # Allow cookies in cross-origin requests
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',  # Change to DEBUG for more detailed logs
+        },
+        'django.server': {
+            'handlers': ['console'],
+            'level': 'DEBUG',  # Ensure this is set to DEBUG
+            'propagate': False,
+        },
+    },
+}
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 

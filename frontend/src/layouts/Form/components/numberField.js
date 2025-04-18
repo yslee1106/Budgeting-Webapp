@@ -6,7 +6,7 @@ import {
     Icon,
 } from '@mui/material';
 
-const NumberField = ({ label, startAdornment, dataState, onChange }) => {
+const NumberField = ({ label, startAdornment, dataState, onChange, readOnly }) => {
 
     return (
         <FormControl
@@ -27,6 +27,7 @@ const NumberField = ({ label, startAdornment, dataState, onChange }) => {
 
                 inputProps={{
                     inputMode: 'decimal',
+                    readOnly: readOnly,
                     min: 0
                 }}
 
@@ -39,6 +40,7 @@ const NumberField = ({ label, startAdornment, dataState, onChange }) => {
                 }}
 
                 onChange={(event) => {
+                    if (readOnly) return;
                     const value = event.target.value;
                     // Validate only one decimal point and numbers
                     if (/^\d*\.?\d*$/.test(value)) {
