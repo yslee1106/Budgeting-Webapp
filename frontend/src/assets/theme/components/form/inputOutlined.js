@@ -61,7 +61,8 @@ const inputOutlined = {
 
     multiline: {
       color: grey[700],
-      padding: 0,
+      paddingTop: pxToRem(0),
+      paddingBottom: pxToRem(0),
     },
   },
 };
