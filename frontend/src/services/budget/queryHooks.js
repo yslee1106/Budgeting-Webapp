@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchSession, fetchBucketByPeriod, fetchGoals, fetchIncome, fetchExpense } from 'services/budget/requests/get';
 
 const useSessions = (period) => useQuery({
-    queryKey: ['sessions'],
+    queryKey: ['sessions', period],
     queryFn: () => fetchSession(period),
     enabled: !!period,
 });
