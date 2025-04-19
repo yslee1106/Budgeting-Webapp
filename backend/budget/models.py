@@ -201,7 +201,7 @@ class Expense(models.Model):
 
 class Bucket(models.Model):
     class Meta:
-        unique_together = (('user'), ('expense'), ('session'))
+        unique_together = (('user'), ('expense'), ('session'), ('next_payment'))
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bucket')
     expense = models.ForeignKey(Expense, on_delete=models.SET_DEFAULT, related_name='expense', null=False, blank=True, default='')

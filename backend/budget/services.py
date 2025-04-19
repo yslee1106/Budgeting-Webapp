@@ -39,6 +39,8 @@ class GoalService:
 
     @staticmethod
     def patch_goal(instance, validated_data):
+        # TODO validate target amount
+        
         target_amount = validated_data.get('target_amount', instance.target_amount)
         
         if 'current_amount' in validated_data:
