@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useBuckets } from 'services/budget/queryHooks';
 import { useCreateExpense } from "services/budget/budgetMutations";
+import { useAddTransaction } from 'services/account/accountMutations';
 import { useCategories } from 'context/helpers/budgetCategories';
 
 import { TextField, Box } from '@mui/material';
@@ -27,7 +28,7 @@ function Expenses({ selectedPeriod, currentPeriod }) {
     const [sortBy, setSortBy] = useState("");
 
     // Add Expenses
-    const { mutateAsync: addExpense, isLoading } = useCreateExpense(currentPeriod);
+    const { mutateAsync: addExpense, loadingAddExpense } = useCreateExpense(currentPeriod);
     const [openAddExpense, setOpenAddExpense] = useState(false);
     const expenseOptions = Object.entries(categories.expenses).map(([value, label]) => ({
         value,
@@ -46,6 +47,17 @@ function Expenses({ selectedPeriod, currentPeriod }) {
         nextPayment: null,
     });
 
+    // Add Transactions
+    const {mutateAsync: addTransaction, loadingAddTransaction} = useAddTransaction();
+    const [openAddTransaction, setOpenAddTransaction] = useState(false);
+    const [addTransactionData, setAddTransactionData] = useState({
+        bucket: null,
+        reference: '',
+        date: '',
+        description: '',
+        amount: '',
+    })
+
     //
     // FUNCTIONS
     //
@@ -54,6 +66,7 @@ function Expenses({ selectedPeriod, currentPeriod }) {
         console.log(`sort expense by ${event.target.value} clicked`);
     };
 
+    // Add Expenses
     const handleAddExpensesSubmit = async (event) => {
         event.preventDefault();
 
@@ -70,14 +83,12 @@ function Expenses({ selectedPeriod, currentPeriod }) {
             await addExpense(addExpenseData);
             alert('Expense added');
 
-            clearAddExpenseVariables();
-            setOpenAddExpense(false);
+            handleCloseAddExpenseForm();
         } catch (error) {
             console.error('Submission error:', error); // Should show any errors
             alert(error.message);
         }
     }
-
     const clearAddExpenseVariables = () => {
         setAddExpenseData({
             name: '',
@@ -88,27 +99,64 @@ function Expenses({ selectedPeriod, currentPeriod }) {
             nextPayment: null,
         });
     }
-
     const handleOpenAddExpenseForm = () => {
         clearAddExpenseVariables();
         setOpenAddExpense(true);
     }
-
     const handleCloseAddExpenseForm = () => {
         clearAddExpenseVariables();
         setOpenAddExpense(false);
     }
 
+    // Add Transaction
+    const handleAddTransactionSubmit = async (event) => {
+        event.preventDefault();
+
+        console.log('bucket: ', addTransactionData.bucket)
+
+        if (!addTransactionData.bucket ||
+            !addTransactionData.date ||
+            !addTransactionData.amount) {
+
+            alert('Please fill in the required fields');
+            return;
+        }
+
+        try {
+            await addTransaction(addTransactionData);
+            alert('Transaction added');
+            handleCloseAddTransactionForm();
+        } catch (error) {
+            console.error('Submission error:', error); // Should show any errors
+            alert(error.message);
+        }
+    }
+    const clearAddTransactionVariables = () => {
+        setAddTransactionData({
+            bucket: null,
+            reference: '',
+            date: '',
+            description: '',
+            amount: '',
+        })
+    }
+    const handleOpenAddTransactionForm = (bucket) => {
+        clearAddTransactionVariables();
+        setAddTransactionData({ ...addTransactionData, bucket: bucket })
+        setOpenAddTransaction(true);
+    }
+    const handleCloseAddTransactionForm = () => {
+        clearAddTransactionVariables();
+        setOpenAddTransaction(false);
+    }
+
+    // Yet to implement
     const handleInfo = (expense) => {
         console.log('open info for expense', expense);
     }
 
     const handleEdit = (expense) => {
         console.log('open edit for expense', expense);
-    }
-
-    const handleFunds = (expense) => {
-        console.log('open funds for expense', expense);
     }
 
     const handleOnDelete = (expense) => {
@@ -123,7 +171,7 @@ function Expenses({ selectedPeriod, currentPeriod }) {
                 data={bucketsData}
                 onInfo={handleInfo}
                 onEdit={handleEdit}
-                onFunds={handleFunds}
+                onFunds={handleOpenAddTransactionForm}
                 onDelete={handleOnDelete}
                 handleSortChange={handleSortChange}
                 sortBy={sortBy}
@@ -212,6 +260,67 @@ function Expenses({ selectedPeriod, currentPeriod }) {
 
 
 
+
+            </Form>
+
+            {/* Add Transaction */}
+            <Form
+                title='Add Transaction'
+                formState={openAddTransaction}
+                handleCloseForm={handleCloseAddTransactionForm}
+                handleSubmit={handleAddTransactionSubmit}>
+
+                {/* Expense */}
+                <SelectField
+                    label='Expense'
+                    dataState={addTransactionData.bucket}
+                    onChange={(value) => {
+                        clearAddTransactionVariables();
+                        setAddTransactionData({ ...addTransactionData, bucket: value })
+                    }}
+                    options={bucketsData.map(bucket => ({
+                        value: bucket,
+                        label: bucket.name,
+                    }))}
+                />
+
+                {/* Reference */}
+                <TextField
+                    label='Reference'
+                    fullWidth
+                    variant='outlined'
+                    value={addTransactionData.reference}
+                    onChange={(e) => setAddTransactionData({ ...addTransactionData, reference: e.target.value })}
+                />
+
+                {/* Date */}
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                        label="Date"
+                        value={addTransactionData.date ? dayjs(addTransactionData.date) : null}
+                        onChange={(value) => setAddTransactionData({ ...addTransactionData, date: value })}
+                    />
+                </LocalizationProvider>
+
+                {/* Description */}
+                <TextField
+                    label='Description'
+                    fullWidth
+                    multiline
+                    rows={3}
+                    maxRows={3}
+                    variant="outlined"
+                    value={addTransactionData.description}
+                    onChange={(e) => setAddTransactionData({ ...addTransactionData, description: e.target.value })}
+                />
+
+                {/* Amount */}
+                <NumberField
+                    label='Amount'
+                    startAdornment='attach_money'
+                    dataState={addTransactionData.amount}
+                    onChange={value => setAddTransactionData({ ...addTransactionData, amount: value })}
+                />
 
             </Form>
         </>

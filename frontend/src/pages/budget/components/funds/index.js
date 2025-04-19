@@ -88,6 +88,7 @@ const DefaultInfoCard = ({ icon, title, description, value, positive }) => {
 
 function Funds({ selectedPeriod }) {
     const { data: sessionData = [], isLoading } = useSessions(selectedPeriod)
+    console.log('selectedperiod: ', selectedPeriod);
 
     return (
         <Grid container spacing={3}>
