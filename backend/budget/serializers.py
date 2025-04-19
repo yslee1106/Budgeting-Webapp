@@ -31,7 +31,7 @@ class BucketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bucket
         fields = ['id', 'expense', 'name', 'session', 'next_payment', 'spending_limit', 'current_amount', 'percentage', 'fulfilled']
-        read_only_fields = ['id', 'user', 'percentage', 'fullfilled']
+        read_only_fields = ['id', 'user', 'percentage', 'fulfilled']
 
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
@@ -51,7 +51,7 @@ class GoalsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Goals
         fields = ['id', 'name', 'category', 'target_amount', 'current_amount', 'percentage', 'fulfilled', 'target_date']
-        read_only_fields = ['id', 'user', 'percentage', 'fullfilled']
+        read_only_fields = ['id', 'user', 'percentage', 'fulfilled']
 
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user

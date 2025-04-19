@@ -1,7 +1,8 @@
 from django.core.exceptions import ValidationError
 from decimal import Decimal
+from django.utils import timezone
 
-from .models import Session, Expense, Bucket
+from .models import Session, Expense, Bucket, Goals
 
 class ExpenseService:
     @staticmethod
@@ -11,15 +12,39 @@ class ExpenseService:
         newExpense = Expense.objects.create(**validated_data)
 
         # Create Bucket for new expense in current session
-        Bucket.objects.create(
-            user=user,
-            expense=newExpense,
-            session=currentSession,
-            next_payment=newExpense.next_payment,
-            spending_limit=newExpense.spending_limit,
-        )
+        BucketService.create_bucket(newExpense)
+
         return newExpense
     
+    @staticmethod
+    def soft_delete_expense(instance):
+        currentBucket = Bucket.objects.filter(expense=instance).latest('session')
+
+        if(currentBucket.current_amount > 0):
+            raise ValidationError("Cannot delete expense with current amount greater than 0.")
+        else:
+            currentBucket.delete()
+            instance.deleted_at = timezone.now().date()
+
+        instance.save()
+        return instance
+
+class BucketService:
+    @staticmethod
+    def create_bucket(expense):
+        user = expense.user
+        currentSession = Session.objects.filter(user=user).latest('period')
+
+        bucket = Bucket.objects.create(
+            user=user,
+            expense=expense,
+            session=currentSession,
+            next_payment=expense.next_payment,
+            spending_limit=expense.spending_limit,
+        )
+
+        return bucket
+
 class GoalService:
     @staticmethod
     def validate_current_amount(value, target_amount):
@@ -63,5 +88,11 @@ class GoalService:
             if attr not in ['current_amount', 'fulfilled']:
                 setattr(instance, attr, value)
 
+        instance.save()
+        return instance
+    
+    @staticmethod
+    def soft_delete_goal(instance):
+        instance.deleted_at = timezone.now().date()
         instance.save()
         return instance

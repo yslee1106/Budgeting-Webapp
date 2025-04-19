@@ -183,12 +183,14 @@ class Expense(models.Model):
     spending_limit = models.DecimalField(max_digits=20, decimal_places=2, null=False)
 
     date_created = models.DateField(auto_now_add=True)
+    deleted_at = models.DateField(null=True, blank=True)
 
     def __repr__(self):
         return (
             f"Expense(id={self.id}, name='{self.name}', category='{self.category}', "
             f"payment_frequency={self.payment_frequency}, next_payment='{self.next_payment}', "
             f"spending_limit={self.spending_limit})"
+            f"date_created='{self.date_created}', deleted_at={self.deleted_at})"
         )
 
     def __str__(self):
@@ -251,12 +253,16 @@ class Goals(models.Model):
     fulfilled = models.BooleanField(default=False, null=False)
     target_date = models.DateField(null=True)
 
+    date_created = models.DateField(auto_now_add=True)
+    deleted_at = models.DateField(null=True, blank=True)
+
     def __repr__(self):
         return (
             f"Goals(id={self.id}, name='{self.name}', category='{self.category}', "
             f"target_amount={self.target_amount}, current_amount={self.current_amount}, "
             f"fulfilled={self.fulfilled})"
             f"target_date={self.target_date}"
+            f"date_created='{self.date_created}', deleted_at={self.deleted_at})"
         )
 
     def __str__(self):
