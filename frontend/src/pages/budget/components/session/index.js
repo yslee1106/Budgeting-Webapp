@@ -127,13 +127,13 @@ const Session = ({ currentPeriod, selectedPeriod, setSelectedPeriod }) => {
                             color={selectedPeriod === month.period ? 'light' : 'dark'}
                             fontSize='10px'
                         >
-                            {month.month}
+                            {month.year}
                         </Typography>
                         <Typography
                             variant="h6"
                             color={selectedPeriod === month.period ? 'light' : 'dark'}
                         >
-                            {month.year}
+                            {month.month}
                         </Typography>
                     </Stack>
                 </Button>
