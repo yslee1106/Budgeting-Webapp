@@ -139,10 +139,10 @@ function Goals({ currentSession }) {
     }
     const clearAdjustGoalVariables = () => {
         setAdjustGoalData({
-            id: '',
+            goal: null,
             type: 'increase',
-            amount: 0,
-            updatedTotal: 0,
+            amount: '',
+            updatedTotal: '',
         });
     }
     const handleOpenAdjustGoalForm = (goal) => {
