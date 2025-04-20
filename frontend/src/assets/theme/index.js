@@ -34,6 +34,11 @@ import inputOutlined from "assets/theme/components/form/inputOutlined";
 import textField from "assets/theme/components/form/textField";
 import switchButton from "assets/theme/components/form/switchButton";
 import menuItem from "assets/theme/components/menuItem";
+import dialog from 'assets/theme/components/dialog/index';
+import dialogTitle from "assets/theme/components/dialog/dialogTitle";
+import dialogContent from "assets/theme/components/dialog/dialogContent";
+import dialogContentText from "assets/theme/components/dialog/dialogContentText";
+import dialogActions from "assets/theme/components/dialog/dialogActions";
 
 // Material Dashboard 2 React helper functions
 import boxShadow from "assets/theme/functions/boxShadow";
@@ -68,7 +73,12 @@ export default createTheme({
     MuiFormControlLabel: { ...formControlLabel },
     MuiFormLabel: { ...formLabel },
     MuiAutocomplete: { ...autocomplete },
-    MuiSwitch: { ...switchButton},
-    MuiMenuItem: { ...menuItem},
+    MuiSwitch: { ...switchButton },
+    MuiMenuItem: { ...menuItem },
+    MuiDialog: { ...dialog },
+    MuiDialogTitle: { ...dialogTitle },
+    MuiDialogContent: { ...dialogContent },
+    MuiDialogContentText: { ...dialogContentText },
+    MuiDialogActions: { ...dialogActions },
   }
 });
