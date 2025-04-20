@@ -1,13 +1,16 @@
 import { useOptimisticMutation } from "services/mutation";
 import { createGoal, createExpense } from "services/budget/requests/post";
 import { patchGoalCurrentAmount } from "services/budget/requests/patch";
+import { deleteGoal, deleteExpense } from "services/budget/requests/delete";
 
 const useCreateExpense = (currentPeriod) => {
+    const bucketKey = ['buckets', currentPeriod];
+
     return useOptimisticMutation(
         createExpense,
-        [['buckets', currentPeriod], /*['expenses']*/],
+        [[bucketKey], /*['expenses']*/],
         {
-            ['buckets']: (oldBuckets, newExpense) => {
+            [bucketKey]: (oldBuckets, newExpense) => {
                 return [
                     ...oldBuckets,
                     {
@@ -22,6 +25,20 @@ const useCreateExpense = (currentPeriod) => {
         },
     );
 };
+
+const useDeleteExpense = (currentPeriod) => {
+    const bucketKey = ['buckets', currentPeriod];
+
+    return useOptimisticMutation(
+        deleteExpense,
+        [bucketKey],
+        {
+            [bucketKey]: (oldBuckets, variables) => {
+                return oldBuckets.filter(bucket => bucket.expense !== variables.expense)
+            }
+        },
+    )
+}
 
 const useCreateGoal = () => {
     return useOptimisticMutation(
@@ -41,7 +58,7 @@ const useCreateGoal = () => {
     )
 };
 
-const usePatchGoalCurrentAmount = (latestSession) => {
+const usePatchGoalCurrentAmount = () => {
     return useOptimisticMutation(
         patchGoalCurrentAmount,
         [['goals'], ['sessions']],
@@ -74,8 +91,22 @@ const usePatchGoalCurrentAmount = (latestSession) => {
     );
 };
 
+const useDeleteGoal = () => {
+    return useOptimisticMutation(
+        deleteGoal,
+        [['goals']],
+        {
+            ['goals']: (oldGoals, variables) => {
+                return oldGoals.filter(goal => goal.id !== variables.id);
+            }
+        }
+    )
+}
+
 export {
     useCreateExpense,
+    useDeleteExpense,
     useCreateGoal,
     usePatchGoalCurrentAmount,
+    useDeleteGoal,
 };

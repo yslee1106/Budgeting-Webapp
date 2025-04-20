@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useGoals } from 'services/budget/queryHooks';
+import { useDeleteGoal } from "services/budget/budgetMutations";
 
 import ProgressTable from "layouts/Table/ProgressTable";
+import Confirmation from 'layouts/Dialogs/Confirmation';
 import AddGoals from 'pages/budget/components/goals/addGoals';
 import AdjustGoals from "pages/budget/components/goals/adjustGoals";
 
@@ -18,6 +20,14 @@ function Goals({ currentSession }) {
 
     const [openAdjustGoals, setOpenAdjustGoals] = useState(false);
 
+    const [openDeleteGoal, setOpenDeleteGoal] = useState(false);
+
+    //
+    // Helper Functions
+    //
+
+    const { mutateAsync: deleteGoal, loadingDeleteGoal } = useDeleteGoal();
+
     //
     // Event Handlers
     //
@@ -30,10 +40,27 @@ function Goals({ currentSession }) {
     const handleOpenAddGoalForm = () => {
         setOpenAddGoals(true);
     }
-    
+
     const handleOpenAdjustGoalForm = (goal) => {
         setSelectedGoal(goal);
         setOpenAdjustGoals(true);
+    }
+
+    const handleOpenDeleteGoal = (goal) => {
+        setSelectedGoal(goal);
+        setOpenDeleteGoal(true);
+    }
+    const handleDeleteGoal = async () => {
+        try {
+            await deleteGoal(selectedGoal);
+            alert('Goal Deleted');
+
+            setSelectedGoal(null);
+            setOpenDeleteGoal(false);
+        } catch (error) {
+            console.error('Submission error:', error);
+            alert(error.message);
+        }
     }
 
     // Yet to implement
@@ -42,9 +69,6 @@ function Goals({ currentSession }) {
     }
     const handleEdit = (goal) => {
         console.log('open edit for goal', goal);
-    }
-    const handleOnDelete = (goal) => {
-        console.log('open delete for goal', goal);
     }
 
     return (
@@ -55,7 +79,7 @@ function Goals({ currentSession }) {
                 onInfo={handleInfo}
                 onEdit={handleEdit}
                 onFunds={handleOpenAdjustGoalForm}
-                onDelete={handleOnDelete}
+                onDelete={handleOpenDeleteGoal}
                 handleSortChange={handleSortChange}
                 sortBy={sortBy}
                 handleAdd={handleOpenAddGoalForm}
@@ -74,13 +98,21 @@ function Goals({ currentSession }) {
                 setIsOpen={setOpenAddGoals}
             />
 
-            <AdjustGoals 
+            <AdjustGoals
                 isOpen={openAdjustGoals}
                 setIsOpen={setOpenAdjustGoals}
                 goalsData={goalsData}
                 selectedGoal={selectedGoal}
             />
-            
+
+            <Confirmation
+                isOpen={openDeleteGoal}
+                setIsOpen={setOpenDeleteGoal}
+                handleClick={handleDeleteGoal}
+                title={'Delete Goal'}
+                content={`Are you sure want to delete ${selectedGoal?.name}?`}
+            />
+
         </>
     )
 }

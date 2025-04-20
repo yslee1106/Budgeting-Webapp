@@ -1,25 +1,33 @@
 import React, { useState } from "react";
 import { useBuckets } from 'services/budget/queryHooks';
-import { useAddTransaction } from 'services/account/accountMutations';
-import { useCategories } from 'context/helpers/budgetCategories';
+import { useDeleteExpense } from "services/budget/budgetMutations";
 
 import ProgressTable from "layouts/Table/ProgressTable";
 import AddExpenses from "pages/budget/components/expenses/addExpenses";
 import AddTransaction from "pages/budget/components/expenses/addTransaction";
+import Confirmation from "layouts/Dialogs/Confirmation";
 
 function Expenses({ selectedPeriod, currentPeriod }) {
 
     //
     // Variable States
     //
-    
+
     const { data: bucketsData = [] } = useBuckets(selectedPeriod);
-    const [selectedBucket, setSelectedBucket] = useState(null);
     const [sortBy, setSortBy] = useState("");
+    const [selectedBucket, setSelectedBucket] = useState(null);
 
     const [openAddExpense, setOpenAddExpense] = useState(false);
 
     const [openAddTransaction, setOpenAddTransaction] = useState(false);
+
+    const [openDeleteExpense, setOpenDeleteExpense] = useState(false);
+
+    //
+    // Helper Functions
+    //
+
+    const { mutateAsync: deleteExpense, loadDeleteExpense } = useDeleteExpense(currentPeriod);
 
     //
     // Event Handlers
@@ -39,6 +47,23 @@ function Expenses({ selectedPeriod, currentPeriod }) {
         setOpenAddTransaction(true);
     }
 
+    const handleOpenDeleteExpense = (bucket) => {
+        setSelectedBucket(bucket);
+        setOpenDeleteExpense(true);
+    }
+    const handleDeleteExpense = async () => {
+        try {
+            await deleteExpense(selectedBucket);
+            alert('Expense Deleted');
+
+            setSelectedBucket(null);
+            setOpenDeleteExpense(false)
+        } catch (error) {
+            console.error('Submission error:', error);
+            alert(error.message);
+        }
+    }
+
     // Yet to implement
     const handleInfo = (expense) => {
         console.log('open info for expense', expense);
@@ -46,10 +71,6 @@ function Expenses({ selectedPeriod, currentPeriod }) {
 
     const handleEdit = (expense) => {
         console.log('open edit for expense', expense);
-    }
-
-    const handleOnDelete = (expense) => {
-        console.log('open delete for expense', expense);
     }
 
     return (
@@ -61,7 +82,7 @@ function Expenses({ selectedPeriod, currentPeriod }) {
                 onInfo={handleInfo}
                 onEdit={handleEdit}
                 onFunds={handleOpenAddTransactionForm}
-                onDelete={handleOnDelete}
+                onDelete={handleOpenDeleteExpense}
                 handleSortChange={handleSortChange}
                 sortBy={sortBy}
                 handleAdd={handleOpenAddExpenseForm}
@@ -86,6 +107,14 @@ function Expenses({ selectedPeriod, currentPeriod }) {
                 setIsOpen={setOpenAddTransaction}
                 bucketsData={bucketsData}
                 selectedBucket={selectedBucket}
+            />
+
+            <Confirmation
+                isOpen={openDeleteExpense}
+                setIsOpen={setOpenDeleteExpense}
+                handleClick={handleDeleteExpense}
+                title={'Delete Expense'}
+                content={`Are you sure you want to delete ${selectedBucket?.name}?`}
             />
 
         </>
