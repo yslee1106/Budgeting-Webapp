@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from decimal import Decimal
+from datetime import datetime
 
 from .models import Transaction
 from budget.models import Bucket, Expense, Session
@@ -42,4 +43,32 @@ class TransactionService:
         bucket.save()
         session.save()
         return transaction
+    
+    @staticmethod
+    def delete_transaction(instance):
+        period_str = instance.date.strftime('%Y-%m-01')
+        period_date = datetime.strptime(period_str, "%Y-%m-01").date()
+
+        bucket = Bucket.objects.get(id=instance.bucket.id, user=instance.user)
+        bucket.current_amount -= instance.amount
+
+        thatSession = Session.objects.get(user=instance.user, period=period_date)
+        thatSession.total_expense -= instance.amount
+        thatSession.available_funds += instance.amount
+        thatSession.save()
+
+        futureSessions = Session.objects.filter(user=instance.user, period__gt=period_date)
+        for session in futureSessions:
+            session.total_expense -= instance.amount
+            session.available_funds += instance.amount
+            session.save()
+    
+        bucket.save()
+
+        instance.delete()
+            
+                
+        
+
+
         

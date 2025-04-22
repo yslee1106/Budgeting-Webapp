@@ -3,7 +3,7 @@ from .models import Transaction
 
 # Register your models here.
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'reference_number', 'date')
+    list_display = ('user', 'date')
     list_filter = ('user',)
 
     def get_queryset(self, request):
