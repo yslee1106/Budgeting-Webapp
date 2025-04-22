@@ -4,9 +4,9 @@ import dayjs from 'dayjs';
 const addTransaction = async (transactionData) => {
     try {
         const payload = {
-            reference_number : transactionData.referenceNumber,
+            title : transactionData.title,
             date: new dayjs(transactionData.date).format('YYYY-MM-DD'),
-            description: transactionData.description,
+            location: transactionData.location,
             bucket: transactionData.bucket.id,
             amount: transactionData.amount,
         }

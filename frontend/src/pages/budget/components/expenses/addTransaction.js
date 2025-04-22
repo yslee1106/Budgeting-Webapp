@@ -19,9 +19,9 @@ function AddTransaction({ isOpen, setIsOpen, bucketsData, selectedBucket }) {
 
     const [addTransactionData, setAddTransactionData] = useState({
         bucket: selectedBucket ? selectedBucket : null,
-        reference: '',
+        title: '',
         date: '',
-        description: '',
+        location: '',
         amount: '',
     })
 
@@ -43,9 +43,9 @@ function AddTransaction({ isOpen, setIsOpen, bucketsData, selectedBucket }) {
     const clearAddTransactionVariables = () => {
         setAddTransactionData({
             bucket: null,
-            reference: '',
+            title: '',
             date: '',
-            description: '',
+            location: '',
             amount: '',
         })
     }
@@ -59,7 +59,8 @@ function AddTransaction({ isOpen, setIsOpen, bucketsData, selectedBucket }) {
 
         console.log('bucket: ', addTransactionData.bucket)
 
-        if (!addTransactionData.bucket ||
+        if (!addTransactionData.title ||
+            !addTransactionData.bucket ||
             !addTransactionData.date ||
             !addTransactionData.amount) {
 
@@ -93,6 +94,24 @@ function AddTransaction({ isOpen, setIsOpen, bucketsData, selectedBucket }) {
             handleCloseForm={handleCloseAddTransactionForm}
             handleSubmit={handleAddTransactionSubmit}>
 
+            {/* Title */}
+            <TextField
+                label='Title'
+                fullWidth
+                variant='outlined'
+                value={addTransactionData.title}
+                onChange={(e) => setAddTransactionData({ ...addTransactionData, title: e.target.value })}
+            />
+
+            {/* Date */}
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DesktopDatePicker
+                    label="Date"
+                    value={addTransactionData.date ? dayjs(addTransactionData.date) : null}
+                    onChange={(value) => setAddTransactionData({ ...addTransactionData, date: value })}
+                />
+            </LocalizationProvider>
+
             {/* Expense */}
             <SelectField
                 label='Expense'
@@ -108,34 +127,16 @@ function AddTransaction({ isOpen, setIsOpen, bucketsData, selectedBucket }) {
                 }))}
             />
 
-            {/* Reference */}
+            {/* Location */}
             <TextField
-                label='Reference'
-                fullWidth
-                variant='outlined'
-                value={addTransactionData.reference}
-                onChange={(e) => setAddTransactionData({ ...addTransactionData, reference: e.target.value })}
-            />
-
-            {/* Date */}
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DesktopDatePicker
-                    label="Date"
-                    value={addTransactionData.date ? dayjs(addTransactionData.date) : null}
-                    onChange={(value) => setAddTransactionData({ ...addTransactionData, date: value })}
-                />
-            </LocalizationProvider>
-
-            {/* Description */}
-            <TextField
-                label='Description'
+                label='Location'
                 fullWidth
                 multiline
-                rows={3}
+                rows={2}
                 maxRows={3}
                 variant="outlined"
-                value={addTransactionData.description}
-                onChange={(e) => setAddTransactionData({ ...addTransactionData, description: e.target.value })}
+                value={addTransactionData.location}
+                onChange={(e) => setAddTransactionData({ ...addTransactionData, location: e.target.value })}
             />
 
             {/* Amount */}
