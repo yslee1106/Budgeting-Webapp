@@ -22,6 +22,8 @@ class SessionViewSet(viewsets.ModelViewSet):
 
         if period is not None:
             queryset = queryset.filter(period=period)
+        else:
+            queryset = queryset.latest('period')
         
         return queryset
 
