@@ -128,7 +128,7 @@ function TableRow({
                         >
                             <LinearProgress
                                 variant="determinate"
-                                value={percentage}
+                                value={percentage < 100 ? percentage : 100}
                                 sx={{
                                     height: 5,
                                     borderRadius: "20px",
