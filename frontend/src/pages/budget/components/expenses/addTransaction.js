@@ -18,7 +18,7 @@ function AddTransaction({ isOpen, setIsOpen, bucketsData, selectedBucket }) {
     //
 
     const [addTransactionData, setAddTransactionData] = useState({
-        bucket: selectedBucket ? selectedBucket : null,
+        bucket: selectedBucket ? selectedBucket : '',
         title: '',
         date: '',
         location: '',
@@ -30,7 +30,7 @@ function AddTransaction({ isOpen, setIsOpen, bucketsData, selectedBucket }) {
     //
 
     useEffect(() => {
-        if (selectedBucket) {
+        if ({selectedBucket}) {
             setAddTransactionData({
                 ...addTransactionData,
                 bucket: selectedBucket,
@@ -42,7 +42,6 @@ function AddTransaction({ isOpen, setIsOpen, bucketsData, selectedBucket }) {
 
     const clearAddTransactionVariables = () => {
         setAddTransactionData({
-            bucket: null,
             title: '',
             date: '',
             location: '',
@@ -115,11 +114,10 @@ function AddTransaction({ isOpen, setIsOpen, bucketsData, selectedBucket }) {
             {/* Expense */}
             <SelectField
                 label='Expense'
-                dataState={selectedBucket}
+                dataState={addTransactionData.bucket}
                 onChange={(value) => {
                     clearAddTransactionVariables();
                     setAddTransactionData({ ...addTransactionData, bucket: value })
-                    selectedBucket = value;
                 }}
                 options={bucketsData.map(bucket => ({
                     value: bucket,

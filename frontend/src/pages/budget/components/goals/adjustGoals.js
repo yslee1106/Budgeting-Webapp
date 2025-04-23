@@ -6,6 +6,7 @@ import { Box } from '@mui/material';
 import Form from "layouts/Form";
 import NumberField from "layouts/Form/components/numberField";
 import SelectField from "layouts/Form/components/selectField";
+import select from "assets/theme/components/form/select";
 
 function AdjustGoals({ isOpen, setIsOpen, goalsData, selectedGoal }) {
     //
@@ -13,7 +14,7 @@ function AdjustGoals({ isOpen, setIsOpen, goalsData, selectedGoal }) {
     //
 
     const [adjustGoalData, setAdjustGoalData] = useState({
-        goal: selectedGoal ? selectedGoal : null,
+        goal: selectedGoal ? selectedGoal : '',
         type: 'increase',
         amount: '',
         updatedTotal: selectedGoal ? selectedGoal.current_amount : '',
@@ -24,23 +25,23 @@ function AdjustGoals({ isOpen, setIsOpen, goalsData, selectedGoal }) {
     //
 
     useEffect(() => {
-        if (selectedGoal) {
+        if (isOpen && selectedGoal) {
             setAdjustGoalData({
                 ...adjustGoalData,
                 goal: selectedGoal,
                 updatedTotal: selectedGoal.current_amount,
             });
         }
-    }, [selectedGoal]);
+    }, [selectedGoal, isOpen]);
 
     const { mutateAsync: patchGoal, loadingPatchGoal } = usePatchGoalCurrentAmount();
 
     const clearAdjustGoalVariables = () => {
         setAdjustGoalData({
-            goal: null,
+            goal: selectedGoal || '',
             type: 'increase',
             amount: '',
-            updatedTotal: '',
+            updatedTotal: selectedGoal ? selectedGoal.current_amount : '',
         });
     }
 
@@ -100,7 +101,7 @@ function AdjustGoals({ isOpen, setIsOpen, goalsData, selectedGoal }) {
             {/* Goal */}
             <SelectField
                 label='Goal'
-                dataState={selectedGoal}
+                dataState={adjustGoalData.goal}
                 onChange={(value) => {
                     clearAdjustGoalVariables();
                     setAdjustGoalData({
@@ -108,7 +109,6 @@ function AdjustGoals({ isOpen, setIsOpen, goalsData, selectedGoal }) {
                         goal: value,
                         updatedTotal: value.current_amount,
                     });
-                    selectedGoal = value;
                 }}
                 options={goalsData.map(goal => ({
                     value: goal,
