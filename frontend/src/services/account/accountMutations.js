@@ -2,11 +2,14 @@ import { useOptimisticMutation } from "services/mutation";
 import { addTransaction } from 'services/account/requests/post';
 
 const useAddTransaction = (currentPeriod) => {
+    const bucketKey = ['buckets', currentPeriod];
+    const sessionKey = ['sessions', currentPeriod];
+
     return useOptimisticMutation(
         addTransaction,
-        [['buckets', currentPeriod], ['sessions', currentPeriod]],
+        [bucketKey, sessionKey],
         {
-            ['buckets']: (oldBuckets, transaction) => {
+            bucketKey: (oldBuckets, transaction) => {
                 return oldBuckets.map((bucket) => {
                     if (bucket.expense === transaction.bucket.expense) {
                         return {
@@ -17,7 +20,7 @@ const useAddTransaction = (currentPeriod) => {
                     return bucket;
                 })
             },
-            ['sessions']: (oldSessions, transaction) => {
+            sessionKey: (oldSessions, transaction) => {
                 return oldSessions.map((session) => {
                     if (session.period === currentPeriod) {
                         return {
