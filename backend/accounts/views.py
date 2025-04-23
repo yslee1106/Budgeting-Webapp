@@ -1,16 +1,18 @@
-# views.py
 from rest_framework import viewsets, permissions
-from .permissions import IsOwner
 from rest_framework.response import Response
 
+from .permissions import IsOwner
 from .models import Transaction
 from .serializers import TransactionSerializer
 from .services import TransactionService
+from .pagination import TransactionPagination
+
 
 class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner]
+    pagination_class = TransactionPagination
 
     def get_queryset(self):
         queryset = Transaction.objects.filter(user=self.request.user)
@@ -19,7 +21,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
         if bucket is not None:
             queryset = queryset.filter(bucket=bucket)
         
-        return queryset
+        return queryset.order_by('-date')
     
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
