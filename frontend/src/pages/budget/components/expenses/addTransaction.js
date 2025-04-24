@@ -30,18 +30,22 @@ function AddTransaction({ isOpen, setIsOpen, bucketsData, selectedBucket }) {
     //
 
     useEffect(() => {
-        if ({selectedBucket}) {
+        if (isOpen) {
             setAddTransactionData({
-                ...addTransactionData,
-                bucket: selectedBucket,
+                bucket: selectedBucket || '',
+                title: '',
+                date: '',
+                location: '',
+                amount: '',
             });
         }
-    }, [selectedBucket]);
+    }, [selectedBucket, isOpen]);
 
     const { mutateAsync: addTransaction, loadingAddTransaction } = useAddTransaction();
 
     const clearAddTransactionVariables = () => {
         setAddTransactionData({
+            bucket: selectedBucket || '',
             title: '',
             date: '',
             location: '',

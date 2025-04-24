@@ -64,17 +64,17 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={true} />
         <AuthProvider>
-          <CssBaseline />
-          {layout === "dashboard" && (
-            <>
-              <SideNav
-                routes={PrivateRouteList}
-                onMouseEnter={handleOnMouseEnter}
-                onMouseLeave={handleOnMouseLeave}
-              />
-            </>
-          )}
-          <AllRoutes />
+            <CssBaseline />
+            {layout === "dashboard" && (
+              <>
+                <SideNav
+                  routes={PrivateRouteList}
+                  onMouseEnter={handleOnMouseEnter}
+                  onMouseLeave={handleOnMouseLeave}
+                />
+              </>
+            )}
+            <AllRoutes />
         </AuthProvider>
 
       </QueryClientProvider>

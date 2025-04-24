@@ -23,7 +23,8 @@ class SessionViewSet(viewsets.ModelViewSet):
         if period is not None:
             queryset = queryset.filter(period=period)
         else:
-            queryset = queryset.latest('period')
+            latest = queryset.latest('period')
+            queryset = queryset.filter(pk=latest.pk)
         
         return queryset
 

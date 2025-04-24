@@ -14,7 +14,7 @@ import NumberField from "layouts/Form/components/numberField";
 import SelectField from "layouts/Form/components/selectField";
 import SwitchField from "layouts/Form/components/switchField";
 
-function AddExpenses({ isOpen, setIsOpen, currentPeriod }) {
+function AddExpenses({ isOpen, setIsOpen }) {
     //
     // Variable States
     //
@@ -42,7 +42,7 @@ function AddExpenses({ isOpen, setIsOpen, currentPeriod }) {
     // Helper Functions
     //
 
-    const { mutateAsync: addExpense, loadingAddExpense } = useCreateExpense(currentPeriod);
+    const { mutateAsync: addExpense, loadingAddExpense } = useCreateExpense();
 
     const clearAddExpenseVariables = () => {
         setAddExpenseData({

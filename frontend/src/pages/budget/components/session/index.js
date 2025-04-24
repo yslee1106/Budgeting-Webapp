@@ -80,21 +80,20 @@ const useDynamicMonthList = (buttonWidth, currentPeriod) => {
     };
 };
 
-const Session = ({ currentPeriod, selectedPeriod, setSelectedPeriod }) => {
+const Session = ({ selectedPeriod, setSelectedPeriod }) => {
     //
     // VARIABLES
     //
-    const { data: sessionData = [], isLoading, error } = useSessions(currentPeriod);
+    const { data: sessionData = [], isLoading, error } = useSessions();
+    const currentPeriod = sessionData.period;
     const buttonWidth = 140;
     const { containerRef, months, handleNavigate, canNavigateRight } = useDynamicMonthList(buttonWidth, currentPeriod);
+    
+    //
+    // Helper Functions
+    //
+    
     const theme = useTheme();
-
-    //
-    // FUNCTIONS
-    //
-    useEffect(() => {
-        setSelectedPeriod(sessionData.period)
-    }, [sessionData]);
 
     //
     // UI OBJECTS
