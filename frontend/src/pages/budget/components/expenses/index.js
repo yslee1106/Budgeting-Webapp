@@ -33,6 +33,19 @@ function Expenses({ selectedPeriod }) {
 
     const { mutateAsync: deleteExpense, loadDeleteExpense } = useDeleteExpense();
 
+    const handleDeleteExpense = async () => {
+        try {
+            await deleteExpense(selectedBucket);
+            alert('Expense Deleted');
+
+            setSelectedBucket(null);
+            setOpenDeleteExpense(false);
+        } catch (error) {
+            console.error('Submission error:', error);
+            alert(error.message);
+        }
+    }
+
     //
     // Event Handlers
     //
@@ -60,18 +73,7 @@ function Expenses({ selectedPeriod }) {
         setSelectedBucket(bucket);
         setOpenDeleteExpense(true);
     }
-    const handleDeleteExpense = async () => {
-        try {
-            await deleteExpense(selectedBucket);
-            alert('Expense Deleted');
-
-            setSelectedBucket(null);
-            setOpenDeleteExpense(false);
-        } catch (error) {
-            console.error('Submission error:', error);
-            alert(error.message);
-        }
-    }
+    
 
     // Yet to implement
     const handleEdit = (expense) => {

@@ -3,14 +3,17 @@ import { createGoal, createExpense } from "services/budget/requests/post";
 import { patchGoalCurrentAmount } from "services/budget/requests/patch";
 import { deleteGoal, deleteExpense } from "services/budget/requests/delete";
 
-const useCreateExpense = (currentPeriod) => {
+import { useCurrentPeriod } from "context/helpers/currentPeriod";
+
+const useCreateExpense = () => {
+    const currentPeriod = useCurrentPeriod()
     const bucketKey = ['buckets', currentPeriod];
 
     return useOptimisticMutation(
         createExpense,
-        [[bucketKey], /*['expenses']*/],
+        [bucketKey, /*['expenses']*/],
         {
-            [bucketKey]: (oldBuckets, newExpense) => {
+            bucketKey: (oldBuckets, newExpense) => {
                 return [
                     ...oldBuckets,
                     {
@@ -26,17 +29,19 @@ const useCreateExpense = (currentPeriod) => {
     );
 };
 
-const useDeleteExpense = (currentPeriod) => {
+const useDeleteExpense = () => {
+    const currentPeriod = useCurrentPeriod();
     const bucketKey = ['buckets', currentPeriod];
 
     return useOptimisticMutation(
         deleteExpense,
         [bucketKey],
         {
-            [bucketKey]: (oldBuckets, variables) => {
+            bucketKey: (oldBuckets, variables) => {
                 return oldBuckets.filter(bucket => bucket.expense !== variables.expense)
             }
         },
+        [bucketKey],
     )
 }
 
@@ -54,14 +59,18 @@ const useCreateGoal = () => {
                     }
                 ];
             }
-        }
+        },
+        [['goals']]
     )
 };
 
 const usePatchGoalCurrentAmount = () => {
+    const currentPeriod = useCurrentPeriod();
+    const sessionKey = ['sessions', currentPeriod];
+
     return useOptimisticMutation(
         patchGoalCurrentAmount,
-        [['goals'], ['sessions']],
+        [['goals'], sessionKey],
         {
             ['goals']: (oldGoals, updatedGoal) => {
                 return oldGoals.map((goal) => {
@@ -74,20 +83,19 @@ const usePatchGoalCurrentAmount = () => {
                     return goal;
                 });
             },
-            // ['sessions']: (oldSession, updatedGoal) => {
-            //     if (oldSession === latestSession) {
-            //         return {
-            //             ...session,
-            //             available_funds: updatedGoal.type === 'increase' ?
-            //                 session.available_funds - updatedGoal.amount :
-            //                 session.available_funds + updatedGoal.amount,
-            //             total_funds: updatedGoal.type === 'increase' ?
-            //                 session.total_funds - updatedGoal.amount :
-            //                 session.total_funds + updatedGoal.amount,
-            //         }
-            //     }
-            // }
-        }
+            sessionKey: (oldSession, updatedGoal) => {
+                return {
+                    ...oldSession,
+                    available_funds: updatedGoal.type === 'increase' ?
+                        oldSession.available_funds - updatedGoal.amount :
+                        oldSession.available_funds + updatedGoal.amount,
+                    total_funds: updatedGoal.type === 'increase' ?
+                        oldSession.total_funds - updatedGoal.amount :
+                        oldSession.total_funds + updatedGoal.amount,
+                }
+            }
+        },
+        [['goals']]
     );
 };
 
@@ -99,7 +107,8 @@ const useDeleteGoal = () => {
             ['goals']: (oldGoals, variables) => {
                 return oldGoals.filter(goal => goal.id !== variables.id);
             }
-        }
+        },
+        [['goals']]
     )
 }
 

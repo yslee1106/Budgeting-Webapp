@@ -1,6 +1,6 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 
-export const useOptimisticMutation = (mutationFn, queryKeys, updateData, successFns) => {
+export const useOptimisticMutation = (mutationFn, queryKeys, updateData, invalidateKeys, successFn,) => {
     const queryClient = useQueryClient();
     const previousData = {};
     const tempIds = {};
@@ -53,8 +53,8 @@ export const useOptimisticMutation = (mutationFn, queryKeys, updateData, success
             }
         },
         onSuccess: (data, variables, context) => {
-            if (successFns) {
-                successFns.forEach(fn => fn({
+            if (successFn) {
+                successFn.forEach(fn => fn({
                     data,
                     variables,
                     context: {
@@ -79,7 +79,7 @@ export const useOptimisticMutation = (mutationFn, queryKeys, updateData, success
             }
         },
         onSettled: async () => {
-            queryKeys.forEach(async key => {
+            invalidateKeys.forEach(async key => {
                 await queryClient.invalidateQueries({key});
             })
         }
