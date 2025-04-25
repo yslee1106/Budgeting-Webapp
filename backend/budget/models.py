@@ -34,17 +34,18 @@ class Income(models.Model):
         unique_together = (('user'), ('name'),)
 
     INCOME_CATEGORIES = [
-    ('SALARY', 'Salary'),
-    ('FREELANCE INCOME', 'Freelance Income'), 
-    ('INVESTMENT INCOME', 'Investment Income'), 
-    ('RENTAL INCOME', 'Rental Income'), 
-    ('SIDE HUSTLE', 'Side Hustle'), 
-    ('GIFTS', 'Gifts'), 
-    ('REIMBURSEMENTS', 'Reimbursements'), 
-    ('OTHER INCOME', 'Other Income')
-]
+        ('SALARY', 'Salary'),
+        ('FREELANCE INCOME', 'Freelance Income'), 
+        ('INVESTMENT INCOME', 'Investment Income'), 
+        ('RENTAL INCOME', 'Rental Income'), 
+        ('SIDE HUSTLE', 'Side Hustle'), 
+        ('GIFTS', 'Gifts'), 
+        ('REIMBURSEMENTS', 'Reimbursements'), 
+        ('OTHER INCOME', 'Other Income')
+    ]
   
     FREQUENCY = [
+        ('ONE-TIME', 'One-time'),
         ('WEEKLY', 'Weekly'), 
         ('BI-WEEKLY', 'Bi-weekly'), 
         ('SEMI-MONTHLY', 'Semi-monthly'),
