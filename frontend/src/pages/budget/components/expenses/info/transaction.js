@@ -196,7 +196,7 @@ const ExpenseTransaction = ({ selectedBucket }) => {
                                             mx: '100px',
                                         }}
                                     >
-                                        - $ {transaction.amount}
+                                        - $ {Math.abs(transaction.amount)}
                                     </Typography>
                                 </Box>
 
