@@ -18,18 +18,30 @@ class TransactionViewSet(viewsets.ModelViewSet):
     serializer_class = DebitTransactionSerializer
 
     def get_queryset(self):
+        user = self.request.user
+        # First, check for bucket and income filters
+        bucket = self.request.query_params.get('bucket')
+        income = self.request.query_params.get('income')
+        if bucket:
+            qs = CreditTransaction.objects.filter(user=user, bucket=bucket)
+            return qs.order_by('-date')
+        if income:
+            qs = DebitTransaction.objects.filter(user=user, income=income)
+            return qs.order_by('-date')
+            
+        # Then check for type filter
         tfilter = self.request.query_params.get('type')
         if tfilter:
             t = tfilter.lower()
             if t == 'debit':
-                qs = DebitTransaction.objects.filter(user=self.request.user, type=t)
+                qs = DebitTransaction.objects.filter(user=user, type=t)
             elif t == 'credit':
-                qs = CreditTransaction.objects.filter(user=self.request.user, type=t)
+                qs = CreditTransaction.objects.filter(user=user, type=t)
             else:
                 qs = Transaction.objects.none()
         else:
-            qs = CreditTransaction.objects.filter(user=self.request.user).union(
-                DebitTransaction.objects.filter(user=self.request.user)
+            qs = CreditTransaction.objects.filter(user=user).union(
+                DebitTransaction.objects.filter(user=user)
             )
         return qs.order_by('-date')
     
@@ -41,12 +53,18 @@ class TransactionViewSet(viewsets.ModelViewSet):
                 return DebitTransactionSerializer
             elif t == Transaction.TransactionType.CREDIT:
                 return CreditTransactionSerializer
-        # For read operations, if a query parameter "type" exists then use that serializer; otherwise, default.
+        # For read operations, if a query parameter "type" exists then use that serializer.
         tfilter = self.request.query_params.get('type')
         if tfilter == Transaction.TransactionType.DEBIT:
             return DebitTransactionSerializer
         elif tfilter == Transaction.TransactionType.CREDIT:
             return CreditTransactionSerializer
+        # If filtering by bucket or income, pick the appropriate serializer:
+        if self.request.query_params.get('bucket'):
+            return CreditTransactionSerializer
+        if self.request.query_params.get('income'):
+            return DebitTransactionSerializer
+        # Default to dynamic serializer
         return TransactionSerializer
 
     def get_object(self):
