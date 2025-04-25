@@ -21,25 +21,18 @@ class TransactionService:
         # Create the correct transaction type
         if transaction_type == Transaction.TransactionType.DEBIT:
             validated_data['amount'] = abs(validated_data['amount'])
-
             transaction = DebitTransaction.objects.create(**validated_data)
-
-            # Handle debit logic (e.g., income updates)
-            session.total_funds += transaction.amount
-            session.available_funds += transaction.amount
         else:
             validated_data['amount'] = -abs(validated_data['amount'])
-
             transaction = CreditTransaction.objects.create(**validated_data)
 
             # Handle credit logic (original bucket/session updates)
             bucket = transaction.bucket
-            
-            bucket.current_amount += transaction.amount
-            session.total_expense += transaction.amount
-            session.available_funds -= transaction.amount
+            bucket.current_amount -= transaction.amount
             bucket.save()
-            
+        
+        session.total_expense += transaction.amount
+        session.available_funds -= transaction.amount
         session.save()
 
         return transaction
@@ -65,16 +58,16 @@ class TransactionService:
         else:
             # Reverse credit logic            
             bucket = instance.bucket
-            bucket.current_amount -= instance.amount
+            bucket.current_amount += instance.amount
 
-            session.total_expense -= instance.amount
-            session.available_funds += instance.amount
+            session.total_expense += instance.amount
+            session.available_funds -= instance.amount
             session.save()
             
             future_sessions = Session.objects.filter(user=instance.user, period__gt=period_date)
             for sess in future_sessions:
-                sess.total_expense -= instance.amount
-                sess.available_funds += instance.amount
+                sess.total_expense += instance.amount
+                sess.available_funds -= instance.amount
                 sess.save()
             
             bucket.save()
