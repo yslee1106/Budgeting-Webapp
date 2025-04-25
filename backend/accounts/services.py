@@ -22,6 +22,9 @@ class TransactionService:
         if transaction_type == Transaction.TransactionType.DEBIT:
             validated_data['amount'] = abs(validated_data['amount'])
             transaction = DebitTransaction.objects.create(**validated_data)
+
+            session.total_funds += transaction.amount
+            session.available_funds += transaction.amount
         else:
             validated_data['amount'] = -abs(validated_data['amount'])
             transaction = CreditTransaction.objects.create(**validated_data)
@@ -31,8 +34,9 @@ class TransactionService:
             bucket.current_amount -= transaction.amount
             bucket.save()
         
-        session.total_expense += transaction.amount
-        session.available_funds -= transaction.amount
+            session.total_expense -= transaction.amount
+            session.available_funds += transaction.amount
+
         session.save()
 
         return transaction
@@ -66,7 +70,7 @@ class TransactionService:
             
             future_sessions = Session.objects.filter(user=instance.user, period__gt=period_date)
             for sess in future_sessions:
-                sess.total_expense += instance.amount
+                sess.total_funds -= instance.amount
                 sess.available_funds -= instance.amount
                 sess.save()
             
