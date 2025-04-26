@@ -37,21 +37,11 @@ function Sidenav({ routes, ...rest }) {
   }, [dispatch, location]);
 
   // Render all the routes from the routes.js (All the visible items on the Sidenav)
-  const renderRoutes = routes.map(({ name, icon, key, href }) => {
+  const renderRoutes = routes.map(({ name, icon, key, href, route, }) => {
     return (
-      <Link
-        href={href}
-        key={key}
-        target="_blank"
-        rel="noreferrer"
-        sx={{ textDecoration: "none" }}
-      >
-        <SidenavCollapse
-          name={name}
-          icon={icon}
-          active={key === collapseName}
-        />
-      </Link>
+      <NavLink key={key} to={route}>
+          <SidenavCollapse name={name} icon={icon} active={key === collapseName} />
+        </NavLink>
     )
   });
 
