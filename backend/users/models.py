@@ -19,7 +19,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     # Preference Fields
     currency = models.CharField(max_length=3, null=True, blank=False)
-    language = models.CharField(max_length=85, null=True, blank=False)
+    language = models.CharField(max_length=85, default='english', blank=False)
     time_zone = models.CharField(max_length=32, default='UTC', null=False, blank=False)
 
     # Security Fields

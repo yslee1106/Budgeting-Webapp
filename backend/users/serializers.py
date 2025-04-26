@@ -15,12 +15,13 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'email', 'password', 
-            #'first_name', 'last_name', 'country', 'phone_number',
-            #'date_of_birth', 'currency', 'language', 
+            'first_name', 'last_name', 'country', 'phone_number',
+            'date_of_birth', 'currency', 'language', 
             'time_zone', 'two_factor_authentication',
             'is_active', 'is_staff', 'is_superuser', 'last_login', 'date_joined'
         ]
         extra_kwargs = {
+            'email': {'read_only': True},
             'password': {'write_only': True},
             'last_login': {'read_only': True},
             'date_joined': {'read_only': True},
@@ -30,11 +31,21 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        # Extract the password and remove it from the validated data
         password = validated_data.pop('password', None)
         email = validated_data.pop('email')
 
         return UserAuthService.create_user(email, password, **validated_data)
+    
+    def update(self, instance, validated_data):
+        password = validated_data.pop('password', None)
+        # Update other fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        # Use set_password to hash the password if it's provided.
+        if password:
+            instance.set_password(password)
+        instance.save()
+        return instance
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     username_field = 'email'

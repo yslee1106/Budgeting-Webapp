@@ -31,7 +31,23 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                 max_age=7 * 24 * 60 * 60,  # 7 days (matches REFRESH_TOKEN_LIFETIME)
             )
         return response
+
+class UserProfileView(generics.RetrieveAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        # Returns the logged-in user
+        return self.request.user
     
+class UserProfileUpdateView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        # Only allow the authenticated user to update their profile
+        return self.request.user
+
 class LogoutView(APIView):
     def post(self, request):
         response = Response({"detail": "Logged out successfully"}, status=status.HTTP_200_OK)
