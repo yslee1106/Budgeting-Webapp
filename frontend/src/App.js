@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import SideNav from "layouts/Sidenav";
@@ -25,17 +23,7 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const { pathname } = useLocation();
 
-  // Create query client (before App component)
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: 30 * 60 * 1000,
-        cacheTime: 30 * 60 * 1000,
-        refetchOnWindowFocus: false,
-        retry: 2,
-      },
-    },
-  });
+
 
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
@@ -61,23 +49,20 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen={true} />
-        <AuthProvider>
-            <CssBaseline />
-            {layout === "dashboard" && (
-              <>
-                <SideNav
-                  routes={PrivateRouteList}
-                  onMouseEnter={handleOnMouseEnter}
-                  onMouseLeave={handleOnMouseLeave}
-                />
-              </>
-            )}
-            <AllRoutes />
-        </AuthProvider>
-
-      </QueryClientProvider>
+      <ReactQueryDevtools initialIsOpen={true} />
+      <AuthProvider>
+        <CssBaseline />
+        {layout === "dashboard" && (
+          <>
+            <SideNav
+              routes={PrivateRouteList}
+              onMouseEnter={handleOnMouseEnter}
+              onMouseLeave={handleOnMouseLeave}
+            />
+          </>
+        )}
+        <AllRoutes />
+      </AuthProvider>
     </ThemeProvider>
   );
 }

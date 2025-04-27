@@ -1,37 +1,41 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import authService from 'services/user/post';
+import { useQueryClient } from '@tanstack/react-query';
+
+import authService from 'services/user/requests/post';
+import { useProfile } from 'services/user/queryHooks';
 import api, { configureApiInterceptor } from 'services/api';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [accessToken, setAccessToken] = useState(null);
-    const [user, setUser] = useState(null);
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
+
+    const [accessToken, setAccessToken] = useState(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    const { data: user, refetch: refetchProfile } = useProfile(isAuthenticated ? accessToken : null);
 
     // Initialize Axios interceptors
     useEffect(() => {
         configureApiInterceptor(
             () => accessToken,  // Function to get current token
-            logout             // Function to call on logout
+            logout,         // Function to call on logout
         );
-    }, [accessToken]);
-
-    const fetchProfile = async () => {
-        try {
-            const profileData = await authService.getProfile();
-            setUser(profileData);
-        } catch (error) {
-            console.error('Error fetching profile:', error);
-            logout();
+        if (accessToken) {
+            setIsAuthenticated(true);
+        } else {
+            setIsAuthenticated(false);
         }
-    };
+        // console.log('ready?', isInterceptorReady)
+    }, [accessToken]);
 
     const login = async (email, password) => {
         try {
             const res = await authService.login(email, password);
             setAccessToken(res.access);  // Only store in state
+
             navigate('/');
         } catch (error) {
             console.error('Login error:', error);
@@ -54,7 +58,8 @@ export const AuthProvider = ({ children }) => {
             await authService.logout();
         } finally {
             setAccessToken(null);
-            setUser(null);
+            // setIsInterceptorReady(false);
+            queryClient.clear();
         }
     };
 

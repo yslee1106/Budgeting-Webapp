@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+let interceptorId;
+
 const API_BASE_URL = process.env.API_BASE_URL || 'http://localhost:8000/';
 
 const api = axios.create({
@@ -9,8 +11,12 @@ const api = axios.create({
 
 // Request interceptor (will be updated in Authentication Context)
 export const configureApiInterceptor = (getToken, logout) => {
-  api.interceptors.request.use((config) => {
-    const token = getToken();  // Get token from function provided by AuthContext
+  // Eject previous interceptor if exists
+  if (interceptorId !== undefined) {
+    api.interceptors.request.eject(interceptorId);
+  }
+  interceptorId = api.interceptors.request.use((config) => {
+    const token = getToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -27,7 +33,7 @@ export const configureApiInterceptor = (getToken, logout) => {
         try {
           // Refresh token using HttpOnly cookie
           const res = await axios.post(
-            `${API_BASE_URL}users/token/refresh/`,
+            `${API_BASE_URL}user/token/refresh/`,
             {},
             { withCredentials: true }
           );

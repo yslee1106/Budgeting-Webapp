@@ -1,5 +1,5 @@
 import Budget from "pages/budget";
-// import Profile from 'pages/profile';
+import Profile from 'pages/profile';
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -52,6 +52,6 @@ export const PrivateRouteList = [
     key: "profile",
     icon: <Icon fontSize="small">person</Icon>,
     route: "/profile",
-    component: <Budget />,
+    component: <Profile />,
   },
 ];
