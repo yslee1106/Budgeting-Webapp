@@ -58,5 +58,4 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     def validate(self, attrs):
         data = super().validate(attrs)
-        del data['refresh']  # Remove refresh token from response body
         return data  # Only returns access token

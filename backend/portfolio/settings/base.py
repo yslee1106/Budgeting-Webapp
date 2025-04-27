@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'daphne',
     'rest_framework', 
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -161,13 +162,19 @@ AUTH_PASSWORD_VALIDATORS = [
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    'ROTATE_REFRESH_TOKENS': True,  # Issues new refresh token on refresh
-    'BLACKLIST_AFTER_ROTATION': True,  # Invalidate old refresh tokens
-    'AUTH_COOKIE': 'refresh_token',  # Cookie name for refresh token
-    'AUTH_COOKIE_SECURE': True,  # HTTPS only
-    'AUTH_COOKIE_HTTP_ONLY': True,  # No JS access
-    'AUTH_COOKIE_SAMESITE': 'Lax',  # CSRF protection
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_COOKIE': 'access_token',  # Cookie name for access token
+    'AUTH_COOKIE_DOMAIN': None,     # Set to your domain in production
+    'AUTH_COOKIE_SECURE': False,     # True for HTTPS only
+    'AUTH_COOKIE_HTTP_ONLY': True,  # Set to True in production with HTTPS
+    'AUTH_COOKIE_PATH': '/',        # The path of the auth cookie
+    'AUTH_COOKIE_SAMESITE': 'Lax',  # Strict/Lax/None
+    'REFRESH_COOKIE': 'refresh_token',  # Cookie name for refresh token
 }
 
 # Security Headers (for production)
