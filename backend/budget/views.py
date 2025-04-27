@@ -1,14 +1,16 @@
 # views.py
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
+from datetime import date
+
 from .permissions import IsOwner
 from .models import Session, Income, Expense, Bucket, Goals
 from .serializers import SessionSerializer, IncomeSerializer, ExpenseSerializer, BucketSerializer, GoalsSerializer
-from .services import ExpenseService, GoalService, BucketService
+from .services import ExpenseService, GoalService, BucketService, SessionService
 
 # Main Data API Views
 class SessionViewSet(viewsets.ModelViewSet):
@@ -42,6 +44,23 @@ class IncomeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    @action(detail=True, methods=['post'])
+    def inject(self, request, pk=None):
+        try:
+            income = self.get_object()
+        except Income.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        if income.next_payday <= date.today():
+            SessionService.inject_income(income)
+            income.next_payday = income.calculate_next_payday()
+            income.save()
+
+            return Response({'status': 'injected'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'status': 'Payday has not passed'}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class ExpenseViewSet(viewsets.ModelViewSet):
     queryset = Expense.objects.all()
     serializer_class = ExpenseSerializer
@@ -63,7 +82,7 @@ class ExpenseViewSet(viewsets.ModelViewSet):
         try:
             expense = Expense.objects.get(pk=pk, user=request.user)
         except:
-            return Response({'detail': 'Not found.'}, status=404)
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
         
         if expense.deleted_at is not None:
             expense.deleted_at = None
@@ -112,7 +131,7 @@ class GoalsViewSet(viewsets.ModelViewSet):
             # Bypass the default queryset to include soft-deleted goals
             goal = Goals.objects.get(pk=pk, user=request.user)
         except Goals.DoesNotExist:
-            return Response({'detail': 'Not found.'}, status=404)
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
 
         if goal.deleted_at is not None:  # Fix: Use "is not None" instead of "__isnull"
             goal.deleted_at = None
@@ -130,7 +149,7 @@ class ChoiceCategoriesView(APIView):
     def get(self, request):
         data = {
             'income_categories': dict(Income.INCOME_CATEGORIES),
-            'income_frequency': dict(Income.FREQUENCY),
+            'income_frequency': dict(Income.FREQUENCY_CHOICES),
             'expense_categories': dict(Expense.EXPENSE_CATEGORIES),
             'goal_categories': dict(Goals.GOAL_CATEGORIES)
         }

@@ -4,11 +4,18 @@ from django.utils import timezone
 
 from .models import Session, Expense, Bucket, Income
 
-# class IncomeService:
-#     @staticmethod
-#     def inject_income(validated_data):
-        
+class SessionService:
+    @staticmethod
+    def inject_income(income):
+        user = income.user
+        amount = income.amount
 
+        currentSession = Session.objects.filter(user=user).latest('period')
+        currentSession.total_funds += amount
+        currentSession.available_funds += amount
+        currentSession.save()
+
+        return currentSession
 
 class ExpenseService:
     @staticmethod

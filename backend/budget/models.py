@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from dateutil.relativedelta import relativedelta
+from datetime import timedelta
 
 # Create your models here.
 User = get_user_model()
@@ -44,22 +46,62 @@ class Income(models.Model):
         ('OTHER INCOME', 'Other Income')
     ]
   
-    FREQUENCY = [
-        ('ONE-TIME', 'One-time'),
-        ('WEEKLY', 'Weekly'), 
-        ('BI-WEEKLY', 'Bi-weekly'), 
-        ('SEMI-MONTHLY', 'Semi-monthly'),
-        ('MONTHLY', 'Monthly'), 
-        ('BI-MONTHLY', 'Bi-monthly'), 
-        ('ANNUALLY', 'Annually')
+    FREQUENCY_CHOICES = [
+        ('DAILY', 'Daily'),
+        ('WEEKLY', 'Weekly'),
+        ('BIWEEKLY', 'Bi-weekly'),
+        ('SEMIMONTHLY', 'Semi-monthly (1st and 15th)'),
+        ('MONTHLY', 'Monthly'),
+        ('BIMONTHLY', 'Bi-monthly (Every 2 months)'),
+        ('QUARTERLY', 'Quarterly'),
+        ('SEMIANNUALLY', 'Semi-annually'),
+        ('ANNUALLY', 'Annually'),
+        ('ONETIME', 'One-time'),
+        ('EVERY_3_DAYS', 'Every 3 days'),
+        ('EVERY_10_DAYS', 'Every 10 days'),
+        ('EVERY_3_WEEKS', 'Every 3 weeks'),
+        ('EVERY_4_WEEKS', 'Every 4 weeks'),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='income')
     name = models.CharField(max_length=60, null=False)
     category = models.CharField(max_length=32, choices=INCOME_CATEGORIES, null=False)
-    pay_frequency = models.DurationField(choices=FREQUENCY)
+    pay_frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES, null=False)  # Changed to CharField
     next_payday = models.DateField(null=False, blank=True)
     amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
+
+    def calculate_next_payday(self):
+        """Calculate the next payday based on frequency"""
+        if not self.next_payday:
+            return None
+            
+        freq_map = {
+            'DAILY': timedelta(days=1),
+            'WEEKLY': timedelta(weeks=1),
+            'BIWEEKLY': timedelta(weeks=2),
+            'SEMIMONTHLY': self._get_semimonthly_delta,
+            'MONTHLY': relativedelta(months=1),
+            'BIMONTHLY': relativedelta(months=2),
+            'QUARTERLY': relativedelta(months=3),
+            'SEMIANNUALLY': relativedelta(months=6),
+            'ANNUALLY': relativedelta(years=1),
+            'EVERY_3_DAYS': timedelta(days=3),
+            'EVERY_10_DAYS': timedelta(days=10),
+            'EVERY_3_WEEKS': timedelta(weeks=3),
+            'EVERY_4_WEEKS': timedelta(weeks=4),
+        }
+        
+        delta = freq_map.get(self.pay_frequency)
+        if callable(delta):
+            return delta()
+        return self.next_payday + delta
+
+    def _get_semimonthly_delta(self):
+        """Special handling for semi-monthly (1st and 15th)"""
+        if self.next_payday.day == 1:
+            return self.next_payday.replace(day=15)
+        else:
+            return (self.next_payday + relativedelta(months=1)).replace(day=1)
 
     def __repr__(self):
         return (
@@ -72,7 +114,7 @@ class Income(models.Model):
         return (
             f"{self.name} ({self.category}) - "
             f"Amount: ${self.amount}, Next Payday: {self.next_payday}, "
-            f"Frequency: Every {self.pay_frequency.days} days"
+            f"Frequency: Every {self.get_pay_frequency_display()} days"
         )
 
 
