@@ -111,6 +111,7 @@ function Goals({ currentSession }) {
                 handleClick={handleDeleteGoal}
                 title={'Delete Goal'}
                 content={`Are you sure want to delete ${selectedGoal?.name}?`}
+                deletion
             />
 
         </>

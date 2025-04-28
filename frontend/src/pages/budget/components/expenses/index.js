@@ -127,6 +127,7 @@ function Expenses({ selectedPeriod }) {
                 handleClick={handleDeleteExpense}
                 title={'Delete Expense'}
                 content={`Are you sure you want to delete ${selectedBucket?.name}?`}
+                deletion
             />
 
         </>

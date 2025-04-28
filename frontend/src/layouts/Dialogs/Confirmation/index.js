@@ -8,7 +8,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function Confirmation({ isOpen, setIsOpen, handleClick, title, content }) {
+export default function Confirmation({ isOpen, setIsOpen, handleClick, title, content, confirm, deletion, yesNo }) {
     const theme = useTheme();
 
     const handleClose = () => {
@@ -31,20 +31,21 @@ export default function Confirmation({ isOpen, setIsOpen, handleClick, title, co
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button 
+                <Button
                     variant='outlined'
                     onClick={handleClose}
                     sx={{
                         px: '1rem',
                         py: '0.4rem'
                     }}>
-                    
+
                     <Typography
                         textTransform='none'
                         color={theme.palette.text_light.main}
                         fontSize='16px'
                     >
-                        Cancel
+                        {confirm | deletion && ('Cancel')}
+                        {yesNo && ('No')}
                     </Typography>
 
                 </Button>
@@ -53,7 +54,7 @@ export default function Confirmation({ isOpen, setIsOpen, handleClick, title, co
                     onClick={handleClick}
                     autoFocus
                     sx={{
-                        bgcolor: theme.palette.negative.main,
+                        bgcolor: deletion ? theme.palette.negative.main : theme.palette.primary.main,
                         px: '1rem',
                         py: '0.4rem'
                     }}>
@@ -63,7 +64,9 @@ export default function Confirmation({ isOpen, setIsOpen, handleClick, title, co
                         color={theme.palette.text_dark.main}
                         fontSize='16px'
                     >
-                        Delete
+                        {confirm && ('Confirm')}
+                        {deletion && ('Delete')}
+                        {yesNo && ('Yes')}
                     </Typography>
 
                 </Button>

@@ -251,6 +251,7 @@ const ExpenseTransaction = ({ selectedBucket }) => {
                 handleClick={handleDeleteTransaction}
                 title={'Delete Transaction'}
                 content={`Are you sure you want to delete ${selectedTransaction?.title}`}
+                deletion
             />
 
         </Box>
