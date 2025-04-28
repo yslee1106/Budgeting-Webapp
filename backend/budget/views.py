@@ -10,7 +10,7 @@ from datetime import date
 from .permissions import IsOwner
 from .models import Session, Income, Expense, Bucket, Goals
 from .serializers import SessionSerializer, IncomeSerializer, ExpenseSerializer, BucketSerializer, GoalsSerializer
-from .services import ExpenseService, GoalService, BucketService, SessionService
+from .services import ExpenseService, GoalService, BucketService, IncomeService
 
 # Main Data API Views
 class SessionViewSet(viewsets.ModelViewSet):
@@ -52,13 +52,28 @@ class IncomeViewSet(viewsets.ModelViewSet):
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
         
         if income.next_payday <= date.today():
-            SessionService.inject_income(income)
-            income.next_payday = income.calculate_next_payday()
+            IncomeService.inject_income(income)
+            income.next_payday = income.calculate_payday(revert=False)
             income.save()
 
             return Response({'status': 'injected'}, status=status.HTTP_200_OK)
         else:
             return Response({'status': 'Payday has not passed'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    @action(detail=True, methods=['post'])
+    def subtract(self, request, pk=None):
+        try:
+            income = self.get_object()
+        except Income.DoesNotExist:
+            return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        IncomeService.subtract_income(income)
+
+        income.next_payday = income.calculate_payday(revert=True)
+        income.save()
+
+        return Response({'status': 'subtracted'}, status=status.HTTP_200_OK)
+            
 
 
 class ExpenseViewSet(viewsets.ModelViewSet):

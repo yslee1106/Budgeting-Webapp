@@ -70,7 +70,7 @@ class Income(models.Model):
     next_payday = models.DateField(null=False, blank=True)
     amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
 
-    def calculate_next_payday(self):
+    def calculate_payday(self, revert):
         """Calculate the next payday based on frequency"""
         if not self.next_payday:
             return None
@@ -94,7 +94,11 @@ class Income(models.Model):
         delta = freq_map.get(self.pay_frequency)
         if callable(delta):
             return delta()
-        return self.next_payday + delta
+        
+        if not revert:
+            return self.next_payday + delta
+        else:
+            return self.next_payday - delta
 
     def _get_semimonthly_delta(self):
         """Special handling for semi-monthly (1st and 15th)"""

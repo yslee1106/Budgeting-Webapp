@@ -1,21 +1,42 @@
-from django.core.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError
 from decimal import Decimal
 from django.utils import timezone
 
 from .models import Session, Expense, Bucket, Income
+from accounts.models import Transaction
+from accounts.services import TransactionService
 
-class SessionService:
+class IncomeService:
     @staticmethod
     def inject_income(income):
         user = income.user
-        amount = income.amount
 
-        currentSession = Session.objects.filter(user=user).latest('period')
-        currentSession.total_funds += amount
-        currentSession.available_funds += amount
-        currentSession.save()
+        transaction = {
+            'user': user,
+            'title': income.name,
+            'type': Transaction.TransactionType.DEBIT,
+            'location': income.name,
+            'date': timezone.now().date(),
+            'amount': income.amount,
+            'income': income
+        }
 
-        return currentSession
+        TransactionService.create_transaction(transaction)
+    
+    @staticmethod
+    def subtract_income(income):
+        user = income.user
+
+        try:
+            last_transaction = Transaction.objects.filter(user=user, income=income.id).latest('date')
+        except Transaction.DoesNotExist:
+            raise ValidationError("Income has never been injected")
+
+        TransactionService.delete_transaction(last_transaction)
+
+
+
+        
 
 class ExpenseService:
     @staticmethod
