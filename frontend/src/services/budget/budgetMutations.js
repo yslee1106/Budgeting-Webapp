@@ -1,12 +1,99 @@
+import { useQueryClient } from "@tanstack/react-query";
+
 import { useOptimisticMutation } from "services/mutation";
-import { createGoal, createExpense } from "services/budget/requests/post";
-import { patchGoalCurrentAmount } from "services/budget/requests/patch";
-import { deleteGoal, deleteExpense } from "services/budget/requests/delete";
+import { createGoal, createExpense, createIncome, injectIncome, subtractIncome } from "services/budget/requests/post";
+import { patchGoalCurrentAmount, patchIncome } from "services/budget/requests/patch";
+import { deleteGoal, deleteExpense, deleteIncome } from "services/budget/requests/delete";
 
 import { useCurrentPeriod } from "context/helpers/currentPeriod";
 
+const useCreateIncome = () => {
+    return useOptimisticMutation(
+        createIncome,
+        [['income']],
+        {
+            ['income']: (oldIncome, newIncome) => {
+                return [
+                    ...oldIncome,
+                    {
+                        newIncome
+                    }
+                ];
+            },
+        },
+        [['income']],
+    )
+}
+
+const usePatchIncome = () => {
+    return useOptimisticMutation(
+        patchIncome,
+        [['income']],
+        {
+            ['income']: (oldIncome, updatedIncome) => {
+                return oldIncome.map((income) =>
+                    income.id === updatedIncome.id
+                        ? { ...income, ...updatedIncome }
+                        : income
+                );
+            },
+        },
+        [['income']]
+    )
+};
+
+const useReceiveIncome = () => {
+    const currentPeriod = useCurrentPeriod();
+    const incomeKey = ['income'];
+    const sessionKey = ['sessions', currentPeriod];
+
+    return useOptimisticMutation(
+        injectIncome,
+        [incomeKey, sessionKey],
+        {
+            sessionKey: (oldSession, incomeReceived) => {
+                return {
+                    ...oldSession,
+                    available_funds: oldSession.available_funds + incomeReceived.amount,
+                    total_funds: oldSession.total_funds + incomeReceived.amount,
+                }
+            }
+        },
+        [incomeKey, sessionKey]
+    )
+};
+
+const useRetractIncome = () => {
+    const queryClient = useQueryClient();
+
+    const sessionQueries = queryClient.getQueriesData(['sessions'])
+
+    const sessionKeys = sessionQueries.map(([key]) => key);
+    const incomeKey = ['income'];
+
+    return useOptimisticMutation(
+        subtractIncome,
+        [incomeKey, ...sessionKeys],
+        {},
+        [incomeKey, ...sessionKeys]
+    )
+}
+
+const useDeleteIncome = () => {
+    return useOptimisticMutation(
+        deleteIncome,
+        [['income']],
+        {
+            ['income']: (oldIncome, variables) => {
+                return oldIncome.filter(income => income.id !== variables.id)
+            }
+        },
+        [['income']]
+    )
+}
+
 const useCreateExpense = () => {
-    const currentPeriod = useCurrentPeriod()
+    const currentPeriod = useCurrentPeriod();
     const bucketKey = ['buckets', currentPeriod];
 
     return useOptimisticMutation(
@@ -26,6 +113,7 @@ const useCreateExpense = () => {
                 return [...oldExpenses, newExpense];
             }*/
         },
+        [bucketKey],
     );
 };
 
@@ -113,6 +201,11 @@ const useDeleteGoal = () => {
 }
 
 export {
+    useCreateIncome,
+    useReceiveIncome,
+    useRetractIncome,
+    usePatchIncome,
+    useDeleteIncome,
     useCreateExpense,
     useDeleteExpense,
     useCreateGoal,

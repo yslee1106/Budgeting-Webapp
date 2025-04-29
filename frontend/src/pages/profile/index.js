@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useTheme } from "@emotion/react";
-import { useAuth } from "context/authentication";
+import { BudgetCategoriesProvider } from "context/helpers/budgetCategories";
+
 
 import {
     Typography,
@@ -16,46 +16,93 @@ import DashboardLayout from "layouts/Containers/DashboardLayout";
 import Footer from "layouts/Footer";
 import DashboardNavbar from "layouts/DashboardNavbar";
 import ProfileSection from "pages/profile/components/profile";
+import Income from "pages/profile/components/income";
 
 function Profile() {
+
+    //
+    // Variables
+    //
+
+    const [currentTab, setCurrentTab] = useState(0);
+
+    //
+    // Event Handlers
+    //
+
+    const handleTabChange = (event, newValue) => {
+        setCurrentTab(newValue);
+    };
+
+    //
+    // UI Styles
+    //
+
+    const TabButtonStyle = () => {
+        return {
+            textTransform: 'none',
+            fontWeight: 'medium',
+            fontSize: '14px',
+        }
+    }
 
     return (
         <DashboardLayout>
             <DashboardNavbar absolute />
-            <Box mt='3rem'>
-                <Grid container spacing={3}>
-                    <Grid size={12}>
+            <BudgetCategoriesProvider>
+                <Box mt='3rem'>
+                    <Grid container spacing={1}>
+                        <Grid size={12}>
 
-                        {/* Profile */}
-                        <ProfileSection />
+                            {/* Profile */}
+                            <ProfileSection />
 
-                        {/* Tabs */}
-                        <Box>
-                            <Tabs
-                                variant="scrollable"
-                                scrollButtons='auto'
-                                aria-label="modal tabs"
-                            >
-                                <Tab
-                                    label='Income'
-                                    sx={{
-                                        textTransform: 'none',
-                                        fontWeight: 'medium',
-                                        fontSize: '14px',
-                                    }} />
-                                <Tab
-                                    label='Preference'
-                                    sx={{
-                                        textTransform: 'none',
-                                        fontWeight: 'medium',
-                                        fontSize: '14px',
-                                    }} />
-                            </Tabs>
-                        </Box>
+                        </Grid>
+                        <Grid size={12}>
 
+                            {/* Tabs */}
+                            <Box>
+                                <Tabs
+                                    value={currentTab}
+                                    onChange={handleTabChange}
+                                    variant="scrollable"
+                                    scrollButtons='auto'
+                                    aria-label="modal tabs"
+                                >
+                                    <Tab
+                                        key='income'
+                                        id='profile-tab-income'
+                                        label='Income'
+                                        sx={() => TabButtonStyle()}
+                                    />
+                                    <Tab
+                                        key='preference'
+                                        id='profile-tab-preference'
+                                        label='Preference'
+                                        sx={() => TabButtonStyle()}
+                                    />
+                                </Tabs>
+                            </Box>
+
+                            <Box>
+
+                                {currentTab === 0 && (
+                                    <Income />
+                                )}
+
+                                {currentTab === 1 && (
+                                    <Stack spacing={2}>
+                                        <Typography variant="h6">Preference</Typography>
+                                        <Typography variant="body1">Yet To Be Implemented</Typography>
+                                    </Stack>
+                                )}
+
+                            </Box>
+
+                        </Grid>
                     </Grid>
-                </Grid>
-            </Box>
+                </Box>
+            </BudgetCategoriesProvider>
         </DashboardLayout>
     )
 }

@@ -1,6 +1,44 @@
 import api from 'services/api'
 import dayjs from 'dayjs';
 
+const createIncome = async (incomeData) => {
+    try {
+        const payload = {
+            name: incomeData.name,
+            category: incomeData.category,
+            amount: incomeData.amount,
+            pay_frequency: incomeData.payFrequency,
+            next_payday: new dayjs(incomeData.nextPayment).format('YYYY-MM-DD')
+        };
+
+        console.log(payload);
+
+        const response = await api.post('/budget/income/', payload);
+        return response.data;
+
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || 'Failed to create income');
+    }
+};
+
+const injectIncome = async (income) => {
+    try {
+        const response = await api.post(`/budget/income/${income.id}/inject/`);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || 'Failed to inject income');
+    }
+};
+
+const subtractIncome = async (income) => {
+    try {
+        const response = await api.post(`/budget/income/${income.id}/subtract/`);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || 'Failed to subtract income');
+    }
+};
+
 const createExpense = async (expenseData) => {
     try {
         const payload = {
@@ -21,7 +59,7 @@ const createExpense = async (expenseData) => {
     } catch (error) {
         throw new Error(error.response?.data?.detail || 'Failed to create expense');
     }
-}
+};
 
 const createGoal = async (goalData) => {
     try {
@@ -47,4 +85,7 @@ const createGoal = async (goalData) => {
 export {
     createGoal,
     createExpense,
+    createIncome,
+    injectIncome,
+    subtractIncome,
 };

@@ -1,5 +1,14 @@
 import api from 'services/api';
 
+const deleteIncome = async (income) => {
+    try {
+        const response = await api.delete(`/budget/income/${income.id}/`);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || 'Failed to delete income');
+    }
+}
+
 const deleteGoal = async (goal) => {
     try {
         const response = await api.delete(`/budget/goals/${goal.id}/`);
@@ -21,4 +30,5 @@ const deleteExpense = async (bucket) => {
 export { 
     deleteGoal,
     deleteExpense,
+    deleteIncome,
 };

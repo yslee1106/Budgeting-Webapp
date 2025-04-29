@@ -68,8 +68,8 @@ function ProfileSection() {
                         {/* Name */}
                         <Typography
                             sx={{
-                                fontWeight: 'regular',
-                                fontSize: '24px',
+                                fontWeight: 'medium',
+                                fontSize: '28px',
                             }}>
                             {user.first_name || user.last_name ? `${user?.first_name} ${user?.last_name}` : 'Anonymous User'}
                         </Typography>
