@@ -44,17 +44,19 @@ const patchGoal = async (goalData) => {
                     acc[newKey] = new dayjs(goalData[key]).format('YYYY-MM-DD');
                 }
                 if (key === 'enableTargetDate') {
-                    return
+                    return acc
                 }
             }
 
             return acc;
         }, {});
 
+        console.log(payload);
+
         const response = await api.patch(`/budget/goals/${goalData.id}/`, payload);
         return response.data;
     } catch (error) {
-        throw new Error(error.response?.data?.detail || 'Failed to update goal');
+        throw new Error(error);
     }
 }
 

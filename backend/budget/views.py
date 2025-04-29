@@ -3,6 +3,7 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from django.utils import timezone
@@ -83,7 +84,7 @@ class IncomeViewSet(viewsets.ModelViewSet):
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
         
         try:
-            last_transaction = Transaction.objects.filter(user=user, income=income.id).latest('date')
+            last_transaction = Transaction.objects.filter(user=income.user, income=income.id).latest('date')
         except Transaction.DoesNotExist:
             raise ValidationError("Income has never been injected")
         

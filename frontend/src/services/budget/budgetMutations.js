@@ -59,23 +59,29 @@ const useReceiveIncome = () => {
                 }
             }
         },
-        [incomeKey, sessionKey]
+        [incomeKey]
     )
 };
 
 const useRetractIncome = () => {
-    const queryClient = useQueryClient();
+    const currentPeriod = useCurrentPeriod();
 
-    const sessionQueries = queryClient.getQueriesData(['sessions'])
-
-    const sessionKeys = sessionQueries.map(([key]) => key);
+    const sessionKey = ['sessions', currentPeriod];
     const incomeKey = ['income'];
 
     return useOptimisticMutation(
         subtractIncome,
-        [incomeKey, ...sessionKeys],
-        {},
-        [incomeKey, ...sessionKeys]
+        [incomeKey, sessionKey],
+        {
+            sessionKey: (oldSession, incomeReceived) => {
+                return {
+                    ...oldSession,
+                    available_funds: oldSession.available_funds - incomeReceived.amount,
+                    total_funds: oldSession.total_funds - incomeReceived.amount,
+                }
+            }
+        },
+        [incomeKey]
     )
 }
 

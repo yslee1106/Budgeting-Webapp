@@ -125,6 +125,15 @@ function GoalsForm({ isOpen, setIsOpen, selectedGoal = null }) {
     }
 
     const handleCloseGoalForm = () => {
+        setGoalData({
+            id: null,
+            name: '',
+            category: '',
+            targetAmount: '',
+            enableTargetDate: false,
+            targetDate: null,
+        })
+
         setIsOpen(false);
     }
 

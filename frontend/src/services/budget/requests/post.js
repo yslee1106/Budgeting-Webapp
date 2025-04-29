@@ -45,6 +45,7 @@ const createExpense = async (expenseData) => {
             name: expenseData.name,
             category: expenseData.category,
             payment_frequency: expenseData?.recurring ? expenseData.paymentFrequency : null,
+            recurring: expenseData.recurring,
             next_payment: expenseData.recurring ?
                 new dayjs(expenseData.nextPayment).format('YYYY-MM-DD') :
                 null,

@@ -34,8 +34,7 @@ class ExpenseService:
 
     @staticmethod
     def soft_delete_expense(instance):
-        currentBucket = Bucket.objects.filter(expense=instance).latest('session')
-
+        currentBucket = Bucket.objects.filter(expense=instance).latest('next_payment')
         if(currentBucket.current_amount > 0):
             raise ValidationError("Cannot delete expense with current amount greater than 0.")
         else:

@@ -70,7 +70,7 @@ class Income(models.Model):
     next_payday = models.DateField(null=False, blank=True)
     amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
 
-    def calculate_payday(self, revert):
+    def calculate_payment(self, revert):
         """Calculate the next payday based on frequency"""
         if not self.next_payday:
             return None
@@ -250,8 +250,8 @@ class Expense(models.Model):
     date_created = models.DateField(auto_now_add=True)
     deleted_at = models.DateField(null=True, blank=True)
 
-    def calculate_payday(self, revert):
-        """Calculate the next payday based on frequency"""
+    def calculate_next_payment(self, revert):
+        """Calculate the next payment based on frequency"""
         if not self.recurring:
             return None
             
