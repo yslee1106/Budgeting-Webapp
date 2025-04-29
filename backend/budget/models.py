@@ -222,15 +222,70 @@ class Expense(models.Model):
         ('OTHER EXPENSES', 'Other Expenses')
     ]
 
+    FREQUENCY_CHOICES = [
+        ('DAILY', 'Daily'),
+        ('WEEKLY', 'Weekly'),
+        ('BIWEEKLY', 'Bi-weekly'),
+        ('SEMIMONTHLY', 'Semi-monthly (1st and 15th)'),
+        ('MONTHLY', 'Monthly'),
+        ('BIMONTHLY', 'Bi-monthly (Every 2 months)'),
+        ('QUARTERLY', 'Quarterly'),
+        ('SEMIANNUALLY', 'Semi-annually'),
+        ('ANNUALLY', 'Annually'),
+        ('ONETIME', 'One-time'),
+        ('EVERY_3_DAYS', 'Every 3 days'),
+        ('EVERY_10_DAYS', 'Every 10 days'),
+        ('EVERY_3_WEEKS', 'Every 3 weeks'),
+        ('EVERY_4_WEEKS', 'Every 4 weeks'),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='expense')
     name = models.CharField(max_length=60, null=False)
     category = models.CharField(max_length=30, choices=EXPENSE_CATEGORIES, null=False)
-    payment_frequency = models.DurationField(null=True)
+    recurring = models.BooleanField(default=False, null=False)
+    payment_frequency = models.CharField(max_length=20, choices=FREQUENCY_CHOICES, null=True)  # Changed to CharField
     next_payment = models.DateField(null=True)
     spending_limit = models.DecimalField(max_digits=20, decimal_places=2, null=False)
 
     date_created = models.DateField(auto_now_add=True)
     deleted_at = models.DateField(null=True, blank=True)
+
+    def calculate_payday(self, revert):
+        """Calculate the next payday based on frequency"""
+        if not self.recurring:
+            return None
+            
+        freq_map = {
+            'DAILY': timedelta(days=1),
+            'WEEKLY': timedelta(weeks=1),
+            'BIWEEKLY': timedelta(weeks=2),
+            'SEMIMONTHLY': self._get_semimonthly_delta,
+            'MONTHLY': relativedelta(months=1),
+            'BIMONTHLY': relativedelta(months=2),
+            'QUARTERLY': relativedelta(months=3),
+            'SEMIANNUALLY': relativedelta(months=6),
+            'ANNUALLY': relativedelta(years=1),
+            'EVERY_3_DAYS': timedelta(days=3),
+            'EVERY_10_DAYS': timedelta(days=10),
+            'EVERY_3_WEEKS': timedelta(weeks=3),
+            'EVERY_4_WEEKS': timedelta(weeks=4),
+        }
+        
+        delta = freq_map.get(self.payment_frequency)
+        if callable(delta):
+            return delta()
+        
+        if not revert:
+            return self.next_payment + delta
+        else:
+            return self.next_payment - delta
+
+    def _get_semimonthly_delta(self):
+        """Special handling for semi-monthly (1st and 15th)"""
+        if self.next_payment.day == 1:
+            return self.next_payment.replace(day=15)
+        else:
+            return (self.next_payment + relativedelta(months=1)).replace(day=1)
 
     def __repr__(self):
         return (

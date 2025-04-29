@@ -33,7 +33,7 @@ class ExpenseAdmin(admin.ModelAdmin):
         return qs.filter(user=request.user)
 
 class BucketAdmin(admin.ModelAdmin):
-    list_display = ('user', 'expense', 'session')
+    list_display = ('user', 'expense', 'get_sessions')
     list_filter = ('user',)
 
     def get_queryset(self, request):
@@ -41,6 +41,10 @@ class BucketAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         return qs.filter(user=request.user)
+    
+    def get_sessions(self, obj):
+        return ", ".join(str(session) for session in obj.session.all())
+    get_sessions.short_description = 'Sessions'
 
 class GoalsAdmin(admin.ModelAdmin):
     list_display = ('user', 'name', 'category')

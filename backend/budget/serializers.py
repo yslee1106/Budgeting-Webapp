@@ -1,7 +1,7 @@
 import decimal
 from rest_framework import serializers
 from .models import Session, Income, Expense, Bucket, Goals
-from .services import ExpenseService, GoalService
+from .services import ExpenseService, GoalService, BucketService
 
 # Main Data Serializers
 class IncomeSerializer(serializers.ModelSerializer):
@@ -23,6 +23,9 @@ class ExpenseSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['user'] = self.context['request'].user
         return ExpenseService.create_expense(validated_data)
+    
+    def update(self, instance, validated_data):
+        return ExpenseService.patch_expense(instance, validated_data)
 
 class BucketSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
@@ -32,10 +35,6 @@ class BucketSerializer(serializers.ModelSerializer):
         model = Bucket
         fields = ['id', 'expense', 'name', 'session', 'next_payment', 'spending_limit', 'current_amount', 'percentage', 'fulfilled']
         read_only_fields = ['id', 'user', 'percentage', 'fulfilled']
-
-    def create(self, validated_data):
-        validated_data['user'] = self.context['request'].user
-        return Bucket.objects.create(**validated_data)
 
     def get_percentage(self, obj):
         if obj.spending_limit == 0:

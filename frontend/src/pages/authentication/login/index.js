@@ -39,8 +39,8 @@ const LogIn = () => {
         try {
             
             // REMOVE THIS
-            setEmail('test4@gmail.com');
-            setPassword('test4Password');
+            setEmail('test@gmail.com');
+            setPassword('testPassword');
             // REMOVE THIS
 
             await login(email, password);

@@ -2,47 +2,12 @@ from rest_framework.exceptions import ValidationError
 from decimal import Decimal
 from django.utils import timezone
 
-from .models import Session, Expense, Bucket, Income
-from accounts.models import Transaction
-from accounts.services import TransactionService
-
-class IncomeService:
-    @staticmethod
-    def inject_income(income):
-        user = income.user
-
-        transaction = {
-            'user': user,
-            'title': income.name,
-            'type': Transaction.TransactionType.DEBIT,
-            'location': income.name,
-            'date': timezone.now().date(),
-            'amount': income.amount,
-            'income': income
-        }
-
-        TransactionService.create_transaction(transaction)
-    
-    @staticmethod
-    def subtract_income(income):
-        user = income.user
-
-        try:
-            last_transaction = Transaction.objects.filter(user=user, income=income.id).latest('date')
-        except Transaction.DoesNotExist:
-            raise ValidationError("Income has never been injected")
-
-        TransactionService.delete_transaction(last_transaction)
-
-
-
-        
+from .models import Session, Expense, Bucket
 
 class ExpenseService:
     @staticmethod
     def create_expense(validated_data):
         user = validated_data['user']
-        currentSession = Session.objects.filter(user=user).latest('period')
         newExpense = Expense.objects.create(**validated_data)
 
         # Create Bucket for new expense in current session
@@ -50,6 +15,23 @@ class ExpenseService:
 
         return newExpense
     
+    @staticmethod
+    def patch_expense(instance, validated_data):
+        currentBucket = Bucket.objects.filter(expense=instance).latest('session')
+
+        for attr, value in validated_data.items():
+            if attr not in ['fulfilled']:
+                setattr(instance, attr, value)
+
+        if 'spending_limit' in validated_data:
+            currentBucket.spending_limit = validated_data['spending_limit']
+        if 'next_payment' in validated_data:
+            currentBucket.next_payment = validated_data['next_payment']
+        
+        instance.save()
+        currentBucket.save()
+
+
     @staticmethod
     def soft_delete_expense(instance):
         currentBucket = Bucket.objects.filter(expense=instance).latest('session')

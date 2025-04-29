@@ -9,8 +9,10 @@ from datetime import date
 
 from .permissions import IsOwner
 from .models import Session, Income, Expense, Bucket, Goals
+from accounts.models import Transaction
 from .serializers import SessionSerializer, IncomeSerializer, ExpenseSerializer, BucketSerializer, GoalsSerializer
-from .services import ExpenseService, GoalService, BucketService, IncomeService
+from .services import ExpenseService, GoalService, BucketService
+from accounts.services import TransactionService
 
 # Main Data API Views
 class SessionViewSet(viewsets.ModelViewSet):
@@ -52,7 +54,19 @@ class IncomeViewSet(viewsets.ModelViewSet):
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
         
         if income.next_payday <= date.today():
-            IncomeService.inject_income(income)
+
+            transaction = {
+                'user': user,
+                'title': income.name,
+                'type': Transaction.TransactionType.DEBIT,
+                'location': income.name,
+                'date': timezone.now().date(),
+                'amount': income.amount,
+                'income': income
+            }
+
+            TransactionService.create_transaction(transaction)
+
             income.next_payday = income.calculate_payday(revert=False)
             income.save()
 
@@ -67,14 +81,17 @@ class IncomeViewSet(viewsets.ModelViewSet):
         except Income.DoesNotExist:
             return Response({'detail': 'Not found.'}, status=status.HTTP_404_NOT_FOUND)
         
-        IncomeService.subtract_income(income)
+        try:
+            last_transaction = Transaction.objects.filter(user=user, income=income.id).latest('date')
+        except Transaction.DoesNotExist:
+            raise ValidationError("Income has never been injected")
+        
+        TransactionService.delete_transaction(last_transaction)
 
         income.next_payday = income.calculate_payday(revert=True)
         income.save()
 
         return Response({'status': 'subtracted'}, status=status.HTTP_200_OK)
-            
-
 
 class ExpenseViewSet(viewsets.ModelViewSet):
     queryset = Expense.objects.all()
@@ -120,9 +137,6 @@ class BucketViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(session__period=period)
         
         return queryset
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
 
 class GoalsViewSet(viewsets.ModelViewSet):
     queryset = Goals.objects.all()

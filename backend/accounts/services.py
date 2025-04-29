@@ -1,8 +1,9 @@
-from django.core.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError
 from decimal import Decimal
 from datetime import datetime
 
 from .models import Transaction, DebitTransaction, CreditTransaction
+from budget.services import BucketService
 from budget.models import Bucket, Session
 
 class TransactionService:
@@ -31,8 +32,18 @@ class TransactionService:
 
             # Handle credit logic (original bucket/session updates)
             bucket = transaction.bucket
+            expense = bucket.expense
             bucket.current_amount -= transaction.amount
+
+            if bucket.current_amount >= bucket.spending_limit:
+                bucket.fulfilled = True
+
+            if bucket.next_payment and bucket.current_amount >= bucket.spending_limit:
+                expense.next_payment += expense.calculate_payday(revert=False)
+                BucketService.create_bucket(expense)
+
             bucket.save()
+            expense.save()
         
             session.total_expense -= transaction.amount
             session.available_funds += transaction.amount
@@ -46,18 +57,16 @@ class TransactionService:
         period_str = instance.date.strftime('%Y-%m-01')
         period_date = datetime.strptime(period_str, "%Y-%m-%d").date()
         session = Session.objects.get(user=instance.user, period=period_date)
+        currentSession = Session.objects.filter(user=instance.user).latest('period')
+        
+        if session != currentSession:
+            raise ValidationError('Unable to delete transactions from previous sessions')
 
         if instance.type == Transaction.TransactionType.DEBIT:
             # Reverse debit logic
             session.total_funds -= instance.amount
             session.available_funds -= instance.amount
             session.save()
-
-            future_sessions = Session.objects.filter(user=instance.user, period__gt=period_date)
-            for sess in future_sessions:
-                sess.total_funds -= instance.amount
-                sess.available_funds -= instance.amount
-                sess.save()
 
         else:
             # Reverse credit logic            
@@ -66,14 +75,8 @@ class TransactionService:
 
             session.total_expense += instance.amount
             session.available_funds -= instance.amount
+            
             session.save()
-            
-            future_sessions = Session.objects.filter(user=instance.user, period__gt=period_date)
-            for sess in future_sessions:
-                sess.total_funds -= instance.amount
-                sess.available_funds -= instance.amount
-                sess.save()
-            
             bucket.save()
         
         instance.delete()

@@ -21,7 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
             'is_active', 'is_staff', 'is_superuser', 'last_login', 'date_joined'
         ]
         extra_kwargs = {
-            'email': {'read_only': True},
+            'email': {'read_only': False},
             'password': {'write_only': True},
             'last_login': {'read_only': True},
             'date_joined': {'read_only': True},
