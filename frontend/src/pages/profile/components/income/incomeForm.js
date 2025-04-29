@@ -98,6 +98,8 @@ function IncomeForm({ isOpen, setIsOpen, selectedIncome = null }) {
             return;
         }
 
+        incomeData.nextPayday = new dayjs(incomeData.nextPayday).format('YYYY-MM-DD');
+
         try {
             if (selectedIncome) {
                 const changedData = {};
@@ -131,6 +133,15 @@ function IncomeForm({ isOpen, setIsOpen, selectedIncome = null }) {
     }
 
     const handleCloseIncomeForm = () => {
+        setIncomeData({
+            id: selectedIncome ? selectedIncome.id : null,
+            name: selectedIncome ? selectedIncome.name : '',
+            category: selectedIncome ? selectedIncome.category : '',
+            payFrequency: selectedIncome ? selectedIncome.pay_frequency : '',
+            nextPayday: selectedIncome ? selectedIncome.next_payday : null,
+            amount: selectedIncome ? selectedIncome.amount : '',
+        })
+
         setIsOpen(false);
     }
 
