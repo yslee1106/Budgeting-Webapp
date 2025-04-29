@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
+from django.utils import timezone
 from datetime import date
 
 from .permissions import IsOwner
@@ -56,7 +57,7 @@ class IncomeViewSet(viewsets.ModelViewSet):
         if income.next_payday <= date.today():
 
             transaction = {
-                'user': user,
+                'user': income.user,
                 'title': income.name,
                 'type': Transaction.TransactionType.DEBIT,
                 'location': income.name,
