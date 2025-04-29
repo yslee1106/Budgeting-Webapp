@@ -12,11 +12,11 @@ const patchIncome = async (incomeData) => {
             if (key !== 'id') { // exclude id from payload if necessary
                 const newKey = keyMapping[key] || key;
                 acc[newKey] = incomeData[key];
-                if (key === 'nextPayday'){
+                if (key === 'nextPayday') {
                     acc[newKey] = new dayjs(incomeData[key]).format('YYYY-MM-DD');
                 }
             }
-            
+
             return acc;
         }, {});
 
@@ -28,6 +28,35 @@ const patchIncome = async (incomeData) => {
         throw new Error(error.response?.data?.detail || 'Failed to update goal');
     }
 };
+
+const patchGoal = async (goalData) => {
+    try {
+        const keyMapping = {
+            targetAmount: 'target_amount',
+            targetDate: 'target_date',
+        };
+
+        const payload = Object.keys(goalData).reduce((acc, key) => {
+            if (key !== 'id') {
+                const newKey = keyMapping[key] || key;
+                acc[newKey] = goalData[key];
+                if (key === 'targetDate') {
+                    acc[newKey] = new dayjs(goalData[key]).format('YYYY-MM-DD');
+                }
+                if (key === 'enableTargetDate') {
+                    return
+                }
+            }
+
+            return acc;
+        }, {});
+
+        const response = await api.patch(`/budget/goals/${goalData.id}/`, payload);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || 'Failed to update goal');
+    }
+}
 
 const patchGoalCurrentAmount = async (updatedData) => {
     try {
@@ -44,7 +73,8 @@ const patchGoalCurrentAmount = async (updatedData) => {
     }
 };
 
-export { 
+export {
     patchIncome,
+    patchGoal,
     patchGoalCurrentAmount,
 };

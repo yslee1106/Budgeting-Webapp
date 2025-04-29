@@ -4,7 +4,7 @@ import { useDeleteGoal } from "services/budget/budgetMutations";
 
 import ProgressTable from "layouts/Table/ProgressTable";
 import Confirmation from 'layouts/Dialogs/Confirmation';
-import AddGoals from 'pages/budget/components/goals/addGoals';
+import GoalsForm from 'pages/budget/components/goals/goalsForm';
 import AdjustGoals from "pages/budget/components/goals/adjustGoals";
 
 function Goals({ currentSession }) {
@@ -17,6 +17,8 @@ function Goals({ currentSession }) {
     const [selectedGoal, setSelectedGoal] = useState(null);
 
     const [openAddGoals, setOpenAddGoals] = useState(false);
+
+    const [openEditGoals, setOpenEditGoals] = useState(false);
 
     const [openAdjustGoals, setOpenAdjustGoals] = useState(false);
 
@@ -37,14 +39,23 @@ function Goals({ currentSession }) {
         console.log(`sort goal by ${event.target.value} clicked`);
     };
 
+
     const handleOpenAddGoalForm = () => {
         setOpenAddGoals(true);
     }
+
 
     const handleOpenAdjustGoalForm = (goal) => {
         setSelectedGoal(goal);
         setOpenAdjustGoals(true);
     }
+
+
+    const handleOpenEditGoalForm = (goal) =>{
+        setSelectedGoal(goal);
+        setOpenEditGoals(true);
+    }
+
 
     const handleOpenDeleteGoal = (goal) => {
         setSelectedGoal(goal);
@@ -67,9 +78,6 @@ function Goals({ currentSession }) {
     const handleInfo = (goal) => {
         console.log('open info for goal', goal);
     }
-    const handleEdit = (goal) => {
-        console.log('open edit for goal', goal);
-    }
 
     return (
         <>
@@ -77,7 +85,7 @@ function Goals({ currentSession }) {
                 title='Goals'
                 data={goalsData}
                 onInfo={handleInfo}
-                onEdit={handleEdit}
+                onEdit={handleOpenEditGoalForm}
                 onFunds={handleOpenAdjustGoalForm}
                 onDelete={handleOpenDeleteGoal}
                 handleSortChange={handleSortChange}
@@ -93,11 +101,20 @@ function Goals({ currentSession }) {
                 }}
             />
 
-            <AddGoals
+            {/* Add Goals Form */}
+            <GoalsForm
                 isOpen={openAddGoals}
                 setIsOpen={setOpenAddGoals}
             />
 
+            {/* Edit Goals Form */}
+            <GoalsForm 
+                isOpen={openEditGoals}
+                setIsOpen={setOpenEditGoals}
+                selectedGoal={selectedGoal}
+            />
+
+            {/* Adjust Goals Form */}
             <AdjustGoals
                 isOpen={openAdjustGoals}
                 setIsOpen={setOpenAdjustGoals}
@@ -105,6 +122,7 @@ function Goals({ currentSession }) {
                 selectedGoal={selectedGoal}
             />
 
+            {/* Delete Goals Confirmation */}
             <Confirmation
                 isOpen={openDeleteGoal}
                 setIsOpen={setOpenDeleteGoal}

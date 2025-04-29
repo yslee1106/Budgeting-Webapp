@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 
 import { useOptimisticMutation } from "services/mutation";
 import { createGoal, createExpense, createIncome, injectIncome, subtractIncome } from "services/budget/requests/post";
-import { patchGoalCurrentAmount, patchIncome } from "services/budget/requests/patch";
+import { patchGoalCurrentAmount, patchIncome, patchGoal } from "services/budget/requests/patch";
 import { deleteGoal, deleteExpense, deleteIncome } from "services/budget/requests/delete";
 
 import { useCurrentPeriod } from "context/helpers/currentPeriod";
@@ -152,6 +152,23 @@ const useCreateGoal = () => {
     )
 };
 
+const usePatchGoal = () => {
+    return useOptimisticMutation(
+        patchGoal,
+        [['goals']],
+        {
+            ['goals']: (oldGoals, updatedGoal) => {
+                return oldGoals.map((goal) =>
+                    goal.id === updatedGoal.id
+                        ? { ...goal, ...updatedGoal }
+                        : goal
+                );
+            },
+        },
+        [['goals']]
+    )
+};
+
 const usePatchGoalCurrentAmount = () => {
     const currentPeriod = useCurrentPeriod();
     const sessionKey = ['sessions', currentPeriod];
@@ -209,6 +226,7 @@ export {
     useCreateExpense,
     useDeleteExpense,
     useCreateGoal,
+    usePatchGoal,
     usePatchGoalCurrentAmount,
     useDeleteGoal,
 };

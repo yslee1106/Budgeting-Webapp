@@ -10,6 +10,7 @@ const SwitchField = ({ label, dataState, onChange }) => {
             label={label}
             control={
                 <Switch
+                    checked={dataState}
                     value={dataState}
                     onChange={onChange}
                     sx={{ ml: '10px' }}
