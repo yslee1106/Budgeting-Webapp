@@ -22,7 +22,7 @@ function ProfileSection() {
     // Variable States
     //
 
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
 
     const [openEditProfile, setOpenEditProfile] = useState(false);
 
@@ -38,6 +38,10 @@ function ProfileSection() {
 
     const handleOpenEditProfile = () => {
         setOpenEditProfile(true);
+    }
+
+    const handleLogout = () => {
+        logout();
     }
 
     return (
@@ -113,26 +117,43 @@ function ProfileSection() {
                     </Box>
                 </Box>
 
-                {/* Edit button */}
+                
                 <Box sx={{
+                    display: 'flex',
                     position: 'absolute',
                     top: 0,
                     right: 0,
                     py: '0.4rem',
                     px: '3rem',
+                    gap: '1rem',
                 }}>
+                    {/* Edit button */}
                     <Button
-                        variant="contained"
+                        variant="outlined"
                         onClick={handleOpenEditProfile}
                         sx={{
-                            px: '2rem',
+                            width: '7rem',
+                            py: '0.7rem',
+                            borderRadius: "10px",
+                            fontWeight: 600,
+                            fontSize: "12px",
+                        }}>
+                        Edit
+                    </Button>
+
+                    {/* Logout Button */}
+                    <Button
+                        variant="contained"
+                        onClick={handleLogout}
+                        sx={{
+                            width: '7rem',
                             py: '0.7rem',
                             borderRadius: "10px",
                             backgroundColor: "#212121",
                             fontWeight: 600,
                             fontSize: "12px",
                         }}>
-                        Edit
+                        Logout
                     </Button>
                 </Box>
 
