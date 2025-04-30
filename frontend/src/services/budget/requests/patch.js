@@ -29,6 +29,35 @@ const patchIncome = async (incomeData) => {
     }
 };
 
+const patchExpense = async (expenseData) => {
+    try {
+        const keyMapping = {
+            spendingLimit: 'spending_limit',
+            paymentFrequency: 'payment_frequency',
+            nextPayment: 'next_payment',
+        };
+
+        const payload = Object.keys(expenseData).reduce((acc, key) => {
+            if (key !== 'id') { // exclude id from payload if necessary
+                const newKey = keyMapping[key] || key;
+                acc[newKey] = expenseData[key];
+                if (key === 'nextPayment') {
+                    acc[newKey] = new dayjs(expenseData[key]).format('YYYY-MM-DD');
+                }
+            }
+
+            return acc;
+        }, {});
+
+        console.log(payload);
+
+        const response = await api.patch(`/budget/expenses/${expenseData.id}/`, payload);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.detail || 'Failed to update expense');
+    }
+}
+
 const patchGoal = async (goalData) => {
     try {
         const keyMapping = {
@@ -77,6 +106,7 @@ const patchGoalCurrentAmount = async (updatedData) => {
 
 export {
     patchIncome,
+    patchExpense,
     patchGoal,
     patchGoalCurrentAmount,
 };

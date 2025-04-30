@@ -2,10 +2,11 @@ import React, { useState } from "react";
 
 import { useBuckets } from 'services/budget/queryHooks';
 import { useDeleteExpense } from "services/budget/budgetMutations";
+import { fetchExpenseById } from "services/budget/requests/get";
 
 import ProgressTable from "layouts/Table/ProgressTable";
 import BucketInfo from 'pages/budget/components/expenses/info'
-import AddExpenses from "pages/budget/components/expenses/addExpenses";
+import ExpenseForm from "pages/budget/components/expenses/expenseForm";
 import AddTransaction from "pages/budget/components/expenses/addTransaction";
 import Confirmation from "layouts/Dialogs/Confirmation";
 
@@ -18,10 +19,13 @@ function Expenses({ selectedPeriod }) {
     const { data: bucketsData = [] } = useBuckets(selectedPeriod);
     const [sortBy, setSortBy] = useState("");
     const [selectedBucket, setSelectedBucket] = useState(null);
+    const [selectedExpense, setSelectedExpense] = useState(null);
 
     const [openInfo, setOpenInfo] = useState(false);
 
     const [openAddExpense, setOpenAddExpense] = useState(false);
+
+    const [openEditExpense, setOpenEditExpense] = useState(false);
 
     const [openAddTransaction, setOpenAddTransaction] = useState(false);
 
@@ -55,13 +59,19 @@ function Expenses({ selectedPeriod }) {
         console.log(`sort expense by ${event.target.value} clicked`);
     };
 
+    const handleOpenAddExpenseForm = () => {
+        setOpenAddExpense(true);
+    }
+
     const handleOpenInfo = (bucket) => {
         setSelectedBucket(bucket)
         setOpenInfo(true);
     }
 
-    const handleOpenAddExpenseForm = () => {
-        setOpenAddExpense(true);
+    const handleOpenEditExpenseForm = async (bucket) => {
+        const expense = await fetchExpenseById(bucket.expense);
+        setSelectedExpense(expense);
+        setOpenEditExpense(true);
     }
 
     const handleOpenAddTransactionForm = (bucket) => {
@@ -74,12 +84,6 @@ function Expenses({ selectedPeriod }) {
         setOpenDeleteExpense(true);
     }
     
-
-    // Yet to implement
-    const handleEdit = (expense) => {
-        console.log('open edit for expense', expense);
-    }
-
     return (
         <>
             <ProgressTable
@@ -87,7 +91,7 @@ function Expenses({ selectedPeriod }) {
                 limit
                 data={bucketsData}
                 onInfo={handleOpenInfo}
-                onEdit={handleEdit}
+                onEdit={handleOpenEditExpenseForm}
                 onFunds={handleOpenAddTransactionForm}
                 onDelete={handleOpenDeleteExpense}
                 handleSortChange={handleSortChange}
@@ -103,17 +107,27 @@ function Expenses({ selectedPeriod }) {
                 }}
             />
 
-            <AddExpenses
+            {/* Add Expense Form */}
+            <ExpenseForm
                 isOpen={openAddExpense}
                 setIsOpen={setOpenAddExpense}
             />
 
+            {/* Edit Expense Form */}
+            <ExpenseForm
+                isOpen={openEditExpense}
+                setIsOpen={setOpenEditExpense}
+                selectedExpense={selectedExpense}
+            />
+
+            {/* Expense Info */}
             <BucketInfo
                 isOpen={openInfo}
                 setIsOpen={setOpenInfo}
                 selectedBucket={selectedBucket}
             />
 
+            {/* Add Transaction Form */}
             <AddTransaction
                 isOpen={openAddTransaction}
                 setIsOpen={setOpenAddTransaction}
@@ -121,6 +135,7 @@ function Expenses({ selectedPeriod }) {
                 selectedBucket={selectedBucket}
             />
 
+            {/* Delete Expense Confirmation */}
             <Confirmation
                 isOpen={openDeleteExpense}
                 setIsOpen={setOpenDeleteExpense}

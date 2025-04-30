@@ -143,7 +143,7 @@ function GoalsForm({ isOpen, setIsOpen, selectedGoal = null }) {
 
     return (
         <Form
-            title='Add Goals'
+            title={title}
             formState={isOpen}
             handleCloseForm={handleCloseGoalForm}
             handleSubmit={handleGoalsSubmit}>
