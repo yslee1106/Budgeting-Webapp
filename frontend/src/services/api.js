@@ -10,7 +10,7 @@ const api = axios.create({
 });
 
 // Request interceptor (will be updated in Authentication Context)
-export const configureApiInterceptor = (getToken, logout) => {
+export const configureApiInterceptor = (getToken, logout, setAccessToken) => {
   // Eject previous interceptor if exists
   if (interceptorId !== undefined) {
     api.interceptors.request.eject(interceptorId);
@@ -38,6 +38,7 @@ export const configureApiInterceptor = (getToken, logout) => {
             { withCredentials: true }
           );
           const newAccessToken = res.data.access;
+          setAccessToken(newAccessToken);  // Update state with new token
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           return api(originalRequest);
         } catch (err) {

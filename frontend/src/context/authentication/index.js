@@ -22,6 +22,7 @@ export const AuthProvider = ({ children }) => {
         configureApiInterceptor(
             () => accessToken,  // Function to get current token
             logout,         // Function to call on logout
+            setAccessToken,
         );
         if (accessToken) {
             setIsAuthenticated(true);
