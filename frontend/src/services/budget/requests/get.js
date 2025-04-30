@@ -40,9 +40,9 @@ const fetchIncome = async () => {
     }
 };
 
-const fetchExpenseById = async (expenseId) => {
+const fetchExpense = async () => {
     try {
-        const response = await api.get(`/budget/expense/${expenseId}/`);
+        const response = await api.get(`/budget/expense/`);
         return response.data;
     } catch (error) {
         console.error('Error fetching items:', error);
@@ -75,7 +75,7 @@ export {
     fetchSessionByPeriod,
     fetchBucketByPeriod,
     fetchIncome,
-    fetchExpenseById,
+    fetchExpense,
     fetchGoals,
     fetchModelChoices,
 };

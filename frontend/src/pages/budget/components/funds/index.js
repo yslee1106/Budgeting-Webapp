@@ -8,6 +8,8 @@ import Box from "@mui/material/Box";
 import Icon from "@mui/material/Icon";
 import Typography from '@mui/material/Typography';
 
+import Loading from "layouts/Loading";
+
 const DefaultInfoCard = ({ icon, title, description, value, positive }) => {
     const theme = useTheme();
 
@@ -88,7 +90,13 @@ const DefaultInfoCard = ({ icon, title, description, value, positive }) => {
 
 function Funds({ selectedPeriod }) {
     const { data: sessionData = [], isLoading } = useSessions(selectedPeriod)
-    
+
+    if (isLoading) {
+        return (
+            <Loading />
+        );
+    }
+
     return (
         <Grid container spacing={3}>
             <Grid size={{ xs: 12, xl: 4 }}>

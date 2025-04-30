@@ -3,6 +3,7 @@ import { usePatchGoalCurrentAmount } from 'services/budget/budgetMutations';
 
 import { Box } from '@mui/material';
 
+import Loading from "layouts/Loading";
 import Form from "layouts/Form";
 import NumberField from "layouts/Form/components/numberField";
 import SelectField from "layouts/Form/components/selectField";
@@ -90,6 +91,12 @@ function AdjustGoals({ isOpen, setIsOpen, goalsData, selectedGoal }) {
     //
     // UI Design
     //
+
+    if (loadingPatchGoal) {
+        return (
+            <Loading />
+        );
+    }
 
     return (
         <Form

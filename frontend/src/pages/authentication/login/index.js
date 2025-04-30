@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { useAuth } from 'context/authentication';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useTheme } from "@emotion/react";
 
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
+import { Typography, Box, Button } from "@mui/material";
 
 import PageLayout from "layouts/Containers/PageLayout";
 import Logo from "layouts/Logo";
@@ -23,9 +21,6 @@ const LogIn = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
 
-    const theme = useTheme();
-    const { functions } = theme;
-
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword);
     };
@@ -37,18 +32,12 @@ const LogIn = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            
-            // REMOVE THIS
-            setEmail('test@gmail.com');
-            setPassword('testPassword');
-            // REMOVE THIS
-
             await login(email, password);
             // Redirect to the originally requested page or home
             navigate(location.state?.from?.pathname || '/budget', { replace: true });
         } catch (err) {
             console.error('Error', err);
-            setError('Invalid username or password');
+            alert('Invalid username or password');
         }
     };
 

@@ -30,7 +30,8 @@ function TableRow({
         name: 'name',
         percentage: 'percentage',
         id: 'id'
-    }
+    },
+    iconMapFunction,
 }) {
     const theme = useTheme();
     const items = Array.isArray(data)
@@ -48,6 +49,7 @@ function TableRow({
                 const currentAmount = getField('currentAmount');
                 const name = getField('name');
                 const percentage = getField('percentage');
+                const category = getField('category');
                 const id = getField('id');
 
                 return (
@@ -66,11 +68,7 @@ function TableRow({
                             minWidth: 56,
                             ml: '10px'
                         }}>
-                            <Icon sx={{
-                                fontSize: '32px'
-                            }}>
-                                error
-                            </Icon>
+                            {category ? iconMapFunction(category) : iconMapFunction(item)}
                         </ListItemIcon>
 
                         <ListItemText

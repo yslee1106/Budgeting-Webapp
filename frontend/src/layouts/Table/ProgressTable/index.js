@@ -15,6 +15,7 @@ function ProgressTable({
     sortBy,
     handleAdd,
     fieldMappings,
+    iconMapFunction,
 }) {
     return (
         <Box
@@ -35,7 +36,8 @@ function ProgressTable({
                 onEdit={onEdit}
                 onFunds={onFunds}
                 onDelete={onDelete}
-                fieldMappings={fieldMappings} />
+                fieldMappings={fieldMappings}
+                iconMapFunction={iconMapFunction} />
         </Box>
     )
 }

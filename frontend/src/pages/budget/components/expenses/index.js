@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 
-import { useBuckets } from 'services/budget/queryHooks';
+import { useBuckets, useExpense } from 'services/budget/queryHooks';
 import { useDeleteExpense } from "services/budget/budgetMutations";
-import { fetchExpenseById } from "services/budget/requests/get";
+import { useCategories } from "context/helpers/budgetCategories";
 
+import Loading from "layouts/Loading";
 import ProgressTable from "layouts/Table/ProgressTable";
 import BucketInfo from 'pages/budget/components/expenses/info'
 import ExpenseForm from "pages/budget/components/expenses/expenseForm";
@@ -16,7 +17,10 @@ function Expenses({ selectedPeriod }) {
     // Variable States
     //
 
-    const { data: bucketsData = [] } = useBuckets(selectedPeriod);
+    const { data: bucketsData = [], loadingBuckets } = useBuckets(selectedPeriod);
+    const { data: expenseData = [], loadingExpense } = useExpense(selectedPeriod);
+
+    const { getExpenseIcon } = useCategories();
     const [sortBy, setSortBy] = useState("");
     const [selectedBucket, setSelectedBucket] = useState(null);
     const [selectedExpense, setSelectedExpense] = useState(null);
@@ -68,8 +72,8 @@ function Expenses({ selectedPeriod }) {
         setOpenInfo(true);
     }
 
-    const handleOpenEditExpenseForm = async (bucket) => {
-        const expense = await fetchExpenseById(bucket.expense);
+    const handleOpenEditExpenseForm = (bucket) => {
+        const expense = expenseData.find(expense => expense.id === bucket.expense);
         setSelectedExpense(expense);
         setOpenEditExpense(true);
     }
@@ -83,7 +87,17 @@ function Expenses({ selectedPeriod }) {
         setSelectedBucket(bucket);
         setOpenDeleteExpense(true);
     }
-    
+
+    //
+    // UI Design
+    //
+
+    if (loadDeleteExpense || loadingBuckets) {
+        return (
+            <Loading />
+        );
+    }
+
     return (
         <>
             <ProgressTable
@@ -104,6 +118,11 @@ function Expenses({ selectedPeriod }) {
                     name: 'name',
                     percentage: 'percentage',
                     id: 'id',
+                }}
+                iconMapFunction={(bucket) => {
+                    const expense = expenseData.find(expense => expense.id === bucket.expense);
+                    console.log('expense', expense);
+                    return getExpenseIcon(expense?.category);
                 }}
             />
 

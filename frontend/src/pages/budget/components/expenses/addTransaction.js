@@ -8,6 +8,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 
+import Loading from "layouts/Loading";
 import Form from "layouts/Form";
 import NumberField from "layouts/Form/components/numberField";
 import SelectField from "layouts/Form/components/selectField";
@@ -89,6 +90,12 @@ function AddTransaction({ isOpen, setIsOpen, bucketsData, selectedBucket }) {
     //
     // UI Design
     //
+
+    if (loadingAddTransaction) {
+            return (
+                <Loading />
+            );
+        }
 
     return (
         <Form

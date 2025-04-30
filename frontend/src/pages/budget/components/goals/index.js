@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { useGoals } from 'services/budget/queryHooks';
 import { useDeleteGoal } from "services/budget/budgetMutations";
+import { useCategories } from "context/helpers/budgetCategories";
 
+import { Box } from "@mui/material";
+
+import Loading from "layouts/Loading";
 import ProgressTable from "layouts/Table/ProgressTable";
 import Confirmation from 'layouts/Dialogs/Confirmation';
 import GoalsForm from 'pages/budget/components/goals/goalsForm';
@@ -12,7 +16,8 @@ function Goals({ currentSession }) {
     // Variable States
     //
 
-    const { data: goalsData = [] } = useGoals(currentSession);
+    const { data: goalsData = [], loadingGoals } = useGoals(currentSession);
+    const { getGoalIcon } = useCategories();
     const [sortBy, setSortBy] = useState("");
     const [selectedGoal, setSelectedGoal] = useState(null);
 
@@ -51,7 +56,7 @@ function Goals({ currentSession }) {
     }
 
 
-    const handleOpenEditGoalForm = (goal) =>{
+    const handleOpenEditGoalForm = (goal) => {
         setSelectedGoal(goal);
         setOpenEditGoals(true);
     }
@@ -79,6 +84,14 @@ function Goals({ currentSession }) {
         console.log('open info for goal', goal);
     }
 
+    //
+    // UI Designs
+    //
+
+    if (loadingDeleteGoal || loadingGoals) {
+        return <Loading />;
+    }
+
     return (
         <>
             <ProgressTable
@@ -99,6 +112,7 @@ function Goals({ currentSession }) {
                     percentage: 'percentage',
                     id: 'id',
                 }}
+                iconMapFunction={(category) => getGoalIcon(category)}
             />
 
             {/* Add Goals Form */}
@@ -108,7 +122,7 @@ function Goals({ currentSession }) {
             />
 
             {/* Edit Goals Form */}
-            <GoalsForm 
+            <GoalsForm
                 isOpen={openEditGoals}
                 setIsOpen={setOpenEditGoals}
                 selectedGoal={selectedGoal}

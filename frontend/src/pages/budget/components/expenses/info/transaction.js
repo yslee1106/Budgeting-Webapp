@@ -20,6 +20,7 @@ import {
     Delete as DeleteIcon,
 } from '@mui/icons-material';
 
+import Loading from 'layouts/Loading';
 import Confirmation from "layouts/Dialogs/Confirmation";
 
 
@@ -96,6 +97,16 @@ const ExpenseTransaction = ({ selectedBucket }) => {
     const handleEditTransaction = (transaction) => {
         console.log('Edit Transaction', transaction);
     }
+
+    //
+    // UI Design
+    //
+
+    if (isLoading || loadDeleteTransaction) {
+            return (
+                <Loading />
+            );
+        }
 
     return (
         <Box

@@ -11,6 +11,8 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from "@mui/material/Typography";
 
+import Loading from "layouts/Loading";
+
 const useDynamicMonthList = (buttonWidth, currentPeriod) => {
     const containerRef = useRef(null);
     const [capacity, setCapacity] = useState(0);
@@ -167,6 +169,12 @@ const Session = ({ selectedPeriod, setSelectedPeriod }) => {
                 </Icon>
             </IconButton>
         )
+    }
+
+    if (isLoading) {
+        return (
+            <Loading />
+        );
     }
 
     return (

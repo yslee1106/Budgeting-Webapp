@@ -51,7 +51,7 @@ const patchExpense = async (expenseData) => {
 
         console.log(payload);
 
-        const response = await api.patch(`/budget/expenses/${expenseData.id}/`, payload);
+        const response = await api.patch(`/budget/expense/${expenseData.id}/`, payload);
         return response.data;
     } catch (error) {
         throw new Error(error.response?.data?.detail || 'Failed to update expense');

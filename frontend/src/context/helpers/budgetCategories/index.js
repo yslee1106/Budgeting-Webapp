@@ -1,6 +1,9 @@
 import React, { createContext, useContext, } from 'react';
 import { useQuery } from '@tanstack/react-query';
+
 import { fetchModelChoices } from 'services/budget/requests/get';
+import { getGoalCategoryIcon } from 'context/helpers/budgetCategories/iconMap/goal';
+import { getExpenseCategoryIcon } from 'context/helpers/budgetCategories/iconMap/expense';
 
 const BudgetCategoriesContext = createContext();
 
@@ -28,11 +31,21 @@ export const BudgetCategoriesProvider = ({ children }) => {
     }
     : defaultCategories;
 
+  const getGoalIcon = (category) => {
+    return getGoalCategoryIcon(category);
+  };
+
+  const getExpenseIcon = (category) => {
+    return getExpenseCategoryIcon(category);
+  };
+
   return (
     <BudgetCategoriesContext.Provider value={{
       categories,
       loading: isLoading,
       error,
+      getGoalIcon,
+      getExpenseIcon,
     }}>
       {children}
     </BudgetCategoriesContext.Provider>

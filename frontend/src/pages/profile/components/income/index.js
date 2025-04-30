@@ -12,6 +12,7 @@ import {
 import { useIncome } from "services/budget/queryHooks";
 import { useReceiveIncome, useRetractIncome, useDeleteIncome } from "services/budget/budgetMutations";
 
+import Loading from "layouts/Loading";
 import DefaultTable from "layouts/Table/DefaultTable";
 import Confirmation from "layouts/Dialogs/Confirmation";
 
@@ -23,7 +24,7 @@ function Income() {
     // Variable States
     //
 
-    const { data: incomeData = [] } = useIncome();
+    const { data: incomeData = [], loadingIncome } = useIncome();
 
     const [selectedIncome, setSelectedIncome] = useState(null);
 
@@ -148,6 +149,16 @@ function Income() {
             console.error('Submission error:', error);
             alert(error.message);
         }
+    }
+
+    //
+    // UI Design
+    //
+
+    if (loadingIncome || loadingReceiveIncome || loadingRetractIncome || loadingDeleteIncome) {
+        return (
+            <Loading />
+        );
     }
 
     return (

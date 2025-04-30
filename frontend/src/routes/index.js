@@ -2,8 +2,9 @@ import { Routes, Route } from 'react-router-dom';
 import { PublicRouteList } from 'routes/publicRoutes';
 import { PrivateRouteList } from 'routes/privateRoutes';
 import Login from 'pages/authentication/login';
+import ErrorPage from 'pages/error';
 import Budget from 'pages/budget';
-import PrivateRoute from './components/privateRoute';
+import PrivateRoute from 'routes/components/privateRoute';
 // import NotFound from 'components/NotFound';
 
 const PublicRoutes = () =>
@@ -33,7 +34,7 @@ const AllRoutes = () => (
     </Route>
 
     {/* Error Page */}
-    <Route path="*" element={<Login />} />
+    <Route path="*" element={<ErrorPage />} />
 
   </Routes>
 );
