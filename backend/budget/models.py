@@ -127,100 +127,63 @@ class Expense(models.Model):
         unique_together = (('user'), ('name'))
 
     EXPENSE_CATEGORIES = [
-        ('HOUSING', 'Housing'), 
-        ('RENT/MORTGAGE', 'Rent/Mortgage'), 
-        ('UTILITIES', 'Utilities'), 
-        ('ELECTRICITY', 'Electricity'), 
-        ('WATER', 'Water'), 
-        ('GAS', 'Gas'), 
-        ('INTERNET', 'Internet'), 
-        ('HOME MAINTENANCE', 'Home Maintenance'), 
-        ('HOME INSURANCE', 'Home Insurance'), 
-        ('PROPERTY TAXES', 'Property Taxes'), 
-        ('OTHER HOUSING EXPENSES', 'Other Housing Expenses'), 
-        ('TRANSPORTATION', 'Transportation'), 
-        ('CAR PAYMENT', 'Car Payment'), 
-        ('GAS/FUEL', 'Gas/Fuel'), 
-        ('PUBLIC TRANSIT', 'Public Transit'), 
-        ('RIDE SHARING', 'Ride Sharing'), 
-        ('CAR INSURANCE', 'Car Insurance'), 
-        ('CAR MAINTENANCE', 'Car Maintenance'), 
-        ('PARKING/TOLLS', 'Parking/Tolls'), 
-        ('OTHER TRANSPORTATION EXPENSES', 'Other Transportation Expenses'), 
-        ('FOOD', 'Food'), 
-        ('GROCERIES', 'Groceries'), 
-        ('DINING OUT', 'Dining Out'), 
-        ('COFFEE SHOPS', 'Coffee Shops'), 
-        ('ALCOHOL/BARS', 'Alcohol/Bars'), 
-        ('OTHER FOOD EXPENSES', 'Other Food Expenses'), 
-        ('HEALTH', 'Health'), 
-        ('HEALTH INSURANCE', 'Health Insurance'), 
-        ('DOCTOR VISITS', 'Doctor Visits'), 
-        ('MEDICATIONS', 'Medications'), 
-        ('GYM MEMBERSHIP', 'Gym Membership'), 
-        ('WELLNESS/SUPPLEMENTS', 'Wellness/Supplements'), 
-        ('OTHER HEALTH EXPENSES', 'Other Health Expenses'), 
-        ('ENTERTAINMENT', 'Entertainment'), 
-        ('STREAMING SERVICES', 'Streaming Services'), 
-        ('MOVIES/THEATER', 'Movies/Theater'), 
-        ('CONCERTS/EVENTS', 'Concerts/Events'), 
-        ('HOBBIES', 'Hobbies'), 
-        ('GAMES', 'Games'), 
-        ('SUBSCRIPTIONS', 'Subscriptions'), 
-        ('OTHER ENTERTAINMENT EXPENSES', 'Other Entertainment Expenses'), 
-        ('SHOPPING', 'Shopping'), 
-        ('CLOTHING', 'Clothing'), 
-        ('ELECTRONICS', 'Electronics'), 
-        ('HOME GOODS', 'Home Goods'), 
-        ('BEAUTY/PERSONAL CARE', 'Beauty/Personal Care'), 
-        ('GIFTS', 'Gifts'), 
-        ('OTHER SHOPPING EXPENSES', 'Other Shopping Expenses'), 
-        ('TRAVEL', 'Travel'), 
-        ('FLIGHTS', 'Flights'), 
-        ('ACCOMMODATION', 'Accommodation'), 
-        ('TRANSPORTATION', 'Transportation'), 
-        ('FOOD/DRINK', 'Food/Drink'), 
-        ('ACTIVITIES', 'Activities'), 
-        ('TRAVEL INSURANCE', 'Travel Insurance'), 
-        ('OTHER TRAVEL EXPENSES', 'Other Travel Expenses'), 
-        ('DEBT PAYMENTS', 'Debt Payments'), 
-        ('CREDIT CARD PAYMENTS', 'Credit Card Payments'), 
-        ('STUDENT LOANS', 'Student Loans'), 
-        ('PERSONAL LOANS', 'Personal Loans'), 
-        ('OTHER DEBT PAYMENTS', 'Other Debt Payments'), 
-        ('SAVINGS', 'Savings'), 
-        ('EMERGENCY FUND', 'Emergency Fund'), 
-        ('RETIREMENT SAVINGS', 'Retirement Savings'), 
-        ('INVESTMENT CONTRIBUTIONS', 'Investment Contributions'), 
-        ('OTHER SAVINGS', 'Other Savings'), 
-        ('EDUCATION', 'Education'), 
-        ('TUITION', 'Tuition'), 
-        ('BOOKS/SUPPLIES', 'Books/Supplies'), 
-        ('COURSES/WORKSHOPS', 'Courses/Workshops'), 
-        ('OTHER EDUCATION EXPENSES', 'Other Education Expenses'), 
-        ('CHILDCARE', 'Childcare'), 
-        ('BABYSITTING', 'Babysitting'), 
-        ('SCHOOL FEES', 'School Fees'), 
-        ('CHILD ACTIVITIES', 'Child Activities'), 
-        ('OTHER CHILDCARE EXPENSES', 'Other Childcare Expenses'), 
-        ('PETS', 'Pets'), 
-        ('PET FOOD', 'Pet Food'), 
-        ('VETERINARY CARE', 'Veterinary Care'), 
-        ('PET SUPPLIES', 'Pet Supplies'), 
-        ('PET INSURANCE', 'Pet Insurance'), 
-        ('OTHER PET EXPENSES', 'Other Pet Expenses'), 
-        ('GIFTS/DONATIONS', 'Gifts/Donations'), 
-        ('CHARITABLE DONATIONS', 'Charitable Donations'), 
-        ('GIFTS FOR OTHERS', 'Gifts for Others'), 
-        ('OTHER GIFTS/DONATIONS', 'Other Gifts/Donations'), 
-        ('BUSINESS EXPENSES', 'Business Expenses'), 
-        ('OFFICE SUPPLIES', 'Office Supplies'), 
-        ('TRAVEL EXPENSES', 'Travel Expenses'), 
-        ('MARKETING/ADVERTISING', 'Marketing/Advertising'), 
-        ('OTHER BUSINESS EXPENSES', 'Other Business Expenses'), 
-        ('MISCELLANEOUS', 'Miscellaneous'), 
-        ('OTHER EXPENSES', 'Other Expenses')
+        # Housing
+        ('HOUSING', 'Housing'),  # Main category
+        ('RENT_MORTGAGE', 'Rent/Mortgage'),
+        ('UTILITIES', 'Utilities'),  # Combine electricity/water/gas/internet here
+        ('HOME_MAINTENANCE', 'Home Maintenance'),
+        ('HOME_INSURANCE_TAXES', 'Home Insurance/Taxes'),  # Combined
+        
+        # Transportation
+        ('TRANSPORTATION', 'Transportation'),  # Main category
+        ('VEHICLE_PAYMENT', 'Vehicle Payment'),  # Combines car payment
+        ('VEHICLE_EXPENSES', 'Vehicle Expenses'),  # Combines gas/fuel, maintenance, insurance
+        ('PUBLIC_TRANSPORT', 'Public Transport'),  # Combines public transit/ride sharing
+        ('PARKING_TOLLS', 'Parking/Tolls'),
+        
+        # Food
+        ('FOOD', 'Food'),  # Main category
+        ('GROCERIES', 'Groceries'),
+        ('DINING_OUT', 'Dining Out'),  # Combine coffee shops/alcohol here
+        
+        # Health
+        ('HEALTHCARE', 'Healthcare'),  # Main category
+        ('HEALTH_INSURANCE', 'Health Insurance'),
+        ('MEDICAL_EXPENSES', 'Medical Expenses'),  # Combines doctor visits/medications
+        ('FITNESS', 'Fitness'),  # Gym/wellness
+        
+        # Entertainment
+        ('ENTERTAINMENT', 'Entertainment'),  # Main category
+        ('STREAMING_SUBSCRIPTIONS', 'Streaming/Subscriptions'),
+        ('RECREATION', 'Recreation'),  # Combines movies, concerts, hobbies, games
+        
+        # Shopping
+        ('SHOPPING', 'Shopping'),  # Main category
+        ('CLOTHING', 'Clothing'),
+        ('ELECTRONICS', 'Electronics'),
+        ('PERSONAL_CARE', 'Personal Care'),  # Beauty/home goods
+        
+        # Travel
+        ('TRAVEL', 'Travel'),  # Main category
+        ('ACCOMMODATION', 'Accommodation'),
+        ('TRAVEL_TRANSPORT', 'Travel Transport'),  # Flights/local transport
+        ('TRAVEL_ACTIVITIES', 'Travel Activities'),
+        
+        # Financial
+        ('DEBT', 'Debt'),  # Main category - combines all debt types
+        ('SAVINGS_INVESTMENTS', 'Savings/Investments'),  # Combined
+        
+        # Other Life Expenses
+        ('EDUCATION', 'Education'),  # Combine all education expenses
+        ('CHILDCARE', 'Childcare'),  # Combine all childcare
+        ('PETS', 'Pets'),  # Combine all pet expenses
+        ('GIFTS_DONATIONS', 'Gifts/Donations'),  # Combined
+        ('BUSINESS', 'Business Expenses'),  # Combine all business
+        
+        # Catch-all
+        ('MISCELLANEOUS', 'Miscellaneous')
     ]
+
 
     FREQUENCY_CHOICES = [
         ('DAILY', 'Daily'),

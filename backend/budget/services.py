@@ -31,6 +31,8 @@ class ExpenseService:
         instance.save()
         currentBucket.save()
 
+        return instance
+
 
     @staticmethod
     def soft_delete_expense(instance):
