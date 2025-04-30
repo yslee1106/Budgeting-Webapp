@@ -17,12 +17,8 @@ class TransactionService:
     def create_transaction(validated_data):
         user = validated_data['user']
         transaction_type = validated_data.get('type')
-        bucket = Bucket.objects.get(id = validated_data.get('bucket').id)
-        session = Session.objects.filter(user=user).latest('period')
         
-        if bucket.expense.deleted_at:
-            raise ValidationError('Expense has already been deleted')
-
+        session = Session.objects.filter(user=user).latest('period')
 
         # Create the correct transaction type
         if transaction_type == Transaction.TransactionType.DEBIT:
@@ -32,6 +28,10 @@ class TransactionService:
             session.total_funds += transaction.amount
             session.available_funds += transaction.amount
         else:
+            bucket = Bucket.objects.get(id = validated_data.get('bucket').id)
+            if bucket.expense.deleted_at:
+                raise ValidationError('Expense has already been deleted')
+            
             validated_data['amount'] = -abs(validated_data['amount'])
             transaction = CreditTransaction.objects.create(**validated_data)
 
@@ -43,10 +43,10 @@ class TransactionService:
             if bucket.current_amount >= bucket.spending_limit:
                 bucket.fulfilled = True
 
-            if bucket.next_payment and bucket.current_amount >= bucket.spending_limit and Bucket.objects.filter(expense=expense).latest('next_payment') == bucket:
-                expense.next_payment = expense.calculate_next_payment(revert=False)
-                expense.save()
-                BucketService.create_bucket(expense)
+            # if bucket.next_payment and bucket.current_amount >= bucket.spending_limit and Bucket.objects.filter(expense=expense).latest('next_payment') == bucket:
+            #     expense.next_payment = expense.calculate_next_payment(revert=False)
+            #     expense.save()
+            #     BucketService.create_bucket(expense)
 
             bucket.save()
             

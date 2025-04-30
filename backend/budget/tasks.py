@@ -23,7 +23,7 @@ def create_new_session():
             # Process every expense for the user
             for expense in user.expense.all():
                 # For non‐recurring expenses, always create a new bucket
-                if not expense.recurring:
+                # if not expense.recurring:
                     Bucket.objects.create(
                         user=user,
                         expense=expense,
@@ -32,22 +32,22 @@ def create_new_session():
                         spending_limit=expense.spending_limit,
                         current_amount=0
                     )
-                else:
-                    # For recurring expenses, get the latest bucket for that expense
-                    latest_bucket = Bucket.objects.filter(user=user, expense=expense).order_by('-id').first()
-                    if latest_bucket:
-                        if not latest_bucket.fulfilled:
-                            if latest_bucket.current_amount != 0:
-                                # Create a new bucket and copy the current_amount from latest_bucket
-                                Bucket.objects.create(
-                                    user=user,
-                                    expense=expense,
-                                    session=new_session,
-                                    next_payment=expense.next_payment,
-                                    spending_limit=expense.spending_limit,
-                                    current_amount=latest_bucket.current_amount
-                                )
-                            else:
-                                # Latest bucket is not fulfilled, current_amount is zero; update its session to new_session
-                                latest_bucket.session = new_session
-                                latest_bucket.save()
+                # else:
+                #     # For recurring expenses, get the latest bucket for that expense
+                #     latest_bucket = Bucket.objects.filter(user=user, expense=expense).order_by('-id').first()
+                #     if latest_bucket:
+                #         if not latest_bucket.fulfilled:
+                #             if latest_bucket.current_amount != 0:
+                #                 # Create a new bucket and copy the current_amount from latest_bucket
+                #                 Bucket.objects.create(
+                #                     user=user,
+                #                     expense=expense,
+                #                     session=new_session,
+                #                     next_payment=expense.next_payment,
+                #                     spending_limit=expense.spending_limit,
+                #                     current_amount=latest_bucket.current_amount
+                #                 )
+                #             else:
+                #                 # Latest bucket is not fulfilled, current_amount is zero; update its session to new_session
+                #                 latest_bucket.session = new_session
+                #                 latest_bucket.save()

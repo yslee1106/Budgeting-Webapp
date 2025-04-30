@@ -70,7 +70,7 @@ class Income(models.Model):
     next_payday = models.DateField(null=False, blank=True)
     amount = models.DecimalField(max_digits=20, decimal_places=2, null=False)
 
-    def calculate_payment(self, revert):
+    def calculate_payday(self, revert):
         """Calculate the next payday based on frequency"""
         if not self.next_payday:
             return None
