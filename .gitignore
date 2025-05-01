@@ -6,3 +6,4 @@ node_modules/
 figma/
 staticfiles/
 dev env
+Procfile

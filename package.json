@@ -1,5 +1,9 @@
 {
   "dependencies": {
     "axios": "^1.8.3"
+  },
+  "scripts": {
+    "start": "python ./backend/manage.py migrate && gunicorn portfolio.wsgi:application --bind 0.0.0.0:${PORT:-8000} --timeout 120"
+
   }
 }
