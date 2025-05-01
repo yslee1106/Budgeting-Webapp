@@ -1,7 +1,10 @@
 from celery import Celery
 import os
+import dotenv
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio.settings.base')
+dotenv.load_dotenv()
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio.settings.development')
 
 app = Celery('portfolio')
 

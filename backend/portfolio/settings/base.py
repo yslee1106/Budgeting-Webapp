@@ -14,13 +14,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise Exception("SECRET_KEY environment variable not set!")
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
     'rest_framework', 
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
@@ -36,13 +37,13 @@ INSTALLED_APPS = [
     'users',
     'budget',
     'accounts',
-    #'chatbot',
     'core',
     
 ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -137,8 +138,8 @@ REST_FRAMEWORK = {
         'rest_framework.throttling.AnonRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '15/hour',
-        'choices': '100/day',  # 100 requests/day per user
+        'anon': '20/hour',
+        'choices': '1000/day',  # 100 requests/day per user
     }
 }
 
@@ -197,10 +198,12 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
-STATICFILES_FINDERS = [ 
-    'django.contrib.staticfiles.finders.FileSystemFinder', 
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    ]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# STATICFILES_FINDERS = [ 
+#     'django.contrib.staticfiles.finders.FileSystemFinder', 
+#     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+#     ]
 
 
 # Default primary key field type

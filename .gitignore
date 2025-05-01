@@ -1,4 +1,7 @@
 venv/
+prodvenv/
+__pycache__/
 .env
 node_modules/
 figma/
+staticfiles
