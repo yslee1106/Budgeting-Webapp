@@ -17,6 +17,6 @@ import dotenv
 dotenv.load_dotenv()
 # from chatbot import consumers
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio.settings.development')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio.settings.production')
 
 application = get_asgi_application()

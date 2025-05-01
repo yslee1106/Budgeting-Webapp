@@ -4,7 +4,7 @@ import dotenv
 
 dotenv.load_dotenv()
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio.settings.development')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'portfolio.settings.production')
 
 app = Celery('portfolio')
 
