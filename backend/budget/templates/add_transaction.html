@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Financial Tracker{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    {% block content %}
+    <div class="container">
+        <h2>Add Financial Transaction</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="transaction_date">Date:</label>
+                <input type="date" class="form-control" id="transaction_date" name="transaction_date" required>
+            </div>
+
+            <div class="form-group">
+                <label for="amount">Amount:</label>
+                <input type="number" step="0.01" class="form-control" id="amount" name="amount" required>
+            </div>
+
+            <div class="row">
+                <div class="entry">
+
+                    <div class="form-group">
+                        <label for="account">Account:</label>
+                        <select class="form-control" id="account" name="account" required>
+                        {% for account in accounts %}
+                            <option value="{{ account.id }}">{{ account.name }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="type">Transaction Type:</label>
+                        <select class="form-control" id="type" name="type" required>
+                            <option value="Debit">Debit</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+
+                </div>
+                
+                <div class="contra-entry">
+
+                    <div class="form-group">
+                        <label for="contra_account">Account:</label>
+                        <select class="form-control" id="contra_account" name="contra_account" required>
+                        {% for account in accounts %}
+                            <option value="{{ account.id }}">{{ account.name }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contra_type">Transaction Type:</label>
+                        <select class="form-control" id="contra_type" name="contra_type" required>
+                            <option value="Credit">Credit</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contra_description">Description:</label>
+                        <textarea class="form-control" id="contra_description" name="contra_description" rows="3"></textarea>
+                    </div>
+
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Transaction</button>
+        </form>
+    </div>
+    {% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
