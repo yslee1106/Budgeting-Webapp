@@ -1,7 +1,17 @@
 from .base import *
 
+import dj_database_url
+
 DEBUG = False
-ALLOWED_HOSTS = ["fintrack-product-testing.railway.app"]
+ALLOWED_HOSTS = ["*"]
+
+DATABASES = {
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),  # Auto-reads Railway's DATABASE_URL
+        conn_max_age=600,  # Optional: connection timeout
+        ssl_require=True   # Force SSL
+    )
+}
 
 # Security Headers (for production)
 SESSION_COOKIE_SECURE = True
